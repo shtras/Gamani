@@ -10,6 +10,5 @@ public:
   bool isStatic() {return false;}
   void render();
 private:
-  GLuint texture_;
 };
 

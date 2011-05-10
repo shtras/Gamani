@@ -21,6 +21,7 @@ protected:
   Vector3 velocity_;
   double yaw_;
   double yawVel_;
+  GLuint texture_;
 
   list<Vector3> points_;
 };

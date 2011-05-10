@@ -1,5 +1,7 @@
 #include "StdAfx.h"
 #include "DynamicBody.h"
+#include "Renderer.h"
+#include "Gamani.h"
 
 
 DynamicBody::DynamicBody():AstralBody()
@@ -8,6 +10,7 @@ DynamicBody::DynamicBody():AstralBody()
   velocity_[1] = 0;
   velocity_[2] = 0;
   yawVel_ = 0;
+  texture_ = (GLuint)-1;
 }
 
 
@@ -18,6 +21,11 @@ DynamicBody::~DynamicBody()
 void DynamicBody::render()
 {
   AstralBody::render();
+  if (!Gamani::getInstance().getTracers()) {
+    return;
+  }
+  glPushMatrix();
+  Renderer::getInstance().getCamera().applyZoom();
   glDisable(GL_LIGHTING);
   glColor3f(1,1,1);
   if (name_ == CString("Jupiter")) {
@@ -44,6 +52,7 @@ void DynamicBody::render()
   //glVertex3f(coord_[0]*GLOBAL_MULT, coord_[1]*GLOBAL_MULT, coord_[2]*GLOBAL_MULT);
   glEnd();
   glEnable(GL_LIGHTING);
+  glPopMatrix();
 }
 
 

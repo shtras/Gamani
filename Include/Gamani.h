@@ -17,6 +17,8 @@ public:
   double getSpeedReduce() {return calcStepLength_;}
   double getDTModifier() {return dtModifier_;}
   bool getAuxAxes() {return auxAxes_;}
+  bool getTracers() {return tracers_;}
+  bool getAuxPrints() {return auxPrint_;}
 private:
   void testInit();
   void layoutTest();
@@ -33,6 +35,10 @@ private:
   double long seconds_;
   double calcStepLength_;
   double dtModifier_;
+
+  bool tracers_;
+  bool auxPrint_;
+  bool interface_;
 
   bool lmDown_;
   bool rmDown_;

@@ -94,23 +94,26 @@ void Camera::rotate(double x, double y, double z)
 
 void Camera::position()
 {
+  bool printData = Gamani::getInstance().getAuxPrints();
   glColor3f(1,1,1);
-  Renderer::getInstance().textOut(-1,0.9,0, "Zoom: %0.2f Pos (%0.2f, %0.2f, %0.2f) Pitch: %0.2f Heading: %0.2f, Speed: %.3f StepLength: %.3f", 
-    zoom_, position_[0], position_[1], position_[2], pitch_, heading_, Gamani::getInstance().getSpeed(), Gamani::getInstance().getSpeedReduce());
+  if (printData) {
+    Renderer::getInstance().textOut(-1,0.9,0, "Zoom: %0.2f Pos (%0.2f, %0.2f, %0.2f) Pitch: %0.2f Heading: %0.2f, Speed: %.3f StepLength: %.3f", 
+      zoom_, position_[0], position_[1], position_[2], pitch_, heading_, Gamani::getInstance().getSpeed(), Gamani::getInstance().getSpeedReduce());
 
-  Renderable* followed = Gamani::getInstance().getFollowedObject();
-  string name = "Free camera";
-  if (followed) {
-    name = followed->getName();
-    Renderer::getInstance().textOut(-1,0.85,0,"Pos: (%.2f, %.2f) Vel: (%.2f, %.2f)", followed->getCoord()[0], followed->getCoord()[1], followed->getVelocity()[0], followed->getVelocity()[1]);
-  }
-  Renderer::getInstance().textOut(-1,0.8,0, "%s", 
-    name.c_str());
+    Renderable* followed = Gamani::getInstance().getFollowedObject();
+    string name = "Free camera";
+    if (followed) {
+      name = followed->getName();
+      Renderer::getInstance().textOut(-1,0.85,0,"Pos: (%.2f, %.2f) Vel: (%.2f, %.2f)", followed->getCoord()[0], followed->getCoord()[1], followed->getVelocity()[0], followed->getVelocity()[1]);
+    }
+    Renderer::getInstance().textOut(-1,0.8,0, "%s", 
+      name.c_str());
 
-  Ship* ship = dynamic_cast<Ship*>(followed);
-  if (ship) {
-    Renderer::getInstance().textOut(-1,0.75,0, "Landed: %d Prog: %s Yaw: %0.2f, Target yaw: %0.2f, Target dist: %s", ship->isLanded(), ship->getProgName(ship->getProgram()).operator const char *(),
-      ship->getYaw(), ship->getTgtAngle(), Renderer::getInstance().formatDistance(ship->getTgtDist()).operator const char *());
+    Ship* ship = dynamic_cast<Ship*>(followed);
+    if (ship) {
+      Renderer::getInstance().textOut(-1,0.75,0, "Landed: %d Prog: %s Yaw: %0.2f, Target yaw: %0.2f, Target dist: %s", ship->isLanded(), ship->getProgName(ship->getProgram()).operator const char *(),
+        ship->getYaw(), ship->getTgtAngle(), Renderer::getInstance().formatDistance(ship->getTgtDist()).operator const char *());
+    }
   }
 
   if (Gamani::getInstance().isPaused()) {
@@ -131,10 +134,9 @@ void Camera::position()
 
   Renderer::getInstance().textOut(-1,0.95,0, "%dY %dD %02d:%02d:%02d.%ld", years, days, hours, minutes, seconds, decim);
 
-
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(45, aspect_, 0.1, 2000000);
+  gluPerspective(45, aspect_, 0.1, 60000);
   gluLookAt(0, 0, 0, 
             0, 1, 0,
             0, 0, -1);

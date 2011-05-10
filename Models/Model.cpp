@@ -123,13 +123,17 @@ void ModelObject::draw() const
   glEnableClientState(GL_COLOR_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
   glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
+  glTexCoordPointer(2, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(40));
   glNormalPointer(GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(28));
   glColorPointer(4, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(12));
   glVertexPointer(3, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(0));
+
   err = glGetError();
   assert(err == 0);
   glDrawElements(GL_TRIANGLES, numFaces_, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_NORMAL_ARRAY);
   glDisableClientState(GL_VERTEX_ARRAY);
@@ -184,6 +188,7 @@ void ModelObject::initVBO()
   glEnableClientState(GL_COLOR_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
   glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   //glPolygonMode(GL_FRONT,GL_LINE);
   verts_ = new VBOVertex[numVertexes_];
   indexes_ = new GLuint[numFaces_];
@@ -207,6 +212,9 @@ void ModelObject::initVBO()
       col.b = mat->color.b/255.0f;
       col.a = mat->color.a/255.0f;
     }
+
+    verts_[idx].texCoord[0] = texCoords_[j]->u;
+    verts_[idx].texCoord[1] = texCoords_[j]->v;
 
     verts_[idx].color[0] = col.r;
     verts_[idx].color[1] = col.g;
@@ -254,6 +262,7 @@ void ModelObject::initVBO()
   err = glGetError();
   assert (err == 0);
 
+  glTexCoordPointer(2, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(40));
   glNormalPointer(GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(28));
   glColorPointer(4, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(12));
   glVertexPointer(3, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(0));
@@ -264,6 +273,7 @@ void ModelObject::initVBO()
 
   delete[] verts_;
   delete[] indexes_;
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_NORMAL_ARRAY);
   glDisableClientState(GL_VERTEX_ARRAY);

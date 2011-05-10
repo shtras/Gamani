@@ -36,7 +36,7 @@ void SkyBox::initTextures()
 
 void SkyBox::draw()
 {
-  float size = 50000;
+  float size = 10000;
   glPushMatrix();
   glDisable(GL_LIGHTING);
   glEnable(GL_TEXTURE_2D);

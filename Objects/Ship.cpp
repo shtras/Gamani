@@ -47,7 +47,7 @@ void Ship::render()
   DynamicBody::render();
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
-
+  Renderer::getInstance().getCamera().applyZoom();
   glColor3f(color_[0], color_[1], color_[2]);
 
   //glTranslatef(coord_[0]*GLOBAL_MULT, coord_[1]*GLOBAL_MULT, coord_[2]*GLOBAL_MULT);

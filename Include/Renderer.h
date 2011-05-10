@@ -5,6 +5,8 @@
 
 using namespace std;
 
+int LoadBitmap11(const char *filename);
+
 class Renderer
 {
 public:

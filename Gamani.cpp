@@ -40,7 +40,7 @@ void toggleVSync()
 }
 
 Gamani::Gamani():world_(new World()), paused_(true), speed_(1.0), calcStepLength_(0.05), dtModifier_(50),auxAxes_(false),lmDown_(false),rmDown_(false),
-  lmDrag_(false), rmDrag_(false)
+  lmDrag_(false), rmDrag_(false), tracers_(false), auxPrint_(true), interface_(true)
 {
   nonContKeys_.insert('M');
   nonContKeys_.insert('V');
@@ -56,6 +56,9 @@ Gamani::Gamani():world_(new World()), paused_(true), speed_(1.0), calcStepLength
   nonContKeys_.insert('E');
   nonContKeys_.insert('O');
   nonContKeys_.insert(0x30);
+  nonContKeys_.insert(0x31);
+  nonContKeys_.insert(0x32);
+  nonContKeys_.insert(0x33);
 }
 
 
@@ -167,7 +170,9 @@ bool Gamani::mainLoop()
       }
 
       Renderer::getInstance().render();
-      layoutManager_.render();
+      if (interface_) {
+        layoutManager_.render();
+      }
       Renderer::getInstance().renderEnd();
 
       GLenum err = glGetError();
@@ -246,6 +251,15 @@ void Gamani::handlePressedKey(int key)
     break;
   case 'O':
     auxAxes_ = !auxAxes_;
+    break;
+  case 0x31:
+    tracers_ = !tracers_;
+    break;
+  case 0x32:
+    auxPrint_ = !auxPrint_;
+    break;
+  case 0x33:
+    interface_ = !interface_;
     break;
   default:
     world_->handlePressedKey(key);
@@ -534,7 +548,7 @@ void Gamani::testInit()
   satellite->setVelocity(Vector3(10880, 13070, 0));
   satellite->setColor(Vector3(1,1,1));
   satellite->setName("Ganymede");
-  planet->setRotationPeriod(7.15455296*24*3600);
+  satellite->setRotationPeriod(7.15455296*24*3600);
   planet->addSatellite(satellite);
 
   //Callisto
@@ -556,6 +570,26 @@ void Gamani::testInit()
   planet->setVelocity(Vector3(0, 9690, 0));
   planet->setName("Saturn");
   planet->setRotationPeriod(10*3600 + 34*60 + 13);
+  star->addSatellite(planet);
+
+  //Uranus
+  planet = new Planet();
+  planet->setCoord(Vector3(2876679.082, 0, 0));
+  planet->setRadius(25.559);
+  planet->setMass(8.6832e19);
+  planet->setVelocity(Vector3(0, 6810, 0));
+  planet->setName("Uranus");
+  planet->setRotationPeriod(0.71833 *24*3600);
+  star->addSatellite(planet);
+
+  //Neptune
+  planet = new Planet();
+  planet->setCoord(Vector3(4503443.661, 0, 0));
+  planet->setRadius(24.341);
+  planet->setMass(1.0243e20);
+  planet->setVelocity(Vector3(0, 5430, 0));
+  planet->setName("Neptune");
+  planet->setRotationPeriod(0.6713 *24*3600);
   star->addSatellite(planet);
 
 
