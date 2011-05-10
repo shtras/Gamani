@@ -70,11 +70,14 @@ void Ship::render()
 
 
   if (Gamani::getInstance().getAuxAxes()) {
+    glPushMatrix();
+    Renderer::getInstance().getCamera().applyZoom();
+
     glDisable(GL_LIGHTING);
     Vector3 relSpd = velocity_ - gravityRef_->getVelocity();
     double spd = relSpd.getLength();
     relSpd.normalize();
-    relSpd *= radius_ * 0.5 * spd/10000.0 * GLOBAL_MULT * 10;
+    relSpd *= radius_ * 0.5 * spd/10000.0 / 1000.0;
     glColor3f(0, 0.2, 0.9);
     glBegin(GL_LINES);
       glVertex3f(0,0,0);
@@ -84,13 +87,14 @@ void Ship::render()
     Vector3 dir = gravityRef_->getCoord() - coord_;
     double dist = dir.getLength();
     dir.normalize();
-    dir *= radius_ * 0.5 * sqrt(dist/10) * GLOBAL_MULT * 10;
+    dir *= radius_ * 0.5 * sqrt(dist/10) / 1000.0;
     glColor3f(0, 0.9, 0.2);
     glBegin(GL_LINES);
     glVertex3f(0,0,0);
     glVertex3f(dir[0], dir[1], dir[2]);
     glEnd();
     glEnable(GL_LIGHTING);
+    glPopMatrix();
   }
 
   //testNavCom();

@@ -335,6 +335,9 @@ void Gamani::handleMessage(UINT message, WPARAM wParam, LPARAM lParam)
     }
     pressedKeys_.erase(wParam);
     break;
+  case WM_SIZE:
+    Renderer::getInstance().resize(LOWORD(lParam), HIWORD(lParam));
+    break;
   default:
     break;
   }
@@ -456,14 +459,14 @@ void Gamani::testInit()
   shipHud->init();
   ship->setHUD(shipHud);
   ship->test1_ = planet;
-  ship->initModel("new.3ds");
+  ship->initModel("res/new.3ds");
 
   Station* station = new Station();
-  station->setCoord(Vector3(149610, 0.1, 0));
-  station->setVelocity(Vector3(/*-6250*/0, 29783+6250, 0));
+  station->setCoord(Vector3(149590, 0, 0));
+  station->setVelocity(Vector3(/*-6250*/0, 29783-6250, 0));
   station->setRadius(0.01);
   station->setName("Shipyard");
-  station->initModel("station.3ds");
+  station->initModel("res/station.3ds");
 
 
   //Moon

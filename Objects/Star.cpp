@@ -61,7 +61,7 @@ void Star::render()
 
   gluQuadricTexture( earth, GL_TRUE);
   if (texture_ == (GLuint)-1) {
-    CString texName = name_ + CString(".bmp");
+    CString texName = CString("Textures/") + name_ + CString(".bmp");
     texture_ = LoadBitmap11(texName);
   }
   glEnable ( GL_TEXTURE_2D );
@@ -78,6 +78,6 @@ void Star::render()
 
 
   glDisable(GL_LIGHT0);
-
+  gluDeleteQuadric(earth);
   glPopMatrix();
 }

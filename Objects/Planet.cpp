@@ -11,6 +11,7 @@ Planet::Planet()
 
 Planet::~Planet()
 {
+  gluDeleteQuadric(quadric_);
   glDeleteTextures(1, &texture_);
 
 }
@@ -45,11 +46,12 @@ void Planet::render()
       Renderer::getInstance().getCamera().applyZoom();
     }
     glColor3f(1,1,1);
-    GLUquadric* earth = gluNewQuadric();
+    
 
-    gluQuadricTexture( earth, GL_TRUE);
     if (texture_ == (GLuint)-1) {
-      CString texName = name_ + CString(".bmp");
+      quadric_ = gluNewQuadric();
+      gluQuadricTexture( quadric_, GL_TRUE);
+      CString texName = CString("Textures/") + name_ + CString(".bmp");
       texture_ = LoadBitmap11(texName);
     }
     glEnable ( GL_TEXTURE_2D );
@@ -61,9 +63,10 @@ void Planet::render()
     glRotatef(190, 1, 0, 0);
     
     glRotatef(rotation_, 0, 0, 1);
-    gluSphere( earth, radius_*GLOBAL_MULT, 36, 72);
+    gluSphere( quadric_, radius_*GLOBAL_MULT, 36, 72);
     glDisable ( GL_TEXTURE_2D );
     glPopMatrix();
+    //gluDeleteQuadric(earth);
     return;
   //}
   //glMatrixMode(GL_MODELVIEW);

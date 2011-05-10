@@ -116,8 +116,8 @@ LRESULT CALLBACK MainLoop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 bool Renderer::init(HINSTANCE& hInstance)
 {
-  width_ = 1500;
-  height_ = 1000;
+  width_ = 1024;
+  height_ = 768;
   hWnd_ = 0;
   hInstance_ = &hInstance;
   bool res = initWindow();
@@ -248,6 +248,14 @@ bool Renderer::initOpenGL()
     return false;
   }
   return true;
+}
+
+void Renderer::resize(int width, int height)
+{
+  width_ = width;
+  height_ = height;
+  glViewport(0, 0, width_, height_);
+  camera_->setAspect((double)width_/(double)height_);
 }
 
 void Renderer::requestViewPort(int left, int top, int width, int height)

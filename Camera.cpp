@@ -121,16 +121,16 @@ void Camera::position()
   }
 
   unsigned long long decim = Gamani::getInstance().getSeconds();
-  int years = decim / 3153600000;
-  decim -= years * 3153600000;
-  int days = decim / 8640000;
-  decim -= days * 8640000;
-  int hours = decim / 360000;
-  decim -= hours * 360000;
-  int minutes = decim / 6000;
-  decim -= minutes * 6000;
-  int seconds = decim/100;
-  decim -= seconds*100;
+  int years = decim / 3153600000LL;
+  decim -= years * 3153600000LL;
+  int days = decim / 8640000LL;
+  decim -= days * 8640000LL;
+  int hours = decim / 360000LL;
+  decim -= hours * 360000LL;
+  int minutes = decim / 6000LL;
+  decim -= minutes * 6000LL;
+  int seconds = decim/100LL;
+  decim -= seconds*100LL;
 
   Renderer::getInstance().textOut(-1,0.95,0, "%dY %dD %02d:%02d:%02d.%ld", years, days, hours, minutes, seconds, decim);
 

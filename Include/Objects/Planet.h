@@ -10,5 +10,6 @@ public:
   bool isStatic() {return false;}
   void render();
 private:
+  GLUquadric* quadric_;
 };
 

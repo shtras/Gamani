@@ -24,6 +24,7 @@ L - autopilot takeoff
 F - free camera
 Q - scroll ref body
 E - auto ref body
+O - toggle direction and relative velocity to the gravity ref body arrows 
 LMB - rotate camera
 Mouse wheel - zoom
 1 - toggle tracers
