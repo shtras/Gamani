@@ -32,8 +32,8 @@ LRESULT CALLBACK MainLoop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 bool Renderer::init(HINSTANCE& hInstance)
 {
-  width_ = 1027;
-  height_ = 768;
+  width_ = 1500;
+  height_ = 1000;
   hWnd_ = 0;
   hInstance_ = &hInstance;
   bool res = initWindow();

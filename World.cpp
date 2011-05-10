@@ -107,7 +107,7 @@ void World::handlePressedKey(int key)
   case 'N':
     scrollFollowedObject();
     if (followedObject_) {
-      Renderer::getInstance().getCamera().position(followedObject_->getCoord());
+      Renderer::getInstance().getCamera().position(followedObject_);
     }
     break;
   case 'F':
@@ -116,7 +116,7 @@ void World::handlePressedKey(int key)
   case 'Z':
     followedObject_ = controlledShip_;
     if (controlledShip_) {
-      Renderer::getInstance().getCamera().position(followedObject_->getCoord());
+      Renderer::getInstance().getCamera().position(followedObject_);
     }
     break;
   case 'Q':

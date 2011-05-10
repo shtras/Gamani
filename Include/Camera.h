@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include "AstralBody.h"
 
 class Camera
 {
@@ -12,6 +13,7 @@ public:
   void setAspect(double aspect);
   void move(double x, double y, double z);
   void position(Vector3 pos);
+  void position(AstralBody* body);
   void rotate(double x, double y, double z);
   void zoom(double val);
   void toggleGlobalView();

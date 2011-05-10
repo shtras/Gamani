@@ -110,7 +110,7 @@ void Camera::position()
   Ship* ship = dynamic_cast<Ship*>(followed);
   if (ship) {
     Renderer::getInstance().textOut(-1,0.75,0, "Landed: %d Prog: %s Yaw: %0.2f, Target yaw: %0.2f, Target dist: %s", ship->isLanded(), ship->getProgName(ship->getProgram()).operator const char *(),
-      ship->getYaw(), ship->getTgtAngle(), Renderer::getInstance().formatDistance(ship->getTgtDist()));
+      ship->getYaw(), ship->getTgtAngle(), Renderer::getInstance().formatDistance(ship->getTgtDist()).operator const char *());
   }
 
   if (Gamani::getInstance().isPaused()) {
@@ -169,6 +169,14 @@ void Camera::position(Vector3 pos)
 {
   position_[0] = -pos[0]*GLOBAL_MULT;
   position_[1] = -pos[1]*GLOBAL_MULT;
+}
+
+void Camera::position(AstralBody* body)
+{
+  Vector3 newPos = body->getCoord();
+  position_[0] = -newPos[0] * GLOBAL_MULT;
+  position_[1] = -newPos[1] * GLOBAL_MULT;
+  zoom_ = 1/ (body->getRadius() * GLOBAL_MULT);
 }
 
 void Camera::handleMessage(UINT message, WPARAM wParam, LPARAM lParam)

@@ -203,12 +203,12 @@ void Gamani::handlePressedKey(int key)
   case VK_NEXT:
     Renderer::getInstance().getCamera().rotate(0,-0.1,0);
     break;
-  case VK_OEM_COMMA:
-    Renderer::getInstance().getCamera().rotate(-0.1,0,0);
-    break;
-  case VK_OEM_PERIOD:
-    Renderer::getInstance().getCamera().rotate(0.1,0,0);
-    break;
+//   case VK_OEM_COMMA:
+//     Renderer::getInstance().getCamera().rotate(-0.1,0,0);
+//     break;
+//   case VK_OEM_PERIOD:
+//     Renderer::getInstance().getCamera().rotate(0.1,0,0);
+//     break;
   case VK_ADD:
     Renderer::getInstance().getCamera().move(0,0,0.999);
     //Renderer::getInstance().getCamera().zoom(0.001);

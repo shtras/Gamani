@@ -16,8 +16,8 @@ public:
   void switchControlledShip(Ship* ship);
   void handlePressedKey(int key);
   void snapshot();
-  void switchFollowedObject(Renderable* object) {followedObject_ = object;}
-  Renderable* getFollowedObject() {return followedObject_;}
+  void switchFollowedObject(AstralBody* object) {followedObject_ = object;}
+  AstralBody* getFollowedObject() {return followedObject_;}
   void setStarSystem(StarSystem* system);
   const StarSystem* getCurrentSystem() const {return currentSystem_;}
 private:
@@ -31,7 +31,7 @@ private:
   vector<AstralBody*>* objects_;
   vector<AstralBody*> freeObjects_;
   Ship* controlledShip_;
-  Renderable* followedObject_;
+  AstralBody* followedObject_;
   StarSystem* currentSystem_;
 };
 

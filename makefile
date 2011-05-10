@@ -26,21 +26,24 @@ SOURCES=Camera.cpp \
 		Objects/Ship.cpp \
 		Objects/Star.cpp \
 		Objects/StarSystem.cpp \
+		Objects/Station.cpp \
+		pngLib/PngWrapper.cpp \
 		Renderer.cpp \
+		SkyBox.cpp \
 		StdAfx.cpp \
-		World.cpp
+		World.cpp \
 
 OBJECTS=$(SOURCES:.cpp=.o)
 
 EXECUTABLE=gamani.exe
 
-INCLUDE=-IInclude/ -IInclude/Generic -IInclude/GUI -IInclude/GUI/Forms -IInclude/Models -IInclude/Objects -IInclude/Math
+INCLUDE=-IInclude/ -IInclude/Generic -IInclude/GUI -IInclude/GUI/Forms -IInclude/Models -IInclude/Objects -IInclude/Math -IInclude/pngLib
 
 FLAGS=${INCLUDE} -DGLUT_DISABLE_ATEXIT_HACK -DGL_GLEXT_PROTOTYPES -O5
 
 LDFLAGS=-LLibs -lglut32 -lglu32 -lopengl32 -lwinmm -lgdi32 -lglew32
 
-GLLIBS=Libs/*
+GLLIBS=Libs/* pngLib/libpng.lib pngLib/zlib.lib
 
 all: $(SOURCES) $(EXECUTABLE)
 
