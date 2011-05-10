@@ -1,5 +1,60 @@
-﻿Build started 10.05.2011 16:58:52.
+﻿Build started 10.05.2011 19:12:33.
+     1>Project "C:\projects\Gamani\Gamani.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Touching "Debug\Gamani.unsuccessfulbuild".
+       ClCompile:
+         All outputs are up-to-date.
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IInclude/Objects /IInclude /IInclude/Math /IInclude/GUI /IInclude/GUI/Forms /IInclude/Generic /IInclude/Models /IInclude/pngLib /ZI /nologo /W3 /WX- /Od /Oy- /D _CRT_SECURE_NO_WARNINGS /D WIN32 /D _DEBUG /D _WINDOWS /D DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /openmp /Yu"StdAfx.h" /Fp"Debug\Gamani.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Objects\DynamicBody.cpp Objects\Planet.cpp
+         Planet.cpp
+         DynamicBody.cpp
+         Generating Code...
+       ManifestResourceCompile:
+         All outputs are up-to-date.
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\projects\Gamani\Debug\Gamani.exe" /INCREMENTAL /NOLOGO /LIBPATH:pngLib glut32.lib glu32.lib opengl32.lib glew32.lib glew32s.lib libpng.lib zlib.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Gamani.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\projects\Gamani\Debug\Gamani.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\projects\Gamani\Debug\Gamani.lib" /MACHINE:X86 Debug\Gamani.exe.embed.manifest.res
+         Debug\Camera.obj
+         Debug\Gamani.obj
+         Debug\CString.obj
+         Debug\Display.obj
+         Debug\NavDisplay.obj
+         Debug\GUIRenderer.obj
+         Debug\LayoutManager.obj
+         Debug\WButton.obj
+         Debug\Widget.obj
+         Debug\WLayout.obj
+         Debug\WMenu.obj
+         Debug\WText.obj
+         Debug\HUD.obj
+         Debug\Matrix.obj
+         Debug\Vector.obj
+         Debug\GLTexture.obj
+         Debug\Model.obj
+         Debug\Wrapper3DS.obj
+         Debug\AstralBody.obj
+         Debug\DynamicBody.obj
+         Debug\ModelRenderable.obj
+         Debug\Planet.obj
+         Debug\Renderable.obj
+         Debug\Ship.obj
+         Debug\Star.obj
+         Debug\StarSystem.obj
+         Debug\Station.obj
+         Debug\PngWrapper.obj
+         Debug\Renderer.obj
+         Debug\SkyBox.obj
+         Debug\StdAfx.obj
+         Debug\World.obj
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Gamani.exe.embed.manifest" /manifest Debug\Gamani.exe.intermediate.manifest
+         All outputs are up-to-date.
+       LinkEmbedManifest:
+         All outputs are up-to-date.
+         Gamani.vcxproj -> C:\projects\Gamani\Debug\Gamani.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\Gamani.unsuccessfulbuild".
+         Touching "Debug\Gamani.lastbuildstate".
+     1>Done Building Project "C:\projects\Gamani\Gamani.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.00
+Time Elapsed 00:00:00.59
