@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{78A9C472-80FC-4464-A23A-D36EA1A74D67}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Gamani</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
+      <AdditionalIncludeDirectories>Include/Objects;Include;Include/Math;Include/GUI;Include/GUI/Forms;Include/Generic;Include/Models;Include/pngLib</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glut32.lib;glu32.lib;opengl32.lib;glew32.lib;glew32s.lib;libpng.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>pngLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>
+      </OmitFramePointers>
+      <EnableFiberSafeOptimizations>
+      </EnableFiberSafeOptimizations>
+      <OpenMPSupport>true</OpenMPSupport>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>Include/Objects;Include;Include/Math;Include/GUI;Include/GUI/Forms;Include/Generic;Include/Models;Include/pngLib</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glut32.lib;glu32.lib;opengl32.lib;glew32.lib;glew32s.lib;libpng.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>pngLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Gamani.cpp" />
+    <ClCompile Include="Generic\CString.cpp" />
+    <ClCompile Include="GUI\Display.cpp" />
+    <ClCompile Include="GUI\Forms\NavDisplay.cpp" />
+    <ClCompile Include="GUI\GUIRenderer.cpp" />
+    <ClCompile Include="GUI\LayoutManager.cpp" />
+    <ClCompile Include="GUI\WButton.cpp" />
+    <ClCompile Include="GUI\Widget.cpp" />
+    <ClCompile Include="GUI\WLayout.cpp" />
+    <ClCompile Include="GUI\WMenu.cpp" />
+    <ClCompile Include="GUI\WText.cpp" />
+    <ClCompile Include="HUD.cpp" />
+    <ClCompile Include="Math\Matrix.cpp" />
+    <ClCompile Include="Math\Vector.cpp" />
+    <ClCompile Include="Models\GLTexture.cpp" />
+    <ClCompile Include="Models\Model.cpp" />
+    <ClCompile Include="Models\Wrapper3DS.cpp" />
+    <ClCompile Include="Objects\AstralBody.cpp" />
+    <ClCompile Include="Objects\DynamicBody.cpp" />
+    <ClCompile Include="Objects\ModelRenderable.cpp" />
+    <ClCompile Include="Objects\Planet.cpp" />
+    <ClCompile Include="Objects\Renderable.cpp" />
+    <ClCompile Include="Objects\Ship.cpp" />
+    <ClCompile Include="Objects\Star.cpp" />
+    <ClCompile Include="Objects\StarSystem.cpp" />
+    <ClCompile Include="Objects\Station.cpp" />
+    <ClCompile Include="pngLib\PngWrapper.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
+    <ClCompile Include="StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="World.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\Camera.h" />
+    <ClInclude Include="Include\Gamani.h" />
+    <ClInclude Include="Include\Generic\CString.h" />
+    <ClInclude Include="Include\GUI\Display.h" />
+    <ClInclude Include="Include\GUI\Forms\NavDisplay.h" />
+    <ClInclude Include="Include\GUI\GUIRenderer.h" />
+    <ClInclude Include="Include\GUI\LayoutManager.h" />
+    <ClInclude Include="Include\GUI\WButton.h" />
+    <ClInclude Include="Include\GUI\Widget.h" />
+    <ClInclude Include="Include\GUI\WLayout.h" />
+    <ClInclude Include="Include\GUI\WMenu.h" />
+    <ClInclude Include="Include\GUI\WText.h" />
+    <ClInclude Include="Include\HUD.h" />
+    <ClInclude Include="Include\Math\Matrix.h" />
+    <ClInclude Include="Include\Math\Vector.h" />
+    <ClInclude Include="Include\Models\GLTexture.h" />
+    <ClInclude Include="Include\Models\Model.h" />
+    <ClInclude Include="Include\Models\Wrapper3DS.h" />
+    <ClInclude Include="Include\Objects\AstralBody.h" />
+    <ClInclude Include="Include\Objects\DynamicBody.h" />
+    <ClInclude Include="Include\Objects\ModelRenderable.h" />
+    <ClInclude Include="Include\Objects\Planet.h" />
+    <ClInclude Include="Include\Objects\Renderable.h" />
+    <ClInclude Include="Include\Objects\Ship.h" />
+    <ClInclude Include="Include\Objects\Star.h" />
+    <ClInclude Include="Include\Objects\StarSystem.h" />
+    <ClInclude Include="Include\Objects\Station.h" />
+    <ClInclude Include="Include\pngLib\PngWrapper.h" />
+    <ClInclude Include="Include\Renderer.h" />
+    <ClInclude Include="Include\sigslot.h" />
+    <ClInclude Include="Include\SkyBox.h" />
+    <ClInclude Include="Include\StdAfx.h" />
+    <ClInclude Include="Include\World.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

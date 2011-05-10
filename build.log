@@ -1,0 +1,350 @@
+g++ -IInclude/ -IInclude/Generic -IInclude/GUI -IInclude/GUI/Forms -IInclude/Models -IInclude/Objects -DSIGSLOT_PURE_ISO Camera.cpp -o Camera.o
+In file included from Include/StdAfx.h:3,
+                 from Camera.cpp:1:
+Include/sigslot.h: In constructor `sigslot::_connection0<dest_type, mt_policy>::_connection0()':
+Include/sigslot.h:1520: error: `pobject' undeclared (first use this function)
+Include/sigslot.h:1520: error: (Each undeclared identifier is reported only once for each function it appears in.)
+Include/sigslot.h:1521: error: `pmemfun' undeclared (first use this function)
+Include/sigslot.h: In constructor `sigslot::_connection1<dest_type, arg1_type, mt_policy>::_connection1()':
+Include/sigslot.h:1561: error: `pobject' undeclared (first use this function)
+Include/sigslot.h:1562: error: `pmemfun' undeclared (first use this function)
+Include/sigslot.h: In constructor `sigslot::_connection2<dest_type, arg1_type, arg2_type, mt_policy>::_connection2()':
+Include/sigslot.h:1602: error: `pobject' undeclared (first use this function)
+Include/sigslot.h:1603: error: `pmemfun' undeclared (first use this function)
+Include/sigslot.h: In constructor `sigslot::_connection3<dest_type, arg1_type, arg2_type, arg3_type, mt_policy>::_connection3()':
+Include/sigslot.h:1644: error: `pobject' undeclared (first use this function)
+Include/sigslot.h:1645: error: `pmemfun' undeclared (first use this function)
+Include/sigslot.h: In constructor `sigslot::_connection4<dest_type, arg1_type, arg2_type, arg3_type, arg4_type, mt_policy>::_connection4()':
+Include/sigslot.h:1688: error: `pobject' undeclared (first use this function)
+Include/sigslot.h:1689: error: `pmemfun' undeclared (first use this function)
+Include/sigslot.h: In constructor `sigslot::_connection5<dest_type, arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, mt_policy>::_connection5()':
+Include/sigslot.h:1734: error: `pobject' undeclared (first use this function)
+Include/sigslot.h:1735: error: `pmemfun' undeclared (first use this function)
+Include/sigslot.h: In constructor `sigslot::_connection6<dest_type, arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, mt_policy>::_connection6()':
+Include/sigslot.h:1784: error: `pobject' undeclared (first use this function)
+Include/sigslot.h:1785: error: `pmemfun' undeclared (first use this function)
+Include/sigslot.h: In constructor `sigslot::_connection7<dest_type, arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type, mt_policy>::_connection7()':
+Include/sigslot.h:1834: error: `pobject' undeclared (first use this function)
+Include/sigslot.h:1835: error: `pmemfun' undeclared (first use this function)
+Include/sigslot.h: In constructor `sigslot::_connection8<dest_type, arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type, arg8_type, mt_policy>::_connection8()':
+Include/sigslot.h:1885: error: `pobject' undeclared (first use this function)
+Include/sigslot.h:1886: error: `pmemfun' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal0<mt_policy>::connect(desttype*, void (desttype::*)())':
+Include/sigslot.h:1949: error: `m_connected_slots' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal0<mt_policy>::emit()':
+Include/sigslot.h:1956: error: `connections_list' has not been declared
+Include/sigslot.h:1956: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:1956: error: expected `;' before "itNext"
+Include/sigslot.h:1957: error: `connections_list' has not been declared
+Include/sigslot.h:1957: error: expected `;' before "itEnd"
+Include/sigslot.h:1959: error: `it' undeclared (first use this function)
+Include/sigslot.h:1959: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:1961: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal0<mt_policy>::operator()()':
+Include/sigslot.h:1973: error: `connections_list' has not been declared
+Include/sigslot.h:1973: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:1973: error: expected `;' before "itNext"
+Include/sigslot.h:1974: error: `connections_list' has not been declared
+Include/sigslot.h:1974: error: expected `;' before "itEnd"
+Include/sigslot.h:1976: error: `it' undeclared (first use this function)
+Include/sigslot.h:1976: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:1978: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal1<arg1_type, mt_policy>::connect(desttype*, void (desttype::*)(arg1_type))':
+Include/sigslot.h:2009: error: `m_connected_slots' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal1<arg1_type, mt_policy>::emit(arg1_type)':
+Include/sigslot.h:2016: error: `connections_list' has not been declared
+Include/sigslot.h:2016: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2016: error: expected `;' before "itNext"
+Include/sigslot.h:2017: error: `connections_list' has not been declared
+Include/sigslot.h:2017: error: expected `;' before "itEnd"
+Include/sigslot.h:2019: error: `it' undeclared (first use this function)
+Include/sigslot.h:2019: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2021: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal1<arg1_type, mt_policy>::operator()(arg1_type)':
+Include/sigslot.h:2033: error: `connections_list' has not been declared
+Include/sigslot.h:2033: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2033: error: expected `;' before "itNext"
+Include/sigslot.h:2034: error: `connections_list' has not been declared
+Include/sigslot.h:2034: error: expected `;' before "itEnd"
+Include/sigslot.h:2036: error: `it' undeclared (first use this function)
+Include/sigslot.h:2036: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2038: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal2<arg1_type, arg2_type, mt_policy>::connect(desttype*, void (desttype::*)(arg1_type, arg2_type))':
+Include/sigslot.h:2070: error: `m_connected_slots' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal2<arg1_type, arg2_type, mt_policy>::emit(arg1_type, arg2_type)':
+Include/sigslot.h:2077: error: `connections_list' has not been declared
+Include/sigslot.h:2077: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2077: error: expected `;' before "itNext"
+Include/sigslot.h:2078: error: `connections_list' has not been declared
+Include/sigslot.h:2078: error: expected `;' before "itEnd"
+Include/sigslot.h:2080: error: `it' undeclared (first use this function)
+Include/sigslot.h:2080: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2082: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal2<arg1_type, arg2_type, mt_policy>::operator()(arg1_type, arg2_type)':
+Include/sigslot.h:2094: error: `connections_list' has not been declared
+Include/sigslot.h:2094: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2094: error: expected `;' before "itNext"
+Include/sigslot.h:2095: error: `connections_list' has not been declared
+Include/sigslot.h:2095: error: expected `;' before "itEnd"
+Include/sigslot.h:2097: error: `it' undeclared (first use this function)
+Include/sigslot.h:2097: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2099: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal3<arg1_type, arg2_type, arg3_type, mt_policy>::connect(desttype*, void (desttype::*)(arg1_type, arg2_type, arg3_type))':
+Include/sigslot.h:2132: error: `m_connected_slots' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal3<arg1_type, arg2_type, arg3_type, mt_policy>::emit(arg1_type, arg2_type, arg3_type)':
+Include/sigslot.h:2139: error: `connections_list' has not been declared
+Include/sigslot.h:2139: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2139: error: expected `;' before "itNext"
+Include/sigslot.h:2140: error: `connections_list' has not been declared
+Include/sigslot.h:2140: error: expected `;' before "itEnd"
+Include/sigslot.h:2142: error: `it' undeclared (first use this function)
+Include/sigslot.h:2142: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2144: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal3<arg1_type, arg2_type, arg3_type, mt_policy>::operator()(arg1_type, arg2_type, arg3_type)':
+Include/sigslot.h:2156: error: `connections_list' has not been declared
+Include/sigslot.h:2156: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2156: error: expected `;' before "itNext"
+Include/sigslot.h:2157: error: `connections_list' has not been declared
+Include/sigslot.h:2157: error: expected `;' before "itEnd"
+Include/sigslot.h:2159: error: `it' undeclared (first use this function)
+Include/sigslot.h:2159: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2161: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal4<arg1_type, arg2_type, arg3_type, arg4_type, mt_policy>::connect(desttype*, void (desttype::*)(arg1_type, arg2_type, arg3_type, arg4_type))':
+Include/sigslot.h:2195: error: `m_connected_slots' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal4<arg1_type, arg2_type, arg3_type, arg4_type, mt_policy>::emit(arg1_type, arg2_type, arg3_type, arg4_type)':
+Include/sigslot.h:2202: error: `connections_list' has not been declared
+Include/sigslot.h:2202: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2202: error: expected `;' before "itNext"
+Include/sigslot.h:2203: error: `connections_list' has not been declared
+Include/sigslot.h:2203: error: expected `;' before "itEnd"
+Include/sigslot.h:2205: error: `it' undeclared (first use this function)
+Include/sigslot.h:2205: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2207: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal4<arg1_type, arg2_type, arg3_type, arg4_type, mt_policy>::operator()(arg1_type, arg2_type, arg3_type, arg4_type)':
+Include/sigslot.h:2219: error: `connections_list' has not been declared
+Include/sigslot.h:2219: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2219: error: expected `;' before "itNext"
+Include/sigslot.h:2220: error: `connections_list' has not been declared
+Include/sigslot.h:2220: error: expected `;' before "itEnd"
+Include/sigslot.h:2222: error: `it' undeclared (first use this function)
+Include/sigslot.h:2222: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2224: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal5<arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, mt_policy>::connect(desttype*, void (desttype::*)(arg1_type, arg2_type, arg3_type, arg4_type, arg5_type))':
+Include/sigslot.h:2261: error: `m_connected_slots' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal5<arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, mt_policy>::emit(arg1_type, arg2_type, arg3_type, arg4_type, arg5_type)':
+Include/sigslot.h:2269: error: `connections_list' has not been declared
+Include/sigslot.h:2269: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2269: error: expected `;' before "itNext"
+Include/sigslot.h:2270: error: `connections_list' has not been declared
+Include/sigslot.h:2270: error: expected `;' before "itEnd"
+Include/sigslot.h:2272: error: `it' undeclared (first use this function)
+Include/sigslot.h:2272: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2274: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal5<arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, mt_policy>::operator()(arg1_type, arg2_type, arg3_type, arg4_type, arg5_type)':
+Include/sigslot.h:2287: error: `connections_list' has not been declared
+Include/sigslot.h:2287: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2287: error: expected `;' before "itNext"
+Include/sigslot.h:2288: error: `connections_list' has not been declared
+Include/sigslot.h:2288: error: expected `;' before "itEnd"
+Include/sigslot.h:2290: error: `it' undeclared (first use this function)
+Include/sigslot.h:2290: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2292: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal6<arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, mt_policy>::connect(desttype*, void (desttype::*)(arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type))':
+Include/sigslot.h:2331: error: `m_connected_slots' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal6<arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, mt_policy>::emit(arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type)':
+Include/sigslot.h:2339: error: `connections_list' has not been declared
+Include/sigslot.h:2339: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2339: error: expected `;' before "itNext"
+Include/sigslot.h:2340: error: `connections_list' has not been declared
+Include/sigslot.h:2340: error: expected `;' before "itEnd"
+Include/sigslot.h:2342: error: `it' undeclared (first use this function)
+Include/sigslot.h:2342: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2344: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal6<arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, mt_policy>::operator()(arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type)':
+Include/sigslot.h:2357: error: `connections_list' has not been declared
+Include/sigslot.h:2357: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2357: error: expected `;' before "itNext"
+Include/sigslot.h:2358: error: `connections_list' has not been declared
+Include/sigslot.h:2358: error: expected `;' before "itEnd"
+Include/sigslot.h:2360: error: `it' undeclared (first use this function)
+Include/sigslot.h:2360: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2362: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal7<arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type, mt_policy>::connect(desttype*, void (desttype::*)(arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type))':
+Include/sigslot.h:2401: error: `m_connected_slots' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal7<arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type, mt_policy>::emit(arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type)':
+Include/sigslot.h:2409: error: `connections_list' has not been declared
+Include/sigslot.h:2409: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2409: error: expected `;' before "itNext"
+Include/sigslot.h:2410: error: `connections_list' has not been declared
+Include/sigslot.h:2410: error: expected `;' before "itEnd"
+Include/sigslot.h:2412: error: `it' undeclared (first use this function)
+Include/sigslot.h:2412: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2414: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal7<arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type, mt_policy>::operator()(arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type)':
+Include/sigslot.h:2427: error: `connections_list' has not been declared
+Include/sigslot.h:2427: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2427: error: expected `;' before "itNext"
+Include/sigslot.h:2428: error: `connections_list' has not been declared
+Include/sigslot.h:2428: error: expected `;' before "itEnd"
+Include/sigslot.h:2430: error: `it' undeclared (first use this function)
+Include/sigslot.h:2430: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2432: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal8<arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type, arg8_type, mt_policy>::connect(desttype*, void (desttype::*)(arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type, arg8_type))':
+Include/sigslot.h:2472: error: `m_connected_slots' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal8<arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type, arg8_type, mt_policy>::emit(arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type, arg8_type)':
+Include/sigslot.h:2480: error: `connections_list' has not been declared
+Include/sigslot.h:2480: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2480: error: expected `;' before "itNext"
+Include/sigslot.h:2481: error: `connections_list' has not been declared
+Include/sigslot.h:2481: error: expected `;' before "itEnd"
+Include/sigslot.h:2483: error: `it' undeclared (first use this function)
+Include/sigslot.h:2483: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2485: error: `itNext' undeclared (first use this function)
+Include/sigslot.h: In member function `void sigslot::signal8<arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type, arg8_type, mt_policy>::operator()(arg1_type, arg2_type, arg3_type, arg4_type, arg5_type, arg6_type, arg7_type, arg8_type)':
+Include/sigslot.h:2498: error: `connections_list' has not been declared
+Include/sigslot.h:2498: error: `const_iterator' undeclared (first use this function)
+Include/sigslot.h:2498: error: expected `;' before "itNext"
+Include/sigslot.h:2499: error: `connections_list' has not been declared
+Include/sigslot.h:2499: error: expected `;' before "itEnd"
+Include/sigslot.h:2501: error: `it' undeclared (first use this function)
+Include/sigslot.h:2501: error: `itEnd' undeclared (first use this function)
+Include/sigslot.h:2503: error: `itNext' undeclared (first use this function)
+In file included from /usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/backward/Vector.h:59,
+                 from Include/StdAfx.h:11,
+                 from Camera.cpp:1:
+/usr/lib/gcc/i686-pc-cygwin/3.4.4/include/c++/backward/backward_warning.h:32:2: warning: #warning This file includes at least one deprecated or antiquated header. Please consider using one of the 32 headers found in section 17.4.1.2 of the C++ standard. Examples include substituting the <X> header for the <X.h> header for C++ includes, or <iostream> instead of the deprecated header <iostream.h>. To disable this warning use -Wno-deprecated.
+In file included from Camera.cpp:1:
+Include/StdAfx.h:12:20: Matrix.h: No such file or directory
+Include/StdAfx.h:17:21: gl/glew.h: No such file or directory
+In file included from Camera.cpp:2:
+Include/Camera.h: At global scope:
+Include/Camera.h:11: error: `Vector3' has not been declared
+Include/Camera.h:11: error: ISO C++ forbids declaration of `pos' with no type
+Include/Camera.h:16: error: `UINT' has not been declared
+Include/Camera.h:16: error: `WPARAM' has not been declared
+Include/Camera.h:16: error: `LPARAM' has not been declared
+Include/Camera.h:16: error: ISO C++ forbids declaration of `message' with no type
+Include/Camera.h:16: error: ISO C++ forbids declaration of `wParam' with no type
+Include/Camera.h:16: error: ISO C++ forbids declaration of `lParam' with no type
+In file included from Include/Objects/AstralBody.h:2,
+                 from Include/Renderer.h:3,
+                 from Camera.cpp:3:
+Include/Objects/Renderable.h:13: error: `Vector3' does not name a type
+Include/Objects/Renderable.h:14: error: `Vector3' has not been declared
+Include/Objects/Renderable.h:14: error: ISO C++ forbids declaration of `coord' with no type
+Include/Objects/Renderable.h:16: error: `Vector3' does not name a type
+In file included from Include/Renderer.h:3,
+                 from Camera.cpp:3:
+Include/Objects/AstralBody.h:15: error: `Vector3' does not name a type
+Include/Objects/AstralBody.h:16: error: `Vector3' has not been declared
+Include/Objects/AstralBody.h:16: error: ISO C++ forbids declaration of `coord' with no type
+Include/Objects/AstralBody.h:17: error: `Vector3' has not been declared
+Include/Objects/AstralBody.h:17: error: ISO C++ forbids declaration of `color' with no type
+Include/Objects/AstralBody.h:18: error: `Vector3' does not name a type
+Include/Objects/AstralBody.h:19: error: `Vector3' has not been declared
+Include/Objects/AstralBody.h:19: error: ISO C++ forbids declaration of `vel' with no type
+Include/Objects/AstralBody.h:29: error: `Vector3' does not name a type
+Include/Objects/AstralBody.h:31: error: `Vector3' does not name a type
+Include/Objects/AstralBody.h: In member function `virtual void AstralBody::setCoord(int)':
+Include/Objects/AstralBody.h:16: error: `coord_' undeclared (first use this function)
+Include/Objects/AstralBody.h: In member function `void AstralBody::setColor(int)':
+Include/Objects/AstralBody.h:17: error: `color_' undeclared (first use this function)
+In file included from Camera.cpp:3:
+Include/Renderer.h: At global scope:
+Include/Renderer.h:11: error: `HINSTANCE' has not been declared
+Include/Renderer.h:11: error: ISO C++ forbids declaration of `hInstance' with no type
+Include/Renderer.h:14: error: ISO C++ forbids declaration of `HWND' with no type
+Include/Renderer.h:14: error: expected `;' before '&' token
+Include/Renderer.h:15: error: expected `;' before "int"
+Include/Renderer.h:35: error: `HWND' does not name a type
+Include/Renderer.h:36: error: ISO C++ forbids declaration of `HINSTANCE' with no type
+Include/Renderer.h:36: error: expected `;' before '*' token
+In file included from Include/Objects/Ship.h:2,
+                 from Include/World.h:3,
+                 from Include/Gamani.h:2,
+                 from Camera.cpp:4:
+Include/Objects/DynamicBody.h:10: error: `Vector3' does not name a type
+Include/Objects/DynamicBody.h:11: error: `Vector3' has not been declared
+Include/Objects/DynamicBody.h:11: error: ISO C++ forbids declaration of `vel' with no type
+Include/Objects/DynamicBody.h:19: error: `Vector3' does not name a type
+Include/Objects/DynamicBody.h:21: error: `Vector3' does not name a type
+Include/Objects/DynamicBody.h:25: error: `Vector3' was not declared in this scope
+Include/Objects/DynamicBody.h:25: error: template argument 1 is invalid
+Include/Objects/DynamicBody.h:25: error: template argument 2 is invalid
+Include/Objects/DynamicBody.h:25: error: ISO C++ forbids declaration of `points_' with no type
+Include/Objects/DynamicBody.h: In member function `virtual void DynamicBody::setVelocity(int)':
+Include/Objects/DynamicBody.h:11: error: `velocity_' undeclared (first use this function)
+In file included from Include/Objects/ModelRenderable.h:2,
+                 from Include/Objects/Ship.h:3,
+                 from Include/World.h:3,
+                 from Include/Gamani.h:2,
+                 from Camera.cpp:4:
+Include/Models/Model.h: At global scope:
+Include/Models/Model.h:9: error: `Vector3' does not name a type
+Include/Models/Model.h:10: error: `Vector3' does not name a type
+Include/Models/Model.h:66: error: `Vector3' does not name a type
+Include/Models/Model.h:67: error: `Matrix4' does not name a type
+Include/Models/Model.h:68: error: `Vector3' does not name a type
+Include/Models/Model.h:69: error: `Vector3' does not name a type
+Include/Models/Model.h:86: error: `Vector3' does not name a type
+Include/Models/Model.h:87: error: `Matrix4' does not name a type
+Include/Models/Model.h:90: error: `Vector3' was not declared in this scope
+Include/Models/Model.h:90: error: template argument 1 is invalid
+Include/Models/Model.h:90: error: template argument 2 is invalid
+Include/Models/Model.h:90: error: ISO C++ forbids declaration of `vertices_' with no type
+Include/Models/Model.h:91: error: `Vector3' was not declared in this scope
+Include/Models/Model.h:91: error: template argument 1 is invalid
+Include/Models/Model.h:91: error: template argument 2 is invalid
+Include/Models/Model.h:91: error: ISO C++ forbids declaration of `normals_' with no type
+Include/Models/Model.h:102: error: `Vector3' does not name a type
+Include/Models/Model.h:103: error: `Vector3' does not name a type
+In file included from Include/World.h:3,
+                 from Include/Gamani.h:2,
+                 from Camera.cpp:4:
+Include/Objects/Ship.h:25: error: `Vector3' does not name a type
+Include/Objects/Ship.h:36: error: `Vector3' was not declared in this scope
+Include/Objects/Ship.h:36: error: template argument 1 is invalid
+Include/Objects/Ship.h:36: error: template argument 2 is invalid
+Include/Objects/Ship.h:36: error: ISO C++ forbids declaration of `calcOrbit' with no type
+In file included from Include/Gamani.h:3,
+                 from Camera.cpp:4:
+Include/GUI/LayoutManager.h:17: error: `UINT' has not been declared
+Include/GUI/LayoutManager.h:17: error: `WPARAM' has not been declared
+Include/GUI/LayoutManager.h:17: error: `LPARAM' has not been declared
+Include/GUI/LayoutManager.h:17: error: ISO C++ forbids declaration of `message' with no type
+Include/GUI/LayoutManager.h:17: error: ISO C++ forbids declaration of `wParam' with no type
+Include/GUI/LayoutManager.h:17: error: ISO C++ forbids declaration of `lParam' with no type
+Include/GUI/LayoutManager.h:19: error: `WPARAM' has not been declared
+Include/GUI/LayoutManager.h:19: error: `LPARAM' has not been declared
+Include/GUI/LayoutManager.h:19: error: ISO C++ forbids declaration of `wParam' with no type
+Include/GUI/LayoutManager.h:19: error: ISO C++ forbids declaration of `lParam' with no type
+In file included from Camera.cpp:4:
+Include/Gamani.h:9: error: `HINSTANCE' has not been declared
+Include/Gamani.h:9: error: ISO C++ forbids declaration of `hIhstance' with no type
+Include/Gamani.h:11: error: `UINT' has not been declared
+Include/Gamani.h:11: error: `WPARAM' has not been declared
+Include/Gamani.h:11: error: `LPARAM' has not been declared
+Include/Gamani.h:11: error: ISO C++ forbids declaration of `message' with no type
+Include/Gamani.h:11: error: ISO C++ forbids declaration of `wParam' with no type
+Include/Gamani.h:11: error: ISO C++ forbids declaration of `lParam' with no type
+Camera.cpp: In member function `void Camera::position()':
+Camera.cpp:95: error: 'class Renderable' has no member named 'getCoord'
+Camera.cpp:95: error: 'class Renderable' has no member named 'getCoord'
+Camera.cpp:95: error: 'class Renderable' has no member named 'getVelocity'
+Camera.cpp:95: error: 'class Renderable' has no member named 'getVelocity'
+Camera.cpp:109: warning: converting to `long long unsigned int' from `long double'
+Camera.cpp:110: warning: this decimal constant is unsigned only in ISO C90
+Camera.cpp:111: warning: this decimal constant is unsigned only in ISO C90
+Camera.cpp: At global scope:
+Camera.cpp:140: error: variable or field `position' declared void
+Camera.cpp:140: error: `int Camera::position' is not a static member of `class Camera'
+Camera.cpp:140: error: `Vector3' was not declared in this scope
+Camera.cpp:141: error: expected `,' or `;' before '{' token
+Camera.cpp:146: error: variable or field `handleMessage' declared void
+Camera.cpp:146: error: `int Camera::handleMessage' is not a static member of `class Camera'
+Camera.cpp:146: error: `UINT' was not declared in this scope
+Camera.cpp:146: error: `WPARAM' was not declared in this scope
+Camera.cpp:146: error: `LPARAM' was not declared in this scope
+Camera.cpp:147: error: initializer expression list treated as compound expression
+Camera.cpp:147: error: expected `,' or `;' before '{' token
+make: *** [Camera.o] Error 1
