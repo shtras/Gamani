@@ -6,6 +6,7 @@ Star::Star()
 {
   color_ = Vector3(1, 1, 0);
   mass_ = 198.0e18;
+  type_ = StarType;
 }
 
 
@@ -32,7 +33,7 @@ void Star::render()
 
   glColor3f(color_[0], color_[1], color_[2]);
   //glTranslatef(coord_[0]*GLOBAL_MULT, coord_[1]*GLOBAL_MULT, coord_[2]*GLOBAL_MULT);
-
+  glPushMatrix();
   glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0/*coord[2]*GLOBAL_MULT*/);
 
   //cout << coord[0]*GLOBAL_MULT << " -- " << coord[1]*GLOBAL_MULT << " -- " << coord[2]*GLOBAL_MULT << endl;
@@ -56,6 +57,7 @@ void Star::render()
   glEnable(GL_LIGHT1);
 
   glEnable(GL_LIGHT0);
+  glPopMatrix();
 
   GLUquadric* earth = gluNewQuadric();
 
@@ -73,9 +75,10 @@ void Star::render()
   glRotatef(190, 1, 0, 0);
 
   glRotatef(rotation_, 0, 0, 1);
-  gluSphere( earth, radius_*GLOBAL_MULT, 36, 72);
+  gluSphere( earth, /*2000*/radius_*GLOBAL_MULT, 36, 72);
   glDisable ( GL_TEXTURE_2D );
 
+  drawName();
 
   glDisable(GL_LIGHT0);
   gluDeleteQuadric(earth);

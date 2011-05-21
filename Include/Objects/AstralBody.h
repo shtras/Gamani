@@ -26,7 +26,7 @@ public:
   bool removeSatellite(AstralBody* satellite);
   void rotationStep();
   void setRotationPeriod(double speed); //Period in seconds to make 360 degrees turn
-
+  void drawName();
 protected:
   double radius_;
   Vector3 coord_;

@@ -19,6 +19,7 @@ public:
   bool getAuxAxes() {return auxAxes_;}
   bool getTracers() {return tracers_;}
   bool getAuxPrints() {return auxPrint_;}
+  bool getDrawNames() {return names_;}
 private:
   void testInit();
   void layoutTest();
@@ -49,5 +50,6 @@ private:
 
   LayoutManager layoutManager_;
   bool auxAxes_;
+  bool names_;
 };
 

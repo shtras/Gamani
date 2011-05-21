@@ -68,19 +68,20 @@ void World::snapshot()
 
 void World::handlePressedKey(int key)
 {
+  bool pause = Gamani::getInstance().isPaused();
   switch (key) {
   case 'A':
-    if (controlledShip_) {
+    if (controlledShip_ && !pause) {
       controlledShip_->yawLeft();
     }
     break;
   case 'D':
-    if (controlledShip_) {
+    if (controlledShip_ && !pause) {
       controlledShip_->yawRight();
     }
     break;
   case 'W':
-    if (controlledShip_) {
+    if (controlledShip_ && !pause) {
       controlledShip_->accelerate();
     }
     break;

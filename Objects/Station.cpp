@@ -5,6 +5,7 @@
 Station::Station()
 {
   mass_ = 1;
+  type_ = StationType;
 }
 
 Station::~Station()
@@ -35,6 +36,6 @@ void Station::render()
   } else {
     glutSolidCone(radius_*GLOBAL_MULT/4.0f, radius_*GLOBAL_MULT, 10, 5);
   }
-
+  drawName();
   glPopMatrix();
 }

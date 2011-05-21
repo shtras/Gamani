@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "AstralBody.h"
 #include "SkyBox.h"
+#include "Planet.h"
 
 using namespace std;
 
@@ -19,7 +20,7 @@ public:
   int getHeight() {return height_;}
   Camera& getCamera() {return *camera_;}
   void changeRenderList(vector<AstralBody*>* newList);
-  void textOutNoMove(double x, double y, double z, char* format, ...);
+  void textOutNoMove(double x, double y, double z, const char* format, ...);
 
   void textOut(double x, double y, double z, char* format, ...);
   void requestViewPort(int left, int top, int width, int height);
@@ -35,6 +36,8 @@ private:
   bool initOpenGL();
 
   void testCase();
+  void checkAndDrawAtmosphere();
+  void drawAtmosphere(Planet* planet, double dist);
 
   Camera* camera_;
   bool init_;

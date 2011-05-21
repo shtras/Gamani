@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "AstralBody.h"
 #include "Gamani.h"
+#include "Renderer.h"
 
 AstralBody::AstralBody()
 {
@@ -15,6 +16,7 @@ AstralBody::AstralBody()
   name_ = "NoName";
   rotation_ = 0;
   rotationSpeed_ = 0;
+  type_ = AstralType;
 }
 
 AstralBody::~AstralBody()
@@ -54,4 +56,14 @@ void AstralBody::setRotationPeriod(double speed)
 {
 
    rotationSpeed_ = 360/speed;
+}
+
+void AstralBody::drawName()
+{
+  if (!Gamani::getInstance().getDrawNames()) {
+    return;
+  }
+  glDisable(GL_DEPTH_TEST);
+  Renderer::getInstance().textOutNoMove(0, 0, 0, name_.operator const char *());
+  glEnable(GL_DEPTH_TEST);
 }

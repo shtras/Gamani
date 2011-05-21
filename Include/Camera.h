@@ -20,7 +20,11 @@ public:
   void reset();
   void handleMessage(UINT message, WPARAM wParam, LPARAM lParam);
   const double* getPosition() const {return position_;}
-  const double getZoom() const {return zoom_;}
+  double getZoom() const {return zoom_;}
+  double getHeading() const {return heading_;}
+  double getPitch() const {return pitch_;}
+  void setPitch(double pitch) {pitch_ = pitch;}
+  void setHeading(double heading) {heading_ = heading;}
 private:
   double position_[3];
   double aspect_;

@@ -11,6 +11,7 @@ DynamicBody::DynamicBody():AstralBody()
   velocity_[2] = 0;
   yawVel_ = 0;
   texture_ = (GLuint)-1;
+  type_ = DynamicType;
 }
 
 

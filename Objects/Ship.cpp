@@ -13,7 +13,7 @@ Ship::Ship()
   yawPower_ = 0.001;
   maxYawVel_ = 10000;
   maxSpeed_ = 500;
-  marchPower_ = 0.5;
+  marchPower_ = 0.1;
   radius_ = 0.05;
   currProg_ = NoProgram;
   targetAngle_ = -100;
@@ -33,6 +33,7 @@ Ship::Ship()
   startAngle_ = -100;
   rotateRight_ = false;
   rotatePhase1_ = true;
+  type_ = ShipType;
 }
 
 Ship::~Ship()
@@ -65,6 +66,8 @@ void Ship::render()
   } else {
     glutSolidCone(radius_*GLOBAL_MULT/4.0f, radius_*GLOBAL_MULT, 10, 5);
   }
+
+  drawName();
 
   glPopMatrix();
 

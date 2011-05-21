@@ -270,7 +270,7 @@ void Renderer::resetViewPort()
 
 GLvoid *font_style = GLUT_BITMAP_HELVETICA_12;
 
-void Renderer::textOutNoMove(double x, double y, double z, char* format, ...)
+void Renderer::textOutNoMove(double x, double y, double z, const char* format, ...)
 {
   va_list args;   //  Variable argument list
   int len;        // String length
@@ -342,6 +342,10 @@ void Renderer::render()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   camera_->position();
   skyBox_->draw();
+
+  checkAndDrawAtmosphere();
+  //drawAtmosphere(NULL, 0);
+  glClearDepth(1);
   //camera_->applyZoom();
   //testCase();
   if (renderList_) {
@@ -400,4 +404,109 @@ CString Renderer::formatVelocity(double vel)
     return CString(kms) + " km/s";
   }
   return CString(kmh) + " km/h";
+}
+
+void Renderer::checkAndDrawAtmosphere()
+{
+  //test
+  Camera& camera = Renderer::getInstance().getCamera();
+  const double* dCamPos = camera.getPosition();
+  Vector3 camPos = Vector3(-dCamPos[0], -dCamPos[1], /*dCamPos[2]*/0);
+  double camDirAlpha = camera.getHeading();
+  double camDirPhi = camera.getPitch();
+  double zoom = camera.getZoom();
+
+  double ralpha = camDirAlpha * 3.14159265 / 180.0;
+  double rphi = camDirPhi * 3.14159265 / 180.0;
+
+  Vector3 camDir(sin(ralpha), cos(ralpha), sin(rphi));
+  camDir *= 10/zoom;
+
+  camPos -= camDir;
+
+  //dist *= 1/Renderer::getInstance().getCamera().getZoom();
+  camPos *= 1/GLOBAL_MULT;
+
+
+  vector<AstralBody*>* objects = Gamani::getInstance().getWorld()->getAllObjects();
+  int SZ = objects->size();
+  for (int i=0; i<SZ; ++i) {
+    AstralBody* body = (*objects)[i];
+    if (!(body->getType() == Renderable::PlanetType)) {
+      continue;
+    }
+    Planet* planet = (Planet*)body;
+    Vector3 dist = camPos - planet->getCoord();
+    double distance = dist.getLength();
+    if (distance <= planet->getAtmRadius()) {
+      drawAtmosphere(planet, distance);
+    }
+  }
+}
+
+void Renderer::drawAtmosphere(Planet* planet, double dist)
+{
+  double radius = planet->getAtmRadius();
+  double height = radius - planet->getRadius();
+  double camH = dist - planet->getRadius();
+  double delta = height - camH;
+  double d = delta / height;
+  Vector3 color = planet->getAtmColor();
+
+  float size = 9000;
+  glPushMatrix();
+  glDisable(GL_LIGHTING);
+  //glDisable(GL_DEPTH_TEST);
+
+  glColor4f(color[0], color[1], color[2], d);
+  //glColor4f(0, 0, 0.5, 0.5);
+
+  //front
+  glBegin(GL_POLYGON);
+  glVertex3f(-size, -size, size);
+  glVertex3f(-size, size, size);
+  glVertex3f(size, size, size);
+  glVertex3f(size, -size, size);
+  glEnd();
+  //Right
+  glBegin(GL_POLYGON);
+  glVertex3f(-size, -size, -size);
+  glVertex3f(-size, size, -size);
+  glVertex3f(-size, size, size);
+  glVertex3f(-size, -size, size);
+  glEnd();
+  //Left
+  glBegin(GL_POLYGON);
+  glVertex3f(size, -size, size);
+  glVertex3f(size, size, size);
+  glVertex3f(size, size, -size);
+  glVertex3f(size, -size, -size);
+  glEnd();
+  //Top
+  glBegin(GL_POLYGON);
+  glVertex3f(-size, size, -size);
+  glVertex3f(size, size, -size);
+  glVertex3f(size, size, size);
+  glVertex3f(-size, size, size);
+  glEnd();
+  //Bottom
+  glBegin(GL_POLYGON);
+  glVertex3f(-size, -size, -size);
+  glVertex3f(-size, -size, size);
+  glVertex3f(size, -size, size);
+  glVertex3f(size, -size, -size);
+  glEnd();
+  //Back
+  glBegin(GL_POLYGON);
+  glVertex3f(-size, -size, -size);
+  glVertex3f(size, -size, -size);
+  glVertex3f(size, size, -size);
+  glVertex3f(-size, size, -size);
+  glEnd();
+
+  //glEnable(GL_DEPTH_TEST);
+  //glClearDepth(1);
+
+  glEnable(GL_LIGHTING);
+  glPopMatrix();
 }

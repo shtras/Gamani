@@ -1,8 +1,10 @@
 #include "StdAfx.h"
 #include "SkyBox.h"
 #include "PngWrapper.h"
+#ifdef MINGW
 extern "C" long _ftol( double ); //defined by VC6 C libs
 extern "C" long _ftol2( double dblSource ) { return _ftol( dblSource ); }
+#endif
 
 SkyBox::SkyBox()
 {
@@ -118,7 +120,7 @@ void SkyBox::draw()
   glEnd();
 
   //glEnable(GL_DEPTH_TEST);
-  glClearDepth(1);
+  //glClearDepth(1);
 
   glDisable(GL_TEXTURE_2D);
   glEnable(GL_LIGHTING);

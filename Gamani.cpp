@@ -40,7 +40,7 @@ void toggleVSync()
 }
 
 Gamani::Gamani():world_(new World()), paused_(true), speed_(1.0), calcStepLength_(0.05), dtModifier_(50),auxAxes_(false),lmDown_(false),rmDown_(false),
-  lmDrag_(false), rmDrag_(false), tracers_(false), auxPrint_(true), interface_(true)
+  lmDrag_(false), rmDrag_(false), tracers_(false), auxPrint_(true), interface_(true), names_(false)
 {
   nonContKeys_.insert('M');
   nonContKeys_.insert('V');
@@ -59,6 +59,8 @@ Gamani::Gamani():world_(new World()), paused_(true), speed_(1.0), calcStepLength
   nonContKeys_.insert(0x31);
   nonContKeys_.insert(0x32);
   nonContKeys_.insert(0x33);
+  nonContKeys_.insert(0x34);
+  nonContKeys_.insert(0x35);
 }
 
 
@@ -153,7 +155,9 @@ bool Gamani::mainLoop()
       }
 
       while (accumKeys >= dtKeys) {
-        handlePressedKeys();
+        for (int i=0; i<speed_; ++i) {
+          handlePressedKeys();
+        }
         accumKeys -= dtKeys;
       }
 
@@ -260,6 +264,13 @@ void Gamani::handlePressedKey(int key)
     break;
   case 0x33:
     interface_ = !interface_;
+    break;
+  case 0x34:
+    Renderer::getInstance().getCamera().setPitch(0);
+    Renderer::getInstance().getCamera().setHeading(90);
+    break;
+  case 0x35:
+    names_ = !names_;
     break;
   default:
     world_->handlePressedKey(key);
@@ -445,6 +456,8 @@ void Gamani::testInit()
   planet->setVelocity(Vector3(0, 29783, 0));
   planet->setName("Earth");
   planet->setRotationPeriod(24*3600);
+  planet->setAtmRadius(6.471);
+  planet->setAtmColor(Vector3(0, 0.75, 1));
   star->addSatellite(planet);
 
   Ship* ship = new Ship();
@@ -594,7 +607,6 @@ void Gamani::testInit()
   planet->setName("Neptune");
   planet->setRotationPeriod(0.6713 *24*3600);
   star->addSatellite(planet);
-
 
   StarSystem* system = new StarSystem();
   system->addStar(star);
