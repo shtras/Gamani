@@ -448,8 +448,8 @@ void Gamani::testInit()
   star->addSatellite(planet);
 
   Ship* ship = new Ship();
-  ship->setCoord(Vector3(149610, 0, 0));
-  ship->setVelocity(Vector3(/*-6250*/1, 29783+6250, 0));
+  ship->setCoord(Vector3(149590, 0, 0));
+  ship->setVelocity(Vector3(/*-6250*/1, 29783-6250, 0));
   ship->setRadius(0.001);
   ship->setGravityRef(planet);
   ship->setName("Galactica");
@@ -462,8 +462,8 @@ void Gamani::testInit()
   ship->initModel("res/new.3ds");
 
   Station* station = new Station();
-  station->setCoord(Vector3(149590, 0, 0));
-  station->setVelocity(Vector3(/*-6250*/0, 29783-6250, 0));
+  station->setCoord(Vector3(149610, 0, 0));
+  station->setVelocity(Vector3(/*-6250*/0, 29783+6250, 0));
   station->setRadius(0.01);
   station->setName("Shipyard");
   station->initModel("res/station.3ds");

@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "SkyBox.h"
 #include "PngWrapper.h"
+extern "C" long _ftol( double ); //defined by VC6 C libs
+extern "C" long _ftol2( double dblSource ) { return _ftol( dblSource ); }
 
 SkyBox::SkyBox()
 {

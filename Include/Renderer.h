@@ -25,6 +25,7 @@ public:
   void requestViewPort(int left, int top, int width, int height);
   void resetViewPort();
   CString formatDistance (double dist);
+  CString formatVelocity (double vel);
   void resize (int width, int height);
 private:
   Renderer();

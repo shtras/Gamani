@@ -80,8 +80,8 @@ void Ship::render()
     relSpd *= radius_ * 0.5 * spd/10000.0 / 1000.0;
     glColor3f(0, 0.2, 0.9);
     glBegin(GL_LINES);
-      glVertex3f(0,0,0);
-      glVertex3f(relSpd[0], relSpd[1], relSpd[2]);
+      glVertex3f(0,0,radius_*GLOBAL_MULT);
+      glVertex3f(relSpd[0], relSpd[1], radius_*GLOBAL_MULT);
     glEnd();
 
     Vector3 dir = gravityRef_->getCoord() - coord_;
@@ -90,8 +90,8 @@ void Ship::render()
     dir *= radius_ * 0.5 * sqrt(dist/10) / 1000.0;
     glColor3f(0, 0.9, 0.2);
     glBegin(GL_LINES);
-    glVertex3f(0,0,0);
-    glVertex3f(dir[0], dir[1], dir[2]);
+    glVertex3f(0,0,radius_*GLOBAL_MULT);
+    glVertex3f(dir[0], dir[1], radius_*GLOBAL_MULT);
     glEnd();
     glEnable(GL_LIGHTING);
     glPopMatrix();

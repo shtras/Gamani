@@ -386,3 +386,18 @@ CString Renderer::formatDistance(double dist)
   }
   return CString(m) + " m";
 }
+
+CString Renderer::formatVelocity(double vel)
+{
+  double ms = vel;
+  double kmh = vel / 3.6;
+  double kms = vel / 1000.0;
+  double c = vel / 299792458.0;
+  if (c > 0.01) {
+    return CString(c) + " C";
+  }
+  if (kms > 1.0) {
+    return CString(kms) + " km/s";
+  }
+  return CString(kmh) + " km/h";
+}

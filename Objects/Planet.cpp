@@ -65,6 +65,22 @@ void Planet::render()
     glRotatef(rotation_, 0, 0, 1);
     gluSphere( quadric_, radius_*GLOBAL_MULT, 36, 72);
     glDisable ( GL_TEXTURE_2D );
+
+    //glColor4f(0.2,0.2,1, 0.2);
+    //glutSolidSphere(radius_*GLOBAL_MULT*1.2, 36, 72);
+    //{
+    //  double r = radius_*GLOBAL_MULT*1.2;
+    //  double R = radius_*GLOBAL_MULT*1.4;
+    //  double mw = 360/(3.1415*(R+r));
+    //  glDisable(GL_LIGHTING);
+    //  glBegin(GL_QUADS);
+    //  for (double fi=0; fi<360; fi += 15) {
+    //    for (double w=r; w<2*R; w += (R-r)) {
+    //      glVertex3f(w*sin(fi*3.14/180.0), w*cos(fi*3.14/180.0), 0);
+    //    }
+    //  }
+    //  glEnd();
+    //}
     glPopMatrix();
     //gluDeleteQuadric(earth);
     return;
