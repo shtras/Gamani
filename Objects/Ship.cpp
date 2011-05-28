@@ -4,19 +4,20 @@
 #include "Ship.h"
 #include "Gamani.h"
 #include "HUD.h"
+#include "APProgram.h"
 
 
-Ship::Ship()
+Ship::Ship():autopilot_(NULL)
 {
   mass_ = 0.00005;
   yaw_ = 270;
-  yawPower_ = 0.001;
+  yawPower_ = 0.05;
   maxYawVel_ = 10000;
   maxSpeed_ = 500;
-  marchPower_ = 0.1;
+  marchPower_ = 5;
   radius_ = 0.05;
-  currProg_ = NoProgram;
-  targetAngle_ = -100;
+//   currProg_ = NoProgram;
+//   targetAngle_ = -100;
   color_[0] = 1;
   color_[1] = 0.5;
   color_[2] = 0;
@@ -29,16 +30,18 @@ Ship::Ship()
   test2_ = NULL;
   manualRef_ = false;
   refIdx_ = -1;
-  targetDist_ = 0;
-  startAngle_ = -100;
-  rotateRight_ = false;
-  rotatePhase1_ = true;
+//   targetDist_ = 0;
+//   startAngle_ = -100;
+//   rotateRight_ = false;
+//   rotatePhase1_ = true;
   type_ = ShipType;
+  autopilot_ = new Autopilot(this);
 }
 
 Ship::~Ship()
 {
   delete hud_;
+  delete autopilot_;
 }
 
 void Ship::render()
@@ -96,6 +99,15 @@ void Ship::render()
     glVertex3f(0,0,radius_*GLOBAL_MULT);
     glVertex3f(dir[0], dir[1], radius_*GLOBAL_MULT);
     glEnd();
+
+    Vector3 sDir = Vector3(sin(yaw_*3.14159265/180.0), -cos(yaw_*3.14159265/180.0), 0);
+    sDir *= radius_ * (1/10000.0);
+    glColor3f(0.7, 0.9, 0.7);
+    glBegin(GL_LINES);
+    glVertex3f(0,0,radius_*GLOBAL_MULT);
+    glVertex3f(sDir[0], sDir[1], radius_*GLOBAL_MULT);
+    glEnd();
+
     glEnable(GL_LIGHTING);
     glPopMatrix();
   }
@@ -492,153 +504,162 @@ void Ship::accelerate()
   velocity_ = Vector3(velocity_[0] + dx*marchPower_, velocity_[1] + dy*marchPower_, velocity_[2]);
 }
 
-void Ship::setAutopilotTo(Autopilot prog)
+void Ship::setAutopilotTo(Autopilot::ProgID prog)
 {
-  currProg_ = prog;
-  if (prog == Launch) {
-    if (!landed_) {
-      return;
-    }
-    launchCount_ = 0;
-    //Vector3 vel = refBody_->getVelocity();
-    //double dx = sin(yaw_*3.14159265/180.0)*100;
-    //double dy = -cos(yaw_*3.14159265/180.0)*100;
-    //vel += Vector3(dx, dy, 0);
-    ////vel = Vector3(0, 0, 0);
-    //velocity_ = vel;
-    landed_ = false;
-    landedOn_ = NULL;
-  } else if (prog == Rotate) {
-    targetAngle_ = yaw_ + 90;
-    if (targetAngle_ < 0) {
-      targetAngle_ += 360;
-    }
-    startAngle_ = yaw_;
-    rotateRight_ = true;
-    rotatePhase1_ = true;
-  } else if (prog == Approach) {
-    startAngle_ = yaw_;
-    targetCoords_ = gravityRef_->getCoord();
-    Vector3 dir = gravityRef_->getCoord() - coord_;
-    double dist = dir.getLength();
-    targetDist_ = dist*0.99/2.0;
-    targetAngle_ = acos(dir[0]/dir[1]) * 180.0 / 3.14159265 - 90;
-    if (fabs(dir[1]) < 0.001) {
-      targetAngle_ = (dir[1] > 0)? 270 : 90;
-    }
-
-
-    {
-      double deltaYaw = targetAngle_ - yaw_;
-      while (deltaYaw < 0) {
-        deltaYaw += 360;
-      }
-      targetAngle_ =  yaw_ + deltaYaw / 2.0;
-      while (targetAngle_ > 360) {
-        targetAngle_ -= 360;
-      }
-      if (deltaYaw > 180) {
-        rotateRight_ = false;
-      } else {
-        rotateRight_ = true;
-      }
-    }
-
-    currProg_ = Rotate;
-    rotatePhase1_ = true;
-    //programs_.push_back(Rotate);
-    programs_.push_front(Accelerate);
-    programs_.push_front(Rotate);
-    programs_.push_front(Stop);
+  autopilot_->clearQueue();
+  switch (prog) {
+  case Autopilot::KillRot:
+    autopilot_->addProgram(new KillRotProg(autopilot_));
+    break;
+  case Autopilot::Launch:
+    autopilot_->addProgram(new LaunchProg(autopilot_));
+    break;
+  case Autopilot::Rotate:
+    autopilot_->addProgram(new RotateProg(autopilot_, yaw_ + 180.0));
+    break;
+  case Autopilot::Approach:
+    autopilot_->addProgram(new ApproachProg(autopilot_));
+    break;
   }
+  //currProg_ = prog;
+  //if (prog == Launch) {
+  //  if (!landed_) {
+  //    return;
+  //  }
+  //  launchCount_ = 0;
+  //  landed_ = false;
+  //  landedOn_ = NULL;
+  //} else if (prog == Rotate) {
+  //  targetAngle_ = yaw_ + 90;
+  //  if (targetAngle_ < 0) {
+  //    targetAngle_ += 360;
+  //  }
+  //  startAngle_ = yaw_;
+  //  rotateRight_ = true;
+  //  rotatePhase1_ = true;
+  //} else if (prog == Approach) {
+  //  startAngle_ = yaw_;
+  //  targetCoords_ = gravityRef_->getCoord();
+  //  Vector3 dir = gravityRef_->getCoord() - coord_;
+  //  double dist = dir.getLength();
+  //  targetDist_ = dist*0.99/2.0;
+  //  targetAngle_ = acos(dir[0]/dir[1]) * 180.0 / 3.14159265 - 90;
+  //  if (fabs(dir[1]) < 0.001) {
+  //    targetAngle_ = (dir[1] > 0)? 270 : 90;
+  //  }
+
+
+  //  {
+  //    double deltaYaw = targetAngle_ - yaw_;
+  //    while (deltaYaw < 0) {
+  //      deltaYaw += 360;
+  //    }
+  //    targetAngle_ =  yaw_ + deltaYaw / 2.0;
+  //    while (targetAngle_ > 360) {
+  //      targetAngle_ -= 360;
+  //    }
+  //    if (deltaYaw > 180) {
+  //      rotateRight_ = false;
+  //    } else {
+  //      rotateRight_ = true;
+  //    }
+  //  }
+
+  //  currProg_ = Rotate;
+  //  rotatePhase1_ = true;
+  //  programs_.push_front(Accelerate);
+  //  programs_.push_front(Rotate);
+  //  programs_.push_front(Stop);
+  //}
 }
 
 void Ship::autopilotStep()
 {
-  if (currProg_ == KillRot) {
-    double val = yawVel_;
-    if (abs(yawVel_) < yawPower_/10.0f) {
-      yawVel_ = 0;
-      currProg_ = NoProgram;
-    } else if (yawVel_ > 0) {
-      yawLeft();
-    } else {
-      yawRight();
-    }
-  } else if (currProg_ == Rotate) {
-    if (targetAngle_ < 0) {
-      targetAngle_ = yaw_ + 90;
-      if (targetAngle_ < 0) {
-        targetAngle_ += 360;
-      }
-      startAngle_ = yaw_;
-      rotateRight_ = true;
-      rotatePhase1_ = true;
-    }
-    if (rotatePhase1_) {
-      if (rotateRight_) {
-        yawRight();
-      } else {
-        yawLeft();
-      }
-      if (abs(yaw_ - targetAngle_) < yawVel_*1.1) {
-        rotatePhase1_ = false;
-        cout << "Phase 2 " << yaw_ << endl;
-      }
-    } else {
-      if (rotateRight_) {
-        yawLeft();
-      } else {
-        yawRight();
-      }
-      if (yawVel_ < yawPower_*1.5) {
-        yawVel_ = 0;
-        rotatePhase1_ = true;
-        currProg_ = NoProgram;
-        targetAngle_ = -100;
-      }
-    }
-  } else if (currProg_ == Launch) {
-    //++launchCount_;
-    //if (launchCount_ > 10000) {
-    //  currProg_ = NoProgram;
-    //}
-    //accelerate();
-    double distance = sqrt((coord_[0] - gravityRef_->getCoord()[0])*(coord_[0] - gravityRef_->getCoord()[0]) + 
-      (coord_[1] - gravityRef_->getCoord()[1])*(coord_[1] - gravityRef_->getCoord()[1]));
-    if (distance > (gravityRef_->getRadius() + radius_) * 1.01) {
-      currProg_ = NoProgram;
-    }
-  } else if (currProg_ == Accelerate) {
-    Vector3 dir = targetCoords_ - coord_;
-    double dist = dir.getLength();
-    if (dist < targetDist_) {
-      currProg_ = NoProgram;
-    }
-    accelerate();
-  } else if (currProg_ == Stop) {
-    Vector3 dir = targetCoords_ - coord_;
-    double dist = dir.getLength();
-    if (dist > targetDist_) {
-      currProg_ = NoProgram;
-    }
-    accelerate();
-  } else if (currProg_ == NoProgram && programs_.size() > 0) {
-    currProg_ = programs_.back();
-    cout << "Switching to: " << getProgName(currProg_) << endl;
-    programs_.pop_back();
-  }
+  autopilot_->step();
+  //if (currProg_ == KillRot) {
+  //  double val = yawVel_;
+  //  if (abs(yawVel_) < yawPower_/10.0f) {
+  //    yawVel_ = 0;
+  //    currProg_ = NoProgram;
+  //  } else if (yawVel_ > 0) {
+  //    yawLeft();
+  //  } else {
+  //    yawRight();
+  //  }
+  //} else if (currProg_ == Rotate) {
+  //  if (targetAngle_ < 0) {
+  //    targetAngle_ = yaw_ + 90;
+  //    if (targetAngle_ < 0) {
+  //      targetAngle_ += 360;
+  //    }
+  //    startAngle_ = yaw_;
+  //    rotateRight_ = true;
+  //    rotatePhase1_ = true;
+  //  }
+  //  if (rotatePhase1_) {
+  //    if (rotateRight_) {
+  //      yawRight();
+  //    } else {
+  //      yawLeft();
+  //    }
+  //    if (abs(yaw_ - targetAngle_) < yawVel_*1.1) {
+  //      rotatePhase1_ = false;
+  //      cout << "Phase 2 " << yaw_ << endl;
+  //    }
+  //  } else {
+  //    if (rotateRight_) {
+  //      yawLeft();
+  //    } else {
+  //      yawRight();
+  //    }
+  //    if (yawVel_ < yawPower_*1.5) {
+  //      yawVel_ = 0;
+  //      rotatePhase1_ = true;
+  //      currProg_ = NoProgram;
+  //      targetAngle_ = -100;
+  //    }
+  //  }
+  //} else if (currProg_ == Launch) {
+  //  //++launchCount_;
+  //  //if (launchCount_ > 10000) {
+  //  //  currProg_ = NoProgram;
+  //  //}
+  //  //accelerate();
+  //  double distance = sqrt((coord_[0] - gravityRef_->getCoord()[0])*(coord_[0] - gravityRef_->getCoord()[0]) + 
+  //    (coord_[1] - gravityRef_->getCoord()[1])*(coord_[1] - gravityRef_->getCoord()[1]));
+  //  if (distance > (gravityRef_->getRadius() + radius_) * 1.01) {
+  //    currProg_ = NoProgram;
+  //  }
+  //} else if (currProg_ == Accelerate) {
+  //  Vector3 dir = targetCoords_ - coord_;
+  //  double dist = dir.getLength();
+  //  if (dist < targetDist_) {
+  //    currProg_ = NoProgram;
+  //  }
+  //  accelerate();
+  //} else if (currProg_ == Stop) {
+  //  Vector3 dir = targetCoords_ - coord_;
+  //  double dist = dir.getLength();
+  //  if (dist > targetDist_) {
+  //    currProg_ = NoProgram;
+  //  }
+  //  accelerate();
+  //} else if (currProg_ == NoProgram && programs_.size() > 0) {
+  //  currProg_ = programs_.back();
+  //  cout << "Switching to: " << getProgName(currProg_) << endl;
+  //  programs_.pop_back();
+  //}
 }
 
 void Ship::collideWith(AstralBody* body)
 {
-  if (currProg_ == Launch) {
-    return;
-  }
+  //if (currProg_ == Launch) {
+  //  return;
+  //}
   landed_ = true;
   //velocity_ = Vector3(0,0,0);
   yawVel_ = 0;
-  currProg_ = NoProgram;
+  //currProg_ = NoProgram;
   Vector3 dir = coord_ - body->getCoord();
   dir[1] = -dir[1];
   double angle = asin(dir[0]/sqrt(dir[0]*dir[0] + dir[1]*dir[1]));
@@ -676,24 +697,30 @@ void Ship::setHUD(HUD* hud)
   hud->assignTo(this);
 }
 
-CString Ship::getProgName(Autopilot prog)
+CString Ship::getCurrProgName()
 {
-  switch (prog) {
-  case NoProgram:
+  Autopilot::ProgID id = autopilot_->getCurrProg();
+  switch (id) {
+  case Autopilot::NoProgram:
     return "No Program";
-  case KillRot:
+  case Autopilot::KillRot:
     return "Kill rotation";
-  case Rotate:
+  case Autopilot::Rotate:
     return "Rotation";
-  case Launch:
+  case Autopilot::Launch:
     return "Launch";
-  case Approach:
+  case Autopilot::Approach:
     return "Approach";
-  case Accelerate:
+  case Autopilot::Accelerate:
     return "Accelerate";
-  case Stop:
+  case Autopilot::Stop:
     return "Stop";
   default:
     return "UnKnown";
   }
+}
+
+bool Ship::isLaunching()
+{
+  return autopilot_->getCurrProg() == Autopilot::Launch;
 }

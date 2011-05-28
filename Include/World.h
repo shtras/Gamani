@@ -20,6 +20,7 @@ public:
   AstralBody* getFollowedObject() {return followedObject_;}
   void setStarSystem(StarSystem* system);
   const StarSystem* getCurrentSystem() const {return currentSystem_;}
+  void selectShip();
 private:
   void interactGravity(Renderable* obj1, Renderable* obj2);
   void updatePosition(Renderable* obj);

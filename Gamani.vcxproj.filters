@@ -49,6 +49,12 @@
     <Filter Include="Header Files\Models">
       <UniqueIdentifier>{27f0f563-36ec-4296-b5d6-dc0f4eaf0200}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Autopilot">
+      <UniqueIdentifier>{aef1748c-7549-47da-9267-a36afdca1419}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Autopilot">
+      <UniqueIdentifier>{77a69a61-4de4-4dee-a5c3-fb9994fd9a4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Gamani.cpp">
@@ -146,6 +152,12 @@
     </ClCompile>
     <ClCompile Include="Objects\Station.cpp">
       <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Autopilot\Autopilot.cpp">
+      <Filter>Source Files\Autopilot</Filter>
+    </ClCompile>
+    <ClCompile Include="Autopilot\APProgram.cpp">
+      <Filter>Source Files\Autopilot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -248,8 +260,11 @@
     <ClInclude Include="Include\Objects\Station.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
+    <ClInclude Include="Include\Autopilot\Autopilot.h">
+      <Filter>Header Files\Autopilot</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Autopilot\APProgram.h">
+      <Filter>Header Files\Autopilot</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -55,6 +55,8 @@ Gamani::Gamani():world_(new World()), paused_(true), speed_(1.0), calcStepLength
   nonContKeys_.insert('Q');
   nonContKeys_.insert('E');
   nonContKeys_.insert('O');
+  nonContKeys_.insert('R');
+  nonContKeys_.insert('K');
   nonContKeys_.insert(0x30);
   nonContKeys_.insert(0x31);
   nonContKeys_.insert(0x32);
@@ -115,6 +117,8 @@ bool Gamani::mainLoop()
 
   seconds_ = 0;
 
+  world_->selectShip();
+
   MSG msg={0};
   while(WM_QUIT!=msg.message) {
     if (PeekMessage(&msg,NULL,0,0,PM_REMOVE)) {
@@ -154,11 +158,11 @@ bool Gamani::mainLoop()
         accumulator -= dt;
       }
 
-      while (accumKeys >= dtKeys) {
+      while (accumKeys >= dt) {
         for (int i=0; i<speed_; ++i) {
           handlePressedKeys();
         }
-        accumKeys -= dtKeys;
+        accumKeys -= dt;
       }
 
       if (time - timebase > 1000) {

@@ -4,6 +4,7 @@
 #include "Planet.h"
 #include "Renderer.h"
 #include "Gamani.h"
+#include "Autopilot.h"
 
 #define OMP_NUM_THREADS 2
 
@@ -87,22 +88,22 @@ void World::handlePressedKey(int key)
     break;
   case 'K':
     if (controlledShip_) {
-      controlledShip_->setAutopilotTo(Ship::KillRot);
+      controlledShip_->setAutopilotTo(Autopilot::KillRot);
     }
     break;
   case 0x30:
     if (controlledShip_) {
-      controlledShip_->setAutopilotTo(Ship::Approach);
+      controlledShip_->setAutopilotTo(Autopilot::Approach);
     }
     break;
   case 'R':
     if (controlledShip_) {
-      controlledShip_->setAutopilotTo(Ship::Rotate);
+      controlledShip_->setAutopilotTo(Autopilot::Rotate);
     }
     break;
   case 'L':
     if (controlledShip_) {
-      controlledShip_->setAutopilotTo(Ship::Launch);
+      controlledShip_->setAutopilotTo(Autopilot::Launch);
     }
     break;
   case 'N':
@@ -115,10 +116,7 @@ void World::handlePressedKey(int key)
     followedObject_ = NULL;
     break;
   case 'Z':
-    followedObject_ = controlledShip_;
-    if (controlledShip_) {
-      Renderer::getInstance().getCamera().position(followedObject_);
-    }
+    selectShip();
     break;
   case 'Q':
     controlledShip_->scrollGravityRef();
@@ -129,16 +127,30 @@ void World::handlePressedKey(int key)
   }
 }
 
+void World::selectShip()
+{
+  followedObject_ = controlledShip_;
+  if (controlledShip_) {
+    Renderer::getInstance().getCamera().position(followedObject_);
+  }
+}
+
 void World::updatePosition(Renderable* obj)
 {
   if (obj->isStatic()) {
     return;
   }
-  DynamicBody* dynObj = dynamic_cast<DynamicBody*>(obj);
-  assert(dynObj);
+
+  assert(!obj->isStatic());
+  DynamicBody* dynObj = (DynamicBody*)obj;
+  
   if (dynObj->isLanded()) {
-    dynObj->setCoord(dynObj->getLandedCoords());
-    dynObj->setVelocity(dynObj->getRefBody()->getVelocity());
+    assert(dynObj->getType() == Renderable::ShipType);
+    Ship* ship = (Ship*)dynObj;
+    if (!ship->isLaunching()) {
+      dynObj->setCoord(dynObj->getLandedCoords());
+      dynObj->setVelocity(dynObj->getRefBody()->getVelocity());
+    }
   } else {
     Vector3 coord = dynObj->getCoord();
     coord *= 1.0e6;
@@ -153,12 +165,7 @@ void World::updatePosition(Renderable* obj)
       newYaw = 360;
     }
     dynObj->setYaw(newYaw);
-    Ship* ship = dynamic_cast<Ship*>(dynObj);
-    if (ship) {
-      for (int i=0; i<Gamani::getInstance().getDTModifier(); ++i) {
-        ship->autopilotStep();
-      }
-    }
+
     if (followedObject_) {
       Renderer::getInstance().getCamera().position(followedObject_->getCoord());
     }
@@ -346,6 +353,12 @@ void World::interactionStep()
   gravitySubLevelsInteraction(mainStar, mainStar->getSatellites(), true);
   for (uint32_t i=0; i<objects_->size(); ++i) {
     AstralBody* itr = (*objects_)[i];
+
+    if (itr->getType() == Renderable::ShipType) {
+      Ship* ship = (Ship*)itr;
+      ship->autopilotStep();
+    }
+
     itr->rotationStep();
     updatePosition(itr);
     for (uint32_t j=0; j<freeObjects_.size(); ++j) {

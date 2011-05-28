@@ -1,6 +1,7 @@
 #pragma once
 #include "DynamicBody.h"
 #include "ModelRenderable.h"
+#include "Autopilot.h"
 
 class HUD;
 
@@ -8,7 +9,6 @@ class Ship: public DynamicBody, public ModelRenderable
 {
   friend class Gamani;
 public:
-  enum Autopilot {NoProgram, KillRot, Rotate, Launch, Approach, Accelerate, Stop};
   Ship();
   ~Ship();
   void render();
@@ -18,20 +18,23 @@ public:
   void yawRight(double val);
   void accelerate();
   void autopilotStep();
-  void setAutopilotTo(Autopilot program);
+  void setAutopilotTo(Autopilot::ProgID program);
   void collideWith(AstralBody* body);
   bool isLanded() {return landed_;}
   AstralBody* getRefBody() {return landedOn_;}
   Vector3 getLandedCoords();
-  Autopilot getProgram() {return currProg_;}
+  //Autopilot getProgram() {return currProg_;}
   void setGravityRef(AstralBody* body) {gravityRef_ = body;}
   void setHUD(HUD* hud);
   AstralBody* getGravityRef() {return gravityRef_;}
   void toggleAutoRef();
   void scrollGravityRef();
-  double getTgtAngle() {return targetAngle_;}
-  double getTgtDist() {return targetDist_;}
-  CString getProgName(Autopilot prog);
+  //double getTgtAngle() {return targetAngle_;}
+  //double getTgtDist() {return targetDist_;}
+  CString getCurrProgName();
+  double getYawPower() const {return yawPower_;}
+  AstralBody* getLandedOn() const {return landedOn_;}
+  bool isLaunching();
 public:
   void testNavCom();
   void testNavCom1();
@@ -41,13 +44,15 @@ public:
   double maxYawVel_;
   double maxSpeed_;
   double marchPower_;
-  Autopilot currProg_;
-  double targetAngle_;
-  double startAngle_;
-  bool rotateRight_;
-  bool rotatePhase1_;
-  double targetDist_;
-  Vector3 targetCoords_;
+  //Autopilot currProg_;
+  //double targetAngle_;
+  //double startAngle_;
+  //bool rotateRight_;
+  //bool rotatePhase1_;
+  //double targetDist_;
+  //Vector3 targetCoords_;
+
+  Autopilot* autopilot_;
 
   bool landed_;
   AstralBody* landedOn_;
@@ -62,6 +67,6 @@ public:
   bool manualRef_;
   unsigned int refIdx_;
 
-  list<Autopilot> programs_;
+  //list<Autopilot> programs_;
 };
 

@@ -111,8 +111,8 @@ void Camera::position()
 
     Ship* ship = dynamic_cast<Ship*>(followed);
     if (ship) {
-      Renderer::getInstance().textOut(-1,0.75,0, "Landed: %d Prog: %s Yaw: %0.2f, Target yaw: %0.2f, Target dist: %s", ship->isLanded(), ship->getProgName(ship->getProgram()).operator const char *(),
-        ship->getYaw(), ship->getTgtAngle(), Renderer::getInstance().formatDistance(ship->getTgtDist()).operator const char *());
+      Renderer::getInstance().textOut(-1,0.75,0, "Landed: %d Yaw: %0.2f Program: %s", ship->isLanded(), 
+        ship->getYaw(), ship->getCurrProgName());
     }
   }
 

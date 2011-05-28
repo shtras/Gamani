@@ -170,10 +170,12 @@ void NavDisplay::updateData()
   Vector3 relSpd = ship_->getVelocity() - ship_->getGravityRef()->getVelocity();
   Vector3 relPos = ship_->getCoord() - ship_->getGravityRef()->getCoord();
   double dist = relPos.getLength();
+  double sdist = dist - ship_->getGravityRef()->getRadius();
 
   CString vel = Renderer::getInstance().formatVelocity(relSpd.getLength());
   char sprStr[100];
-  sprintf(sprStr, "Rel spd: %s Dist: %s", vel.operator const char *(), Renderer::getInstance().formatDistance(dist).operator const char *());
+  sprintf(sprStr, "Rel spd: %s Dist: %s SurfDist: %s", vel.operator const char *(), Renderer::getInstance().formatDistance(dist).operator const char *(), 
+    Renderer::getInstance().formatDistance(sdist));
   velData_->setText(sprStr);
 }
 
