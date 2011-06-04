@@ -159,6 +159,15 @@
     <ClCompile Include="Autopilot\APProgram.cpp">
       <Filter>Source Files\Autopilot</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\Forms\StationDisplay.cpp">
+      <Filter>Source Files\GUI\Forms</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\Forms\UpperPanel.cpp">
+      <Filter>Source Files\GUI\Forms</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Dockable.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Math\Matrix.h">
@@ -265,6 +274,18 @@
     </ClInclude>
     <ClInclude Include="Include\Autopilot\APProgram.h">
       <Filter>Header Files\Autopilot</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GUI\Forms\StationDisplay.h">
+      <Filter>Header Files\GUI\Forms</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GUI\Forms\UpperPanel.h">
+      <Filter>Header Files\GUI\Forms</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GUI\Widgets.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Objects\Dockable.h">
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

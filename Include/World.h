@@ -9,6 +9,7 @@ public:
   World();
   ~World();
   vector<AstralBody*>* getAllObjects();
+  vector<AstralBody*>& getFreeObjects() {return freeObjects_;}
   void interactionStep();
   void addObject(Renderable* object);
   void addFreeObject(AstralBody* object);

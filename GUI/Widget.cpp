@@ -10,7 +10,7 @@ Widget::~Widget()
 {
 }
 
-void Widget::setDimensions(int left, int top, int width, int height)
+void Widget::setDimensions(double left, double top, double width, double height)
 {
   top_ = top;
   left_ = left;
@@ -18,7 +18,7 @@ void Widget::setDimensions(int left, int top, int width, int height)
   height_ = height;
 }
 
-bool Widget::isInside(int x, int y)
+bool Widget::isInside(double x, double y)
 {
-  return ((x >= left_) && (x <= left_+width_) && (y >= top_-height_) && (y <= top_));
+  return ((x >= left_) && (x <= left_+width_) && (y >= top_) && (y <= top_ + height_));
 }

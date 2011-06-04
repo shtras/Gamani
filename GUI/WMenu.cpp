@@ -18,6 +18,7 @@ WMenu::~WMenu()
 
 void WMenu::render(double left, double top, double width, double height)
 {
+  glDisable(GL_LIGHTING);
   glColor3f(0.2, 0.2, 0.2);
   glBegin(GL_LINE_LOOP);
   glVertex3f(0, 0, -0.09);
@@ -26,13 +27,14 @@ void WMenu::render(double left, double top, double width, double height)
   glVertex3f(0, height, -0.09);
   glEnd();
 
-  glColor3f(0.8,0.2,0);
+  glColor3f(0.8,0.2,0.7);
   glBegin(GL_POLYGON);
   glVertex3f(0, 0, -0.09);
   glVertex3f(width, 0, -0.09);
   glVertex3f(width, height, -0.09);
   glVertex3f(0, height, -0.09);
   glEnd();
+  glEnable(GL_LIGHTING);
 }
 
 void WMenu::setVisible(bool value)
@@ -82,6 +84,7 @@ WMenu::Item::~Item()
 
 void WMenu::Item::render(double left, double top, double width, double height)
 {
+  glDisable(GL_LIGHTING);
   glColor3f(0.7, 0.4, 0.1);
   glBegin(GL_LINE_LOOP);
   glVertex3f(0, 0, -0.1);
@@ -101,6 +104,7 @@ void WMenu::Item::render(double left, double top, double width, double height)
 
   glColor3f(0.8,0.8,0.8);
   Renderer::getInstance().textOutNoMove(0.01, height/2, -0.11, "%s", label_.operator const char *());
+  glEnable(GL_LIGHTING);
 }
 
 void WMenu::Item::click()

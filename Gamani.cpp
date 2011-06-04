@@ -15,6 +15,7 @@
 #include <crtdbg.h>
 #endif //DEBUG
 #include "Station.h"
+#include "StationDisplay.h"
 
 typedef BOOL (APIENTRY *PFNWGLSWAPINTERVALFARPROC)( int );
 PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT = 0;
@@ -118,6 +119,10 @@ bool Gamani::mainLoop()
   seconds_ = 0;
 
   world_->selectShip();
+
+  upperPanel_ = new UpperPanel();
+  upperPanel_->init();
+  layoutManager_.addLayout(upperPanel_);
 
   MSG msg={0};
   while(WM_QUIT!=msg.message) {
@@ -243,13 +248,16 @@ void Gamani::handlePressedKey(int key)
     Renderer::getInstance().getCamera().toggleGlobalView();
     break;
   case 'P':
-    paused_ = !paused_;
+    pause();
+    //paused_ = !paused_;
     break;
   case 'Y':
-    speed_ *= 2;
+    speedUp();
+    //speed_ *= 2;
     break;
   case 'U':
-    speed_ /= 2;
+    speedDown();
+    //speed_ /= 2;
     break;
   case 'X':
     calcStepLength_ *= 1.5;
@@ -356,6 +364,21 @@ void Gamani::handleMessage(UINT message, WPARAM wParam, LPARAM lParam)
   default:
     break;
   }
+}
+
+void Gamani::speedUp()
+{
+  speed_ *= 2;
+}
+
+void Gamani::speedDown()
+{
+  speed_ /= 2;
+}
+
+void Gamani::pause()
+{
+  paused_ = !paused_;
 }
 
 bool Gamani::run()
@@ -477,13 +500,20 @@ void Gamani::testInit()
   ship->setHUD(shipHud);
   ship->test1_ = planet;
   ship->initModel("res/new.3ds");
+  ship->setDockingPort(Vector3(0,0.25,1.4)); //Hey, screwed up axes. Again...
+  ship->setPortAngle(0);
 
   Station* station = new Station();
-  station->setCoord(Vector3(149610, 0, 0));
-  station->setVelocity(Vector3(/*-6250*/0, 29783+6250, 0));
+  station->setCoord(Vector3(149590.1, 0, 0));
+  station->setVelocity(Vector3(/*-6250*/0, 29783-6250, 0));
   station->setRadius(0.01);
   station->setName("Shipyard");
+  //StationDisplay* stationDisplay = new StationDisplay();
+  //stationDisplay->init();
+  //layoutManager_.addLayout(stationDisplay);
   station->initModel("res/station.3ds");
+  station->setDockingPort(Vector3(0.6,1.1,0.05));
+  station->setPortAngle(270);
 
 
   //Moon

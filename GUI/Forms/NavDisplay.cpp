@@ -1,10 +1,11 @@
 #include "StdAfx.h"
 #include "NavDisplay.h"
 #include "Ship.h"
+#include "Station.h"
 #include "Gamani.h"
 #include "Renderer.h"
 
-NavDisplay::NavDisplay():syncOrbitRef_(NULL), mode_(Orbit)
+NavDisplay::NavDisplay():syncOrbitRef_(NULL), mode_(Orbit),selectRef_(false)
 {
 }
 
@@ -14,45 +15,52 @@ NavDisplay::~NavDisplay()
 
 void NavDisplay::init()
 {
-  setDimensions(0, 300, 300, 300);
+  setDimensions(0, 0.4, 0.4, 0.4);
+  square_ = true;
   shipNameText_ = new WText();
-  shipNameText_->setDimensions(10, 290, 100, 10);
+  shipNameText_->setDimensions(0.05, 0.95, 1, 1);
   shipNameText_->setText("Hello!");
   addWidget(shipNameText_);
 
   modeName_ = new WText();
-  modeName_->setDimensions(150, 290, 100, 10);
+  modeName_->setDimensions(0.5, 0.95, 1, 1);
   modeName_->setText("Orbit mode");
   addWidget(modeName_);
 
   gravityRefName_ = new WText();
-  gravityRefName_->setDimensions(10, 275, 100, 10);
+  gravityRefName_->setDimensions(0.05, 0.9, 1, 1);
   gravityRefName_->setText("Hello!");
   addWidget(gravityRefName_);
 
   velData_ = new WText();
-  velData_->setDimensions(10, 260, 100, 10);
+  velData_->setDimensions(0.05, 0.85, 1, 1);
   velData_->setText("AAA!");
   addWidget(velData_);
 
   modeButton_ = new WButton();
-  modeButton_->setDimensions(75, 30, 70, 29);
+  modeButton_->setDimensions(0.3, 0.01, 0.19, 0.1);
   modeButton_->sigClick.connect(this, &NavDisplay::modeButtonClick);
   modeButton_->setLabel("Mode");
   addWidget(modeButton_);
 
+  refButton_ = new WButton();
+  refButton_->setDimensions(0.1, 0.01, 0.19, 0.1);
+  refButton_->sigClick.connect(this, &NavDisplay::refButtonClick);
+  refButton_->setLabel("Ref");
+  addWidget(refButton_);
+
   tgtToSyncOrbitButton_ = new WButton();
-  tgtToSyncOrbitButton_->setDimensions(150, 30, 70, 29);
+  tgtToSyncOrbitButton_->setDimensions(0.51, 0.01, 0.19, 0.1);
   tgtToSyncOrbitButton_->sigClick.connect(this, &NavDisplay::tgtToSyncOrbitButtonClick);
   tgtToSyncOrbitButton_->setLabel("Target");
   tgtToSyncOrbitButton_->setVisible(false);
   addWidget(tgtToSyncOrbitButton_);
 
   modeMenu_ = new WMenu();
-  modeMenu_->setDimensions(5, 5, 100, 290);
+  modeMenu_->setDimensions(0.04, 0.64, 0.22, 0.3);
   /////////////////////////////////////////////////////////////////////////
   WMenu::Item* mode1Item = new WMenu::Item();
-  mode1Item->setDimensions(6,288,98,20);
+  mode1Item->setDimensions(0.05,0.85,0.2,0.08);
   mode1Item->setLabel("Orbit");
   modeMenu_->addItem(mode1Item);
   mode1Item->setValue((void*)1);
@@ -60,7 +68,7 @@ void NavDisplay::init()
   addWidget(mode1Item);
   //////////////////////////////////////////////////////////////////////////
   WMenu::Item* mode2Item = new WMenu::Item();
-  mode2Item->setDimensions(6,266,98,20);
+  mode2Item->setDimensions(0.05,0.75,0.2,0.08);
   mode2Item->setLabel("Sync orbit");
   modeMenu_->addItem(mode2Item);
   mode2Item->setValue((void*)2);
@@ -68,8 +76,8 @@ void NavDisplay::init()
   addWidget(mode2Item);
   //////////////////////////////////////////////////////////////////////////
   WMenu::Item* mode3Item = new WMenu::Item();
-  mode3Item->setDimensions(6,244,98,20);
-  mode3Item->setLabel("Landing");
+  mode3Item->setDimensions(0.05,0.65,0.2,0.08);
+  mode3Item->setLabel("Docking");
   modeMenu_->addItem(mode3Item);
   mode3Item->setValue((void*)3);
   mode3Item->sigClick.connect(this, &NavDisplay::menuModeClick);
@@ -79,7 +87,7 @@ void NavDisplay::init()
   addWidget(modeMenu_);
 
   tgtSelectMenu_ = new WMenu();
-  tgtSelectMenu_->setDimensions(150, 30, 70, 29);
+  tgtSelectMenu_->setDimensions(0.04, 0.1, 0.32, 0.9);
   tgtSelectMenu_->setVisible(false);
   addWidget(tgtSelectMenu_);
 
@@ -90,38 +98,73 @@ void NavDisplay::setTarget(void* tgt)
 {
   tgtSelectMenu_->setVisible(false);
   AstralBody* newTgt = (AstralBody*)tgt;
-  syncOrbitRef_ = newTgt;
+  if (selectRef_) {
+    ship_->setManualRef(true);
+    ship_->setGravityRef(newTgt);
+  } else {
+    syncOrbitRef_ = newTgt;
+  }
   tgtSelectMenu_->initialClear(this);
   addWidgetToGC(tgtSelectMenu_);
 }
 
 void NavDisplay::selectTargetStartingFrom(void* bodyRef)
 {
-  AstralBody* body = (AstralBody*)bodyRef;
-  if (!body) {
+  bool displayFree = false;
+  bool freeList = false;
+  AstralBody* body = NULL;
+  if (bodyRef == (void*)-1) {
+    freeList = true;
+  } else if (!bodyRef) {
     body = *Gamani::getInstance().getWorld()->getCurrentSystem()->getStars().begin();
+    displayFree = true;
+  } else {
+    body = (AstralBody*)bodyRef;
   }
   tgtSelectMenu_->initialClear(this);
 
-  WMenu::Item* mainItem = new WMenu::Item();
-  mainItem->setDimensions(6,288,98,20);
-  mainItem->setValue((void*)body);
-  mainItem->setLabel(body->getName());
-  mainItem->sigClick.connect(this, &NavDisplay::setTarget);
-  tgtSelectMenu_->addItem(mainItem);
-  addWidget(mainItem);
 
-  vector<AstralBody*>& satellites = body->getSatellites();
-  for (unsigned int i=0; i<satellites.size(); ++i) {
-    AstralBody* satellite = satellites[i];
+  if (!freeList) {
+    WMenu::Item* mainItem = new WMenu::Item();
+    mainItem->setDimensions(0.05,0.9,0.3,0.07);
+    mainItem->setValue((void*)body);
+    mainItem->setLabel(body->getName());
+    mainItem->sigClick.connect(this, &NavDisplay::setTarget);
+    tgtSelectMenu_->addItem(mainItem);
+    addWidget(mainItem);
+  }
+  
+  vector<AstralBody*>* satellites = NULL;
+  if (freeList) {
+    satellites = &Gamani::getInstance().getWorld()->getFreeObjects();
+  } else {
+    satellites = &body->getSatellites();
+  }
+  unsigned int i = 0;
+  for (; i<satellites->size(); ++i) {
+    AstralBody* satellite = (*satellites)[i];
 
     WMenu::Item* item = new WMenu::Item();
-    item->setDimensions(6, 266 - i*22, 98, 20);
+    item->setDimensions(0.05, 0.83 - i*0.07, 0.3, 0.05);
     item->setValue((void*)satellite);
     item->setLabel(satellite->getName());
-    item->sigClick.connect(this, &NavDisplay::selectTargetStartingFrom);
+    if (freeList) {
+      item->sigClick.connect(this, &NavDisplay::setTarget);
+    } else {
+      item->sigClick.connect(this, &NavDisplay::selectTargetStartingFrom);
+    }
     tgtSelectMenu_->addItem(item);
     addWidget(item);
+  }
+
+  if (displayFree) {
+    WMenu::Item* freeItem = new WMenu::Item();
+    freeItem->setDimensions(0.05, 0.83 - (i+1)*0.07, 0.3, 0.05);
+    freeItem->setValue((void*)-1);
+    freeItem->setLabel("Ships");
+    freeItem->sigClick.connect(this, &NavDisplay::selectTargetStartingFrom);
+    tgtSelectMenu_->addItem(freeItem);
+    addWidget(freeItem);
   }
 
   tgtSelectMenu_->setVisible(true);
@@ -129,6 +172,7 @@ void NavDisplay::selectTargetStartingFrom(void* bodyRef)
 
 void NavDisplay::tgtToSyncOrbitButtonClick()
 {
+  selectRef_ = false;
   selectTargetStartingFrom(NULL);
 }
 
@@ -136,6 +180,12 @@ void NavDisplay::modeButtonClick()
 {
   modeMenu_->setVisible(true);
   shipNameText_->setText("World!");
+}
+
+void NavDisplay::refButtonClick()
+{
+  selectRef_ = true;
+  selectTargetStartingFrom(NULL);
 }
 
 void NavDisplay::menuModeClick(void* val)
@@ -155,10 +205,10 @@ void NavDisplay::menuModeClick(void* val)
     mode_ = SyncOrbit;
     break;
   case 3:
-    modeName_->setText("Landing mode");
+    modeName_->setText("Docking mode");
     tgtToSyncOrbitButton_->setVisible(false);
     modeMenu_->setVisible(false);
-    mode_ = Landing;
+    mode_ = Docking;
     break;
   }
 }
@@ -386,10 +436,44 @@ void NavDisplay::drawOrbit(Ship* ship)
     glVertex3f(cos(ang)*multipleFactor/ab, sin(ang)*multipleFactor, 0);
   }
   glEnd();
+  glTranslatef(0, multipleFactor, 0);
+  glutWireSphere(0.5, 3, 3);
+
+
+  glTranslatef(0, -2*multipleFactor, 0);
+  glBegin(GL_LINE_LOOP);
+  glVertex3f(-0.5, -0.5, 0);
+  glVertex3f(-0.5, 0.5, 0);
+  glVertex3f(0.5, 0.5, 0);
+  glVertex3f(0.5, -0.5, 0);
+  glEnd();
 
 
   glPopMatrix();
 
+}
+
+void NavDisplay::drawDocking()
+{
+  if (!ship_ || !ship_->getGravityRef() || !(ship_->getGravityRef()->getType() == Renderable::StationType)) {
+    return;
+  }
+  Station* station = (Station*)ship_->getGravityRef();
+  glPushMatrix();
+  glRotatef(270, 1, 0, 0);
+  glutWireCone(0.02, 0.1, 10, 10);
+  glPopMatrix();
+
+  Vector3 dir = station->getCoord() - ship_->getCoord();
+  double dist = dir.getLength() * 50.0;
+  if (dist > 10) {
+    dist = 10;
+  }
+  double scaleF = dist;
+  dir *= scaleF;
+  glRotatef(ship_->getYaw(), 0, 0, 1);
+  glTranslatef(dir[0], dir[1], dir[2]);
+  glutWireSphere(0.02, 10, 10);
 }
 
 void NavDisplay::render()
@@ -423,10 +507,12 @@ void NavDisplay::render()
   if (mode_ == Orbit) {
     drawOrbit(ship_);
   } else if (mode_ == SyncOrbit) {
-    DynamicBody* dyn = dynamic_cast<DynamicBody*>(syncOrbitRef_);
-    if (dyn) {
+    if (syncOrbitRef_) {
+      DynamicBody* dyn = (DynamicBody*)syncOrbitRef_;
       drawSyncOrbit(ship_, dyn);
     }
+  } else if (mode_ == Docking) {
+    drawDocking();
   }
   //glLoadIdentity();
   //vector<Vector3> points;

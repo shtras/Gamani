@@ -17,6 +17,7 @@ void WButton::click()
 
 void WButton::render(double left, double top, double width, double height)
 {
+  glDisable(GL_LIGHTING);
   glColor3f(0.7, 0.4, 0.1);
   glBegin(GL_LINE_LOOP);
   glVertex3f(0, 0, 0);
@@ -36,4 +37,5 @@ void WButton::render(double left, double top, double width, double height)
 
   glColor3f(0.8,0.8,0.8);
   Renderer::getInstance().textOutNoMove(0.01, height/2, -0.1, "%s", label_.operator const char *());
+  glEnable(GL_LIGHTING);
 }

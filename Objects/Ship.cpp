@@ -10,9 +10,9 @@
 Ship::Ship():autopilot_(NULL)
 {
   mass_ = 0.00005;
-  yaw_ = 270;
+  yaw_ = 0;
   yawPower_ = 0.05;
-  maxYawVel_ = 10000;
+  maxYawVel_ = 10;
   maxSpeed_ = 500;
   marchPower_ = 5;
   radius_ = 0.05;
@@ -22,7 +22,9 @@ Ship::Ship():autopilot_(NULL)
   color_[1] = 0.5;
   color_[2] = 0;
   landed_ = false;
+  docked_ = false;
   landedOn_ = NULL;
+  dockedTo_ = NULL;
   launchCount_ = 0;
   gravityRef_ = NULL;
   hud_ = NULL;
@@ -69,6 +71,12 @@ void Ship::render()
   } else {
     glutSolidCone(radius_*GLOBAL_MULT/4.0f, radius_*GLOBAL_MULT, 10, 5);
   }
+
+  glPushMatrix();
+  Vector3 port = getDockingPort();
+  glTranslatef(port[0], port[1], port[2]);
+  renderPort();
+  glPopMatrix();
 
   drawName();
 
@@ -132,8 +140,12 @@ void Ship::updateGravityRef()
       continue;
     }
 
+    //if (obj->getName() == CString("Earth") || obj->getName() == CString("Shipyard")) {
+    //  int aaa = 0;
+    //}
+
     Vector3 coordFrom = obj->getCoord();
-    double massFrom = gravityRef_->getMass() * 1e6; //kg
+    double massFrom = obj->getMass() * 1e6; //kg
     double massTo = getMass() * 1e6; //kg
     //G*m*m/r^2
     static double G = 6.6725e-11;
@@ -311,6 +323,18 @@ void Ship::testNavCom()
   Renderer::getInstance().resetViewPort();
 }
 
+Vector3 Ship::getDockedCoord()
+{
+  Vector3 refCoord = dockedTo_->getCoord();
+  Vector3 refPort = dockedTo_->getDockingPort();
+  Vector3 myPort = getDockingPort();
+  double refYaw = dockedTo_->getYaw();
+  double myYaw = getYaw();
+  Vector3 res = refCoord;
+  res += Vector3(-refPort[0]*cos(refYaw), refPort[1]*sin(refYaw), refPort[2])*dockedTo_->getRadius();
+  return res;
+}
+
 vector<Vector3> Ship::calcOrbit(AstralBody* from, AstralBody* to, double& minDist, double& maxDist)
 {
   vector<Vector3> points;
@@ -470,6 +494,9 @@ void Ship::yawLeft()
 
 void Ship::yawLeft(double val)
 {
+  if (docked_) {
+    return;
+  }
   if (val > yawPower_) {
     val = yawPower_;
   }
@@ -486,6 +513,9 @@ void Ship::yawRight()
 
 void Ship::yawRight(double val)
 {
+  if (docked_) {
+    return;
+  }
   if (val > yawPower_) {
     val = yawPower_;
   }
@@ -497,6 +527,9 @@ void Ship::yawRight(double val)
 
 void Ship::accelerate()
 {
+  if (docked_) {
+    return;
+  }
   landed_ = false;
   double yawAngleRad = yaw_ * 3.14159265f / 180.0f;
   double dx = sin(yawAngleRad);
@@ -651,11 +684,43 @@ void Ship::autopilotStep()
   //}
 }
 
+void Ship::attemptDocking(Station* station)
+{
+  Vector3 stationPort = station->getCoord() + station->getDockingPort();
+  Vector3 myPort = getCoord() + getDockingPort();
+  double portDist = (stationPort - myPort).getLength();
+  if (portDist < 2) {
+    double stationPortAngle = station->getPortAngle() + station->getYaw();
+    double myPortAngle = getPortAngle() + getYaw();
+    double angleDelta = stationPortAngle - myPortAngle - 180.0;
+    while (angleDelta < 0) {
+      angleDelta += 360.0;
+    }
+    while (angleDelta >= 360.0) {
+      angleDelta -= 360.0;
+    }
+    if (angleDelta < 5 || angleDelta > 355) {
+      docked_ = true;
+      dockedTo_ = station;
+      return;
+    }
+  }
+  Gamani::getInstance().pause();
+  //Crash!!!
+}
+
 void Ship::collideWith(AstralBody* body)
 {
   //if (currProg_ == Launch) {
   //  return;
   //}
+  if (isDocked()) {
+    return;
+  }
+  if (body->getType() == Renderable::StationType) {
+    attemptDocking((Station*)body);
+    return;
+  }
   landed_ = true;
   //velocity_ = Vector3(0,0,0);
   yawVel_ = 0;

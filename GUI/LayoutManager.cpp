@@ -49,13 +49,25 @@ bool LayoutManager::handleMouseClick(WPARAM wParam, LPARAM lParam)
   if (1 || wParam == MK_LBUTTON) {
     int xPos = GET_X_LPARAM(lParam);
     int yPos = GET_Y_LPARAM(lParam);
-    cout << xPos << " -- " << yPos << endl;
-    yPos = Renderer::getInstance().getHeight() - yPos;
+    double dx = xPos / (double)Renderer::getInstance().getWidth();
+    double dy = yPos / (double)Renderer::getInstance().getHeight();
+    Renderer::getInstance().getHeight();
+    //cout << xPos << " -- " << yPos << endl;
+    //yPos = Renderer::getInstance().getHeight() - yPos;
+    dy = 1 - dy;
     set<WLayout*>::iterator itr = layouts_.begin();
     for (; itr != layouts_.end(); ++itr) {
       WLayout* layout = *itr;
-      if (layout->isInside(xPos, yPos)) {
-        return layout->handleMouseClick(xPos - layout->getLeft(), yPos - layout->getBottom());
+      if (layout->isVisible() && layout->isInside(dx, dy)) {
+        cout << "Yes!" << endl;
+        dx -= layout->getLeft();
+        dy -= layout->getBottom();
+        dx /= layout->getWidth();
+        dy /= layout->getHeight();
+        if (layout->isSquare()) {
+          dx *= Renderer::getInstance().getWidth() / (double)Renderer::getInstance().getHeight();
+        }
+        return layout->handleMouseClick(dx, dy);
       }
     }
   }

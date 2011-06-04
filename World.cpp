@@ -144,6 +144,14 @@ void World::updatePosition(Renderable* obj)
   assert(!obj->isStatic());
   DynamicBody* dynObj = (DynamicBody*)obj;
   
+  if (dynObj->getType() == Renderable::ShipType) {
+    Ship* ship = (Ship*)dynObj;
+    if (ship->isDocked()) {
+      ship->setCoord(ship->getDockedCoord());
+      return;
+    }
+  }
+
   if (dynObj->isLanded()) {
     assert(dynObj->getType() == Renderable::ShipType);
     Ship* ship = (Ship*)dynObj;
@@ -266,8 +274,8 @@ void World::interactCollision(Renderable* obj1, Renderable* obj2)
   if (obj1->isStatic() && obj2->isStatic()) {
     return;
   }
-  AstralBody* body1 = dynamic_cast<AstralBody*>(obj1);
-  AstralBody* body2 = dynamic_cast<AstralBody*>(obj2);
+  AstralBody* body1 = (AstralBody*)obj1;
+  AstralBody* body2 = (AstralBody*)obj2;
   if (!checkCollision(body1, body2)) {
     return;
   }
@@ -288,9 +296,9 @@ bool World::checkCollision(AstralBody* body1, AstralBody* body2)
   }
   Vector3 coord1 = body1->getCoord();
   Vector3 coord2 = body2->getCoord();
-  double distSquare = (coord1[0]-coord2[0])*(coord1[0]-coord2[0])+(coord1[1]-coord2[1])*(coord1[1]-coord2[1])+(coord1[2]-coord2[2])*(coord1[2]-coord2[2]);
+  double dist = (coord1 - coord2).getLength();
   double minDist = body1->getRadius() + body2->getRadius();
-  if (distSquare <= minDist*minDist) {
+  if (dist <= minDist) {
     return true;
   }
   return false;

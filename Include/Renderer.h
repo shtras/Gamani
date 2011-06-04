@@ -23,7 +23,7 @@ public:
   void textOutNoMove(double x, double y, double z, const char* format, ...);
 
   void textOut(double x, double y, double z, char* format, ...);
-  void requestViewPort(int left, int top, int width, int height);
+  void requestViewPort(double left, double top, double width, double height, bool square = false);
   void resetViewPort();
   CString formatDistance (double dist);
   CString formatVelocity (double vel);

@@ -36,6 +36,27 @@ void Planet::render()
   DynamicBody::render();
 
   //if (!strcmp(name_.c_str(), "Earth")) {
+
+  Camera& camera = Renderer::getInstance().getCamera();
+  const double* dCamPos = camera.getPosition();
+  Vector3 camPos = Vector3(-dCamPos[0], -dCamPos[1], /*dCamPos[2]*/0);
+  double camDirAlpha = camera.getHeading();
+  double camDirPhi = camera.getPitch();
+  double camZoom = camera.getZoom();
+
+  double ralpha = camDirAlpha * 3.14159265 / 180.0;
+  double rphi = camDirPhi * 3.14159265 / 180.0;
+
+  Vector3 camDir(sin(ralpha), cos(ralpha), sin(rphi));
+  camDir *= 10/camZoom;
+
+  camPos -= camDir;
+
+  //dist *= 1/Renderer::getInstance().getCamera().getZoom();
+  camPos *= 1/GLOBAL_MULT;
+  double camDist = (camPos - coord_).getLength() - getRadius();
+
+
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
 
@@ -52,56 +73,40 @@ void Planet::render()
   glColor3f(1,1,1);
     
 
-  if (texture_ == (GLuint)-1) {
-    quadric_ = gluNewQuadric();
-    gluQuadricTexture( quadric_, GL_TRUE);
-    CString texName = CString("Textures/") + name_ + CString(".bmp");
-    texture_ = LoadBitmap11(texName);
-  }
-  glEnable ( GL_TEXTURE_2D );
-  glBindTexture ( GL_TEXTURE_2D, texture_);
-  //glTranslatef(coord_[0]*GLOBAL_MULT, coord_[1]*GLOBAL_MULT, coord_[2]*GLOBAL_MULT);
-  //Vector3 coord = getRealCoordinates(coord_);
   glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0/*coord[2]*GLOBAL_MULT*/);
 
 
-  //glRotatef(90, 0, 1, 0);
   glRotatef(190, 1, 0, 0);
-    
-  glRotatef(rotation_, 0, 0, 1);
-  gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, 36, 72);
-  glDisable ( GL_TEXTURE_2D );
+   
+  if (1 || camDist > 5) {
+    glRotatef(rotation_, 0, 0, 1);
+    if (texture_ == (GLuint)-1) {
+      quadric_ = gluNewQuadric();
+      gluQuadricTexture( quadric_, GL_TRUE);
+      CString texName = CString("Textures/") + name_ + CString(".bmp");
+      texture_ = LoadBitmap11(texName);
+    }
+    glEnable ( GL_TEXTURE_2D );
+    glBindTexture ( GL_TEXTURE_2D, texture_);
+    gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, 36, 72);
+    glDisable ( GL_TEXTURE_2D );
+  } else {
+    Vector3 dir = coord_ - camPos;
+    dir.normalize();
+    glRotatef(asin(dir[1])*180.0/3.14159265, 0, 1, 0);
+   // glRotatef(acos(dir[0])*180.0/3.14159265, 0, 0, 1);
+    glColor3f(0,1,0);
+    glBegin(GL_POLYGON);
+    glVertex3f(0,-GLOBAL_MULT,-GLOBAL_MULT);
+    glVertex3f(0,GLOBAL_MULT,-GLOBAL_MULT);
+    glVertex3f(0,-GLOBAL_MULT,GLOBAL_MULT);
+    glVertex3f(0,GLOBAL_MULT,GLOBAL_MULT);
+    glEnd();
+  }
 
   drawName();
 
 
-  //glColor4f(0.2,0.2,1, 0.2);
-  //glutSolidSphere(radius_*GLOBAL_MULT*1.2, 36, 72);
-  //{
-  //  double r = radius_*GLOBAL_MULT*1.2;
-  //  double R = radius_*GLOBAL_MULT*1.4;
-  //  double mw = 360/(3.1415*(R+r));
-  //  glDisable(GL_LIGHTING);
-  //  glBegin(GL_QUADS);
-  //  for (double fi=0; fi<360; fi += 15) {
-  //    for (double w=r; w<2*R; w += (R-r)) {
-  //      glVertex3f(w*sin(fi*3.14/180.0), w*cos(fi*3.14/180.0), 0);
-  //    }
-  //  }
-  //  glEnd();
-  //}
   glPopMatrix();
-  //gluDeleteQuadric(earth);
   return;
-  //}
-  //glMatrixMode(GL_MODELVIEW);
-  //glPushMatrix();
-
-  //glColor3f(color_[0], color_[1], color_[2]);
-  ////glTranslatef(coord_[0]*GLOBAL_MULT, coord_[1]*GLOBAL_MULT, coord_[2]*GLOBAL_MULT);
-  //Vector3 coord = getRealCoordinates(coord_);
-  //glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, coord[2]*GLOBAL_MULT);
-  //glutSolidSphere(radius_*GLOBAL_MULT, 30, 30);
-
-  //glPopMatrix();
 }

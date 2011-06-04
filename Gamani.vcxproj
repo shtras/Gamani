@@ -95,6 +95,8 @@
     <ClCompile Include="Generic\CString.cpp" />
     <ClCompile Include="GUI\Display.cpp" />
     <ClCompile Include="GUI\Forms\NavDisplay.cpp" />
+    <ClCompile Include="GUI\Forms\StationDisplay.cpp" />
+    <ClCompile Include="GUI\Forms\UpperPanel.cpp" />
     <ClCompile Include="GUI\GUIRenderer.cpp" />
     <ClCompile Include="GUI\LayoutManager.cpp" />
     <ClCompile Include="GUI\WButton.cpp" />
@@ -109,6 +111,7 @@
     <ClCompile Include="Models\Model.cpp" />
     <ClCompile Include="Models\Wrapper3DS.cpp" />
     <ClCompile Include="Objects\AstralBody.cpp" />
+    <ClCompile Include="Objects\Dockable.cpp" />
     <ClCompile Include="Objects\DynamicBody.cpp" />
     <ClCompile Include="Objects\ModelRenderable.cpp" />
     <ClCompile Include="Objects\Planet.cpp" />
@@ -134,10 +137,13 @@
     <ClInclude Include="Include\Generic\CString.h" />
     <ClInclude Include="Include\GUI\Display.h" />
     <ClInclude Include="Include\GUI\Forms\NavDisplay.h" />
+    <ClInclude Include="Include\GUI\Forms\StationDisplay.h" />
+    <ClInclude Include="Include\GUI\Forms\UpperPanel.h" />
     <ClInclude Include="Include\GUI\GUIRenderer.h" />
     <ClInclude Include="Include\GUI\LayoutManager.h" />
     <ClInclude Include="Include\GUI\WButton.h" />
     <ClInclude Include="Include\GUI\Widget.h" />
+    <ClInclude Include="Include\GUI\Widgets.h" />
     <ClInclude Include="Include\GUI\WLayout.h" />
     <ClInclude Include="Include\GUI\WMenu.h" />
     <ClInclude Include="Include\GUI\WText.h" />
@@ -148,6 +154,7 @@
     <ClInclude Include="Include\Models\Model.h" />
     <ClInclude Include="Include\Models\Wrapper3DS.h" />
     <ClInclude Include="Include\Objects\AstralBody.h" />
+    <ClInclude Include="Include\Objects\Dockable.h" />
     <ClInclude Include="Include\Objects\DynamicBody.h" />
     <ClInclude Include="Include\Objects\ModelRenderable.h" />
     <ClInclude Include="Include\Objects\Planet.h" />

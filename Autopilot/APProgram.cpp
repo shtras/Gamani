@@ -2,6 +2,7 @@
 #include "APProgram.h"
 #include "Ship.h"
 #include "Renderer.h"
+#include "Gamani.h"
 
 APProgram::APProgram(Autopilot* autopilot):autopilot_(autopilot), id_(Autopilot::UnKnown),init_(false)
 {
@@ -131,8 +132,11 @@ ApproachProg::ApproachProg(Autopilot* autopilot):APProgram(autopilot)
   Vector3 tgtCoord = target_->getCoord();
   Vector3 shipCoord = getShip()->getCoord();
   double dist = (tgtCoord - shipCoord).getLength();
-  //double timeToHalfDist = dist/2.0 / getShip()->accelerate
+  double timeToDist = sqrt(dist/2.0*1e6 / getShip()->gatMarchPower()) * 2;
+  //timeToDist *= 0.1;
+  Vector3 tgtNewCord = (target_->getCoord()*1e6 + target_->getVelocity()*timeToDist) * 1e-6;
 
+  tgtCoord = tgtNewCord;
   
   Vector3 dir = tgtCoord - shipCoord;
   

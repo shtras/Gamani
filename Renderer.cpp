@@ -258,9 +258,13 @@ void Renderer::resize(int width, int height)
   camera_->setAspect((double)width_/(double)height_);
 }
 
-void Renderer::requestViewPort(int left, int top, int width, int height)
+void Renderer::requestViewPort(double left, double top, double width, double height, bool square/* = false*/)
 {
-  glViewport(left, top-height, width, top);
+  if (square) {
+    glViewport(width_*left, height_*(top-height), height_*height, height_*height);
+  } else {
+    glViewport(width_*left, height_*(top-height), width_*width, height_*height);
+  }
 }
 
 void Renderer::resetViewPort()
@@ -343,8 +347,7 @@ void Renderer::render()
   camera_->position();
   skyBox_->draw();
 
-  checkAndDrawAtmosphere();
-  //drawAtmosphere(NULL, 0);
+  //checkAndDrawAtmosphere();
   glClearDepth(1);
   //camera_->applyZoom();
   //testCase();

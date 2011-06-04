@@ -3,7 +3,7 @@
 #include "Renderer.h"
 
 WLayout::WLayout(int left, int top, int width, int height):
-  top_(top), left_(left), height_(height), width_(width), visible_(false)
+  top_(top), left_(left), height_(height), width_(width), visible_(false), square_(false)
 {
 }
 
@@ -19,7 +19,7 @@ WLayout::~WLayout()
 void WLayout::render()
 {
   assert(width_ > 0 && height_ > 0);
-  Renderer::getInstance().requestViewPort(left_, top_, width_, height_);
+  Renderer::getInstance().requestViewPort(left_, top_, width_, height_, square_);
   glDisable(GL_LIGHTING);
 
   glMatrixMode(GL_PROJECTION);
@@ -53,17 +53,17 @@ void WLayout::render()
     }
     glPushMatrix();
 
-    int left = widget->getLeft();
-    int top = widget->getTop();
-    int width = widget->getWidth();
-    int height = widget->getHeight();
+    double dLeft = widget->getLeft();
+    double dTop = widget->getTop();
+    double dWidth = widget->getWidth();
+    double dHeight = widget->getHeight();
 
-    double dLeft = left/(double)width_;
-    double dTop = top/(double)height_;
-    double dWidth = width/(double)width_;
-    double dHeight = height/(double)height_;
+    //double dLeft = left/(double)width_;
+    //double dTop = top/(double)height_;
+    //double dWidth = width/(double)width_;
+    //double dHeight = height/(double)height_;
 
-    dTop = (dTop - dHeight) * 2.0 - 1.0;
+    dTop = (dTop/* - dHeight*/) * 2.0 - 1.0;
     dLeft = dLeft * 2.0 - 1.0;
     dWidth = dWidth * 2.0;
     dHeight = dHeight * 2.0;
@@ -100,7 +100,7 @@ void WLayout::removeWidget(Widget* widget)
   widgets_.remove(widget);
 }
 
-void WLayout::setDimensions(int left, int top, int width, int height)
+void WLayout::setDimensions(double left, double top, double width, double height)
 {
   top_ = top;
   left_ = left;
@@ -108,12 +108,17 @@ void WLayout::setDimensions(int left, int top, int width, int height)
   height_ = height;
 }
 
-bool WLayout::isInside(int x, int y)
+bool WLayout::isInside(double x, double y)
 {
-  return ((x >= left_) && (x <= left_+width_) && (y >= top_-height_) && (y <= top_));
+  x -= left_;
+  y -= top_-height_;
+  if (square_) {
+    x *= Renderer::getInstance().getWidth() / (double)Renderer::getInstance().getHeight();
+  }
+  return ((x >= 0) && (x <= width_) && (y >= 0) && (y <= height_));
 }
 
-bool WLayout::handleMouseClick(int x, int y)
+bool WLayout::handleMouseClick(double x, double y)
 {
   list<Widget*>::iterator itr = widgets_.begin();
   for (; itr != widgets_.end(); ++itr) {

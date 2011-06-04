@@ -1,6 +1,7 @@
 #pragma once
 #include "World.h"
 #include "LayoutManager.h"
+#include "UpperPanel.h"
 
 class Gamani
 {
@@ -20,6 +21,10 @@ public:
   bool getTracers() {return tracers_;}
   bool getAuxPrints() {return auxPrint_;}
   bool getDrawNames() {return names_;}
+
+  void speedUp();
+  void speedDown();
+  void pause();
 private:
   void testInit();
   void layoutTest();
@@ -51,5 +56,7 @@ private:
   LayoutManager layoutManager_;
   bool auxAxes_;
   bool names_;
+
+  UpperPanel* upperPanel_;
 };
 
