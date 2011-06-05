@@ -32,10 +32,12 @@ void Model::initVBOs()
 
 void Model::draw() const
 {
+  glPushMatrix();
   glTranslatef(coord_[0], coord_[1], coord_[2]);
   for (unsigned int i=0; i<objects_.size(); ++i) {
     objects_[i]->draw();
   }
+  glPopMatrix();
 }
 
 void Model::normalize()

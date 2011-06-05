@@ -42,4 +42,10 @@ void HUD::init()
   navDisplay->init();
   displays_.push_back(navDisplay);
   AddLayout.emit(navDisplay);
+
+  NavDisplay* navDisplay1 = new NavDisplay();
+  navDisplay1->init();
+  navDisplay1->setDimensions(0.6, 0.4, 0.4, 0.4);
+  displays_.push_back(navDisplay1);
+  AddLayout.emit(navDisplay1);
 }

@@ -5,7 +5,7 @@
 #include "Gamani.h"
 #include "Renderer.h"
 
-NavDisplay::NavDisplay():syncOrbitRef_(NULL), mode_(Orbit),selectRef_(false)
+NavDisplay::NavDisplay():syncOrbitRef_(NULL), mode_(Orbit),selectRef_(false),gravityRef_(NULL),manualRef_(false)
 {
 }
 
@@ -38,26 +38,32 @@ void NavDisplay::init()
   addWidget(velData_);
 
   modeButton_ = new WButton();
-  modeButton_->setDimensions(0.3, 0.01, 0.19, 0.1);
+  modeButton_->setDimensions(0.41, 0.01, 0.19, 0.07);
   modeButton_->sigClick.connect(this, &NavDisplay::modeButtonClick);
   modeButton_->setLabel("Mode");
   addWidget(modeButton_);
 
   refButton_ = new WButton();
-  refButton_->setDimensions(0.1, 0.01, 0.19, 0.1);
+  refButton_->setDimensions(0.01, 0.01, 0.19, 0.07);
   refButton_->sigClick.connect(this, &NavDisplay::refButtonClick);
   refButton_->setLabel("Ref");
   addWidget(refButton_);
 
+  autoRefButton_ = new WButton();
+  autoRefButton_->setDimensions(0.21, 0.01, 0.19, 0.07);
+  autoRefButton_->sigClick.connect(this, &NavDisplay::autoRefButtonClick);
+  autoRefButton_->setLabel("Auto Ref");
+  addWidget(autoRefButton_);
+
   tgtToSyncOrbitButton_ = new WButton();
-  tgtToSyncOrbitButton_->setDimensions(0.51, 0.01, 0.19, 0.1);
+  tgtToSyncOrbitButton_->setDimensions(0.61, 0.01, 0.19, 0.07);
   tgtToSyncOrbitButton_->sigClick.connect(this, &NavDisplay::tgtToSyncOrbitButtonClick);
   tgtToSyncOrbitButton_->setLabel("Target");
   tgtToSyncOrbitButton_->setVisible(false);
   addWidget(tgtToSyncOrbitButton_);
 
   modeMenu_ = new WMenu();
-  modeMenu_->setDimensions(0.04, 0.64, 0.22, 0.3);
+  modeMenu_->setDimensions(0.04, 0.54, 0.22, 0.4);
   /////////////////////////////////////////////////////////////////////////
   WMenu::Item* mode1Item = new WMenu::Item();
   mode1Item->setDimensions(0.05,0.85,0.2,0.08);
@@ -83,6 +89,14 @@ void NavDisplay::init()
   mode3Item->sigClick.connect(this, &NavDisplay::menuModeClick);
   addWidget(mode3Item);
   //////////////////////////////////////////////////////////////////////////
+  WMenu::Item* mode4Item = new WMenu::Item();
+  mode4Item->setDimensions(0.05,0.55,0.2,0.08);
+  mode4Item->setLabel("Axes");
+  modeMenu_->addItem(mode4Item);
+  mode4Item->setValue((void*)4);
+  mode4Item->sigClick.connect(this, &NavDisplay::menuModeClick);
+  addWidget(mode4Item);
+  //////////////////////////////////////////////////////////////////////////
   modeMenu_->setVisible(false);
   addWidget(modeMenu_);
 
@@ -99,8 +113,8 @@ void NavDisplay::setTarget(void* tgt)
   tgtSelectMenu_->setVisible(false);
   AstralBody* newTgt = (AstralBody*)tgt;
   if (selectRef_) {
-    ship_->setManualRef(true);
-    ship_->setGravityRef(newTgt);
+    setManualRef(true);
+    setGravityRef(newTgt);
   } else {
     syncOrbitRef_ = newTgt;
   }
@@ -188,6 +202,11 @@ void NavDisplay::refButtonClick()
   selectTargetStartingFrom(NULL);
 }
 
+void NavDisplay::autoRefButtonClick()
+{
+  setManualRef(false);
+}
+
 void NavDisplay::menuModeClick(void* val)
 {
   int value = (int)val;
@@ -210,17 +229,26 @@ void NavDisplay::menuModeClick(void* val)
     modeMenu_->setVisible(false);
     mode_ = Docking;
     break;
+  case 4:
+    modeName_->setText("Axes mode");
+    tgtToSyncOrbitButton_->setVisible(false);
+    modeMenu_->setVisible(false);
+    mode_ = Axes;
+    break;
   }
 }
 
 void NavDisplay::updateData()
 {
+  if (!manualRef_ || !gravityRef_) {
+    updateGravityRef();
+  }
   shipNameText_->setText(ship_->getName());
-  gravityRefName_->setText(ship_->getGravityRef()->getName());
-  Vector3 relSpd = ship_->getVelocity() - ship_->getGravityRef()->getVelocity();
-  Vector3 relPos = ship_->getCoord() - ship_->getGravityRef()->getCoord();
+  gravityRefName_->setText(gravityRef_->getName());
+  Vector3 relSpd = ship_->getVelocity() - gravityRef_->getVelocity();
+  Vector3 relPos = ship_->getCoord() - gravityRef_->getCoord();
   double dist = relPos.getLength();
-  double sdist = dist - ship_->getGravityRef()->getRadius();
+  double sdist = dist - gravityRef_->getRadius();
 
   CString vel = Renderer::getInstance().formatVelocity(relSpd.getLength());
   char sprStr[100];
@@ -231,9 +259,9 @@ void NavDisplay::updateData()
 
 void NavDisplay::drawSyncOrbit(Ship* ship, DynamicBody* ref)
 {
-  Vector3 r = (ship->getCoord() - ship->getGravityRef()->getCoord()) * 1e6;
-  Vector3 v = (ship->getVelocity() - ship->getGravityRef()->getVelocity());
-  double M = ship->getGravityRef()->getMass() * 1e6;
+  Vector3 r = (ship->getCoord() - gravityRef_->getCoord()) * 1e6;
+  Vector3 v = (ship->getVelocity() - gravityRef_->getVelocity());
+  double M = gravityRef_->getMass() * 1e6;
   Vector3 h = r*v;
   Vector3 n = Vector3(0,1,0)*h;
   double G = 6.6725e-11;
@@ -261,9 +289,9 @@ void NavDisplay::drawSyncOrbit(Ship* ship, DynamicBody* ref)
   double translateDist = eps*a*1e-6;
   double scaleFactor = a/b * maxDiameter / 2.0;
 
-  Vector3 r1 = (ref->getCoord() - ship->getGravityRef()->getCoord()) * 1e6;
-  Vector3 v1 = (ref->getVelocity() - ship->getGravityRef()->getVelocity());
-  double M1 = ship->getGravityRef()->getMass() * 1e6;
+  Vector3 r1 = (ref->getCoord() - gravityRef_->getCoord()) * 1e6;
+  Vector3 v1 = (ref->getVelocity() - gravityRef_->getVelocity());
+  double M1 = gravityRef_->getMass() * 1e6;
   Vector3 h1 = r1*v1;
   Vector3 n1 = Vector3(0,1,0)*h1;
   double G1 = 6.6725e-11;
@@ -320,7 +348,7 @@ void NavDisplay::drawSyncOrbit(Ship* ship, DynamicBody* ref)
   if (plAng > 360) {
     plAng = 0;
   }
-  glutWireSphere(ship_->gravityRef_->getRadius(), 15, 10);
+  glutWireSphere(gravityRef_->getRadius(), 15, 10);
   glPopMatrix();
 
   glPushMatrix();
@@ -356,9 +384,10 @@ void NavDisplay::drawSyncOrbit(Ship* ship, DynamicBody* ref)
 
 void NavDisplay::drawOrbit(Ship* ship)
 {
-  Vector3 r = (ship->getCoord() - ship->getGravityRef()->getCoord()) * 1e6;
-  Vector3 v = (ship->getVelocity() - ship->getGravityRef()->getVelocity());
-  double M = ship->getGravityRef()->getMass() * 1e6;
+  AstralBody* gravityRef = gravityRef_;
+  Vector3 r = (ship->getCoord() - gravityRef->getCoord()) * 1e6;
+  Vector3 v = (ship->getVelocity() - gravityRef->getVelocity());
+  double M = gravityRef->getMass() * 1e6;
   Vector3 h = r*v;
   Vector3 n = Vector3(0,1,0)*h;
   double G = 6.6725e-11;
@@ -410,7 +439,7 @@ void NavDisplay::drawOrbit(Ship* ship)
   if (plAng > 360) {
     plAng = 0;
   }
-  glutWireSphere(ship_->gravityRef_->getRadius(), 15, 10);
+  glutWireSphere(gravityRef_->getRadius(), 15, 10);
   glPopMatrix();
 
   double modifier = r.getNormalized().dot(v.getNormalized() * Vector3(0,0,1));
@@ -455,31 +484,80 @@ void NavDisplay::drawOrbit(Ship* ship)
 
 void NavDisplay::drawDocking()
 {
-  if (!ship_ || !ship_->getGravityRef() || !(ship_->getGravityRef()->getType() == Renderable::StationType)) {
+  if (!ship_ || !gravityRef_ || !(gravityRef_->getType() == Renderable::StationType)) {
     return;
   }
-  Station* station = (Station*)ship_->getGravityRef();
+  Station* station = (Station*)gravityRef_;
   glPushMatrix();
   glRotatef(270, 1, 0, 0);
   glutWireCone(0.02, 0.1, 10, 10);
   glPopMatrix();
 
   Vector3 dir = station->getCoord() - ship_->getCoord();
-  double dist = dir.getLength() * 50.0;
+
+  double dist = (dir.getLength()+0.5) * 10.0;
   if (dist > 10) {
-    dist = 10;
+    dist = 10.0;
   }
   double scaleF = dist;
   dir *= scaleF;
+  double yaw = ship_->getYaw()*3.14159265/180.0;
+  //glPushMatrix();
   glRotatef(ship_->getYaw(), 0, 0, 1);
-  glTranslatef(dir[0], dir[1], dir[2]);
-  glutWireSphere(0.02, 10, 10);
+  glTranslatef(dir[0], -dir[1], 0);
+  glutWireSphere(0.05, 4, 2);
+  //glPopMatrix();
+
+  Vector3 stationPort = station->getDockingPort()*0.05;
+  glRotatef(station->getYaw() + station->getPortAngle(), 0, 0, 1);
+  
+  glBegin(GL_LINES);
+  glVertex3f(0,0,0);
+  glVertex3f(-0.1,0,0);
+  glEnd();
+}
+
+void NavDisplay::drawAxes()
+{
+  glPushMatrix();
+  //Renderer::getInstance().getCamera().applyZoom();
+
+  Vector3 relSpd = ship_->getVelocity() - gravityRef_->getVelocity();
+  double spd = relSpd.getLength();
+  relSpd.normalize();
+  relSpd *= 0.5 * spd / 10000.0;
+  glColor3f(0, 0.2, 0.9);
+  glBegin(GL_LINES);
+  glVertex3f(0,0,ship_->getRadius()*GLOBAL_MULT);
+  glVertex3f(relSpd[0], -relSpd[1], 0);
+  glEnd();
+
+  Vector3 dir = gravityRef_->getCoord() - ship_->getCoord();
+  double dist = dir.getLength();
+  dir.normalize();
+  dir *= /*ship_->getRadius() * */0.5 * sqrt(dist/10);
+  glColor3f(0, 0.9, 0.2);
+  glBegin(GL_LINES);
+  glVertex3f(0,0,ship_->getRadius()*GLOBAL_MULT);
+  glVertex3f(dir[0], -dir[1], 0);
+  glEnd();
+
+  Vector3 sDir = Vector3(sin(ship_->getYaw()*3.14159265/180.0)*0.5, -cos(ship_->getYaw()*3.14159265/180.0)*0.5, 0);
+  //sDir *= ship_->getRadius()/* * (1/10000.0)*/;
+  glColor3f(0.7, 0.9, 0.7);
+  glBegin(GL_LINES);
+  glVertex3f(0,0,ship_->getRadius()*GLOBAL_MULT);
+  glVertex3f(sDir[0], -sDir[1], 0);
+  glEnd();
+
+  glPopMatrix();
+
 }
 
 void NavDisplay::render()
 {
   WLayout::render();
-  ship_->updateGravityRef();
+  updateGravityRef();
   glDisable(GL_LIGHTING);
 
   //double distance = sqrt((ship_->getCoord()[0]-ship_->gravityRef_->getCoord()[0])*(ship_->getCoord()[0]-ship_->gravityRef_->getCoord()[0]) + 
@@ -487,7 +565,7 @@ void NavDisplay::render()
   //Vector3 relSpd = ship_->getVelocity() - ship_->gravityRef_->getVelocity();
 
 
-  Vector3 direction = ship_->getCoord() -  ship_->gravityRef_->getCoord();
+  Vector3 direction = ship_->getCoord() -  gravityRef_->getCoord();
   direction.normalize();
   direction *= 0.1;
 
@@ -513,6 +591,8 @@ void NavDisplay::render()
     }
   } else if (mode_ == Docking) {
     drawDocking();
+  } else if (mode_ == Axes) {
+    drawAxes();
   }
   //glLoadIdentity();
   //vector<Vector3> points;
@@ -601,4 +681,50 @@ void NavDisplay::render()
   //  glVertex3f(points[i][0], -points[i][1], 0);
   //}
   //glEnd();
+}
+
+void NavDisplay::updateGravityRef()
+{
+  if (manualRef_) {
+    return;
+  }
+  vector<AstralBody*>& objects = *Gamani::getInstance().getWorld()->getAllObjects();
+  AstralBody* newRef = NULL;
+  double maxGrav = 0;
+  Vector3 coordTo = ship_->getCoord();
+
+  for (uint32_t i=0; i<objects.size(); ++i) {
+    AstralBody* obj = objects[i];
+    if (obj == ship_) {
+      continue;
+    }
+
+    //if (obj->getName() == CString("Earth") || obj->getName() == CString("Shipyard")) {
+    //  int aaa = 0;
+    //}
+
+    Vector3 coordFrom = obj->getCoord();
+    double massFrom = obj->getMass() * 1e6; //kg
+    double massTo = ship_->getMass() * 1e6; //kg
+    //G*m*m/r^2
+    static double G = 6.6725e-11;
+    double distSquare = (coordFrom[0]-coordTo[0])*(coordFrom[0]-coordTo[0])+(coordFrom[1]-coordTo[1])*(coordFrom[1]-coordTo[1])+(coordFrom[2]-coordTo[2])*(coordFrom[2]-coordTo[2]);
+    distSquare *= 1e6*1e6; //meters^2
+    double force = G*massFrom*massTo/distSquare; //kg^2/m^2*M*m^2/kg^2 = N
+    if (force > maxGrav) {
+      maxGrav = force;
+      newRef = obj;
+    }
+  }
+  if (newRef) {
+    gravityRef_ = newRef;
+  } else {
+    assert(0);
+  }
+}
+
+void NavDisplay::toggleAutoRef()
+{
+  manualRef_ = false;
+  //refIdx_ = -1;
 }

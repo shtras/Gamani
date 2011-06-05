@@ -86,6 +86,11 @@ void World::handlePressedKey(int key)
       controlledShip_->accelerate();
     }
     break;
+  case 'S':
+    if (controlledShip_ && !pause) {
+      controlledShip_->back();
+    }
+    break;
   case 'K':
     if (controlledShip_) {
       controlledShip_->setAutopilotTo(Autopilot::KillRot);
@@ -119,10 +124,15 @@ void World::handlePressedKey(int key)
     selectShip();
     break;
   case 'Q':
-    controlledShip_->scrollGravityRef();
+    controlledShip_->steerLeft();
+    //controlledShip_->scrollGravityRef();
     break;
   case 'E':
-    controlledShip_->toggleAutoRef();
+    controlledShip_->steerRight();
+    //controlledShip_->toggleAutoRef();
+    break;
+  case 0x39:
+    controlledShip_->undock();
     break;
   }
 }
@@ -146,8 +156,11 @@ void World::updatePosition(Renderable* obj)
   
   if (dynObj->getType() == Renderable::ShipType) {
     Ship* ship = (Ship*)dynObj;
-    if (ship->isDocked()) {
-      ship->setCoord(ship->getDockedCoord());
+    if (ship->isUndocking()) {
+      ship->checkUndocking();
+    } else if (ship->isDocked()) {
+      ship->setDockedCoord();
+      //ship->setCoord(ship->getDockedCoord());
       return;
     }
   }
@@ -167,10 +180,10 @@ void World::updatePosition(Renderable* obj)
     dynObj->setCoord(coord);
     double newYaw = dynObj->getYaw() + dynObj->getYawVel();
     if (newYaw >= 360) {
-      newYaw = 0;
+      newYaw -= 360.0;
     }
     if (newYaw < 0) {
-      newYaw = 360;
+      newYaw += 360.0;
     }
     dynObj->setYaw(newYaw);
 

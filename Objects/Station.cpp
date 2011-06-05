@@ -6,7 +6,7 @@ Station::Station()
 {
   mass_ = 1;
   type_ = StationType;
-  yaw_ = 45;
+  yaw_ = 20;
 }
 
 Station::~Station()
@@ -38,12 +38,7 @@ void Station::render()
     glutSolidCone(radius_*GLOBAL_MULT/4.0f, radius_*GLOBAL_MULT, 10, 5);
   }
 
-  glPushMatrix();
-  Vector3 port = getDockingPort();
-  glTranslatef(port[0], port[1], port[2]);
-  glRotatef(-getPortAngle(), 0, 1, 0);
   renderPort();
-  glPopMatrix();
 
   drawName();
   glPopMatrix();

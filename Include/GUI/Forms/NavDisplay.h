@@ -14,10 +14,15 @@ public:
   void init();
   void updateData();
   void render();
+
+  void toggleAutoRef();
+  void setGravityRef(AstralBody* body) {gravityRef_ = body;}
+  void setManualRef(bool value) {manualRef_ = value;}
 protected:
-  enum Mode {Orbit, SyncOrbit, Landing, Docking};
+  enum Mode {Orbit, SyncOrbit, Landing, Docking, Axes};
   void modeButtonClick();
   void refButtonClick();
+  void autoRefButtonClick();
   void menuModeClick(void* val);
   void tgtToSyncOrbitButtonClick();
 
@@ -27,6 +32,10 @@ protected:
   void drawOrbit(Ship* ship);
   void drawSyncOrbit(Ship* ship, DynamicBody* ref);
   void drawDocking();
+  void drawAxes();
+
+  void updateGravityRef();
+
 
   WText* shipNameText_;
   WText* gravityRefName_;
@@ -34,6 +43,8 @@ protected:
   WText* modeName_;
   WButton* modeButton_;
   WButton* refButton_;
+  WButton* autoRefButton_;
+  WButton* axesButton_;
   WButton* tgtToSyncOrbitButton_;
   WMenu* modeMenu_;
   WMenu* tgtSelectMenu_;
@@ -42,4 +53,7 @@ protected:
   bool selectRef_;
 
   AstralBody* syncOrbitRef_;
+  AstralBody* gravityRef_;
+
+  bool manualRef_;
 };

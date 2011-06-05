@@ -110,7 +110,7 @@ void Camera::position()
 
     Ship* ship = dynamic_cast<Ship*>(followed);
     if (ship) {
-      Renderer::getInstance().textOut(-1,0.65,0, "Landed: %d Yaw: %0.2f Program: %s", ship->isLanded(), 
+      Renderer::getInstance().textOut(-1,0.65,0, "Landed: %d Docked: %s Yaw: %0.2f Program: %s", ship->isLanded(), (ship->isDocked()? "Docked" : (ship->dockedTo_?"Undocking":"No")), 
         ship->getYaw(), ship->getCurrProgName());
     }
   }

@@ -128,7 +128,7 @@ void RotateProg::init()
 ApproachProg::ApproachProg(Autopilot* autopilot):APProgram(autopilot)
 {
   id_ = Autopilot::Approach;
-  target_ = getShip()->getGravityRef();
+  //target_ = getShip()->getGravityRef();
   Vector3 tgtCoord = target_->getCoord();
   Vector3 shipCoord = getShip()->getCoord();
   double dist = (tgtCoord - shipCoord).getLength();
