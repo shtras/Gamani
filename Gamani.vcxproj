@@ -51,12 +51,14 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalIncludeDirectories>Include/Objects;Include;Include/Math;Include/GUI;Include/GUI/Forms;Include/Generic;Include/Models;Include/pngLib;Include/Autopilot</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glut32.lib;glu32.lib;opengl32.lib;glew32.lib;glew32s.lib;libpng.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>pngLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>MSVCRT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,12 +73,16 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>
       </OmitFramePointers>
-      <EnableFiberSafeOptimizations>
-      </EnableFiberSafeOptimizations>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <OpenMPSupport>true</OpenMPSupport>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <AdditionalIncludeDirectories>Include/Objects;Include;Include/Math;Include/GUI;Include/GUI/Forms;Include/Generic;Include/Models;Include/pngLib;Include/Autopilot</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <CallingConvention>Cdecl</CallingConvention>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -85,6 +91,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>glut32.lib;glu32.lib;opengl32.lib;glew32.lib;glew32s.lib;libpng.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>pngLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

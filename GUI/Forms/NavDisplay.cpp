@@ -37,6 +37,16 @@ void NavDisplay::init()
   velData_->setText("AAA!");
   addWidget(velData_);
 
+  distData_ = new WText();
+  distData_->setDimensions(0.05, 0.80, 1, 1);
+  distData_->setText("AAA!");
+  addWidget(distData_);
+
+  surfDistData_ = new WText();
+  surfDistData_->setDimensions(0.05, 0.75, 1, 1);
+  surfDistData_->setText("AAA!");
+  addWidget(surfDistData_);
+
   modeButton_ = new WButton();
   modeButton_->setDimensions(0.41, 0.01, 0.19, 0.07);
   modeButton_->sigClick.connect(this, &NavDisplay::modeButtonClick);
@@ -250,11 +260,18 @@ void NavDisplay::updateData()
   double dist = relPos.getLength();
   double sdist = dist - gravityRef_->getRadius();
 
-  CString vel = Renderer::getInstance().formatVelocity(relSpd.getLength());
+  
+
+  CString vel = Renderer::getInstance().formatVelocity(relSpd.getLength(), 3);
   char sprStr[100];
-  sprintf(sprStr, "Rel spd: %s Dist: %s SurfDist: %s", vel.operator const char *(), Renderer::getInstance().formatDistance(dist).operator const char *(), 
-    Renderer::getInstance().formatDistance(sdist));
+  sprintf(sprStr, "Vel: %s", vel.operator const char *());
   velData_->setText(sprStr);
+
+  sprintf(sprStr, "Dist: %s", Renderer::getInstance().formatDistance(dist, 3).operator const char *());
+  distData_->setText(sprStr);
+
+  sprintf(sprStr, "Height: %s", Renderer::getInstance().formatDistance(sdist, 3));
+  surfDistData_->setText(sprStr);
 }
 
 void NavDisplay::drawSyncOrbit(Ship* ship, DynamicBody* ref)
@@ -525,7 +542,8 @@ void NavDisplay::drawAxes()
   Vector3 relSpd = ship_->getVelocity() - gravityRef_->getVelocity();
   double spd = relSpd.getLength();
   relSpd.normalize();
-  relSpd *= 0.5 * spd / 10000.0;
+  relSpd *= 0.5 * spd / 1000.0;
+  
   glColor3f(0, 0.2, 0.9);
   glBegin(GL_LINES);
   glVertex3f(0,0,ship_->getRadius()*GLOBAL_MULT);
@@ -536,13 +554,14 @@ void NavDisplay::drawAxes()
   double dist = dir.getLength();
   dir.normalize();
   dir *= /*ship_->getRadius() * */0.5 * sqrt(dist/10);
+  
   glColor3f(0, 0.9, 0.2);
   glBegin(GL_LINES);
   glVertex3f(0,0,ship_->getRadius()*GLOBAL_MULT);
   glVertex3f(dir[0], -dir[1], 0);
   glEnd();
 
-  Vector3 sDir = Vector3(sin(ship_->getYaw()*3.14159265/180.0)*0.5, -cos(ship_->getYaw()*3.14159265/180.0)*0.5, 0);
+  Vector3 sDir = Vector3(sin(ship_->getYaw()*3.14159265/180.0)*0.3, -cos(ship_->getYaw()*3.14159265/180.0)*0.3, 0);
   //sDir *= ship_->getRadius()/* * (1/10000.0)*/;
   glColor3f(0.7, 0.9, 0.7);
   glBegin(GL_LINES);

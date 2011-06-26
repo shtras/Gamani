@@ -59,10 +59,10 @@ void World::snapshot()
   unsigned int SZ = objects_->size();
   for (unsigned int i=0; i<SZ; ++i) {
     Renderable* ren = (*objects_)[i];//*itr;
-    DynamicBody* pl = dynamic_cast<DynamicBody*>(ren);
-    if (!pl) {
+    if (ren->getType() == Renderable::AstralType) { //Static body.h Should not be used at all I think...
       continue;
     }
+    DynamicBody* pl = static_cast<DynamicBody*>(ren);
     pl->snapshot();
   }
 }
@@ -90,6 +90,18 @@ void World::handlePressedKey(int key)
     if (controlledShip_ && !pause) {
       controlledShip_->back();
     }
+    break;
+  case 'Q':
+    if (controlledShip_ && !pause) {
+      controlledShip_->steerLeft();
+    }
+    //controlledShip_->scrollGravityRef();
+    break;
+  case 'E':
+    if (controlledShip_ && !pause) {
+      controlledShip_->steerRight();
+    }
+    //controlledShip_->toggleAutoRef();
     break;
   case 'K':
     if (controlledShip_) {
@@ -122,14 +134,6 @@ void World::handlePressedKey(int key)
     break;
   case 'Z':
     selectShip();
-    break;
-  case 'Q':
-    controlledShip_->steerLeft();
-    //controlledShip_->scrollGravityRef();
-    break;
-  case 'E':
-    controlledShip_->steerRight();
-    //controlledShip_->toggleAutoRef();
     break;
   case 0x39:
     controlledShip_->undock();
@@ -205,8 +209,8 @@ void World::interactGravity(Renderable* from, Renderable* to)
   //  return;
   //}
 
-  AstralBody* bodyFrom = (AstralBody*)from; //dynamic_cast<AstralBody*>(from);
-  AstralBody* bodyTo = (AstralBody*)to; //dynamic_cast<AstralBody*>(to);
+  AstralBody* bodyFrom = static_cast<AstralBody*>(from); //dynamic_cast<AstralBody*>(from);
+  AstralBody* bodyTo = static_cast<AstralBody*>(to); //dynamic_cast<AstralBody*>(to);
   assert(bodyFrom && bodyTo);
 
   //if (bodyFrom->getName() == CString("Earth")) {

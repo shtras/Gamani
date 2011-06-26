@@ -3,7 +3,7 @@
 #include "Renderer.h"
 
 WLayout::WLayout(int left, int top, int width, int height):
-  top_(top), left_(left), height_(height), width_(width), visible_(false), square_(false)
+  top_(top), left_(left), height_(height), width_(width), visible_(false), square_(false), rightAlign_(false)
 {
 }
 
@@ -19,7 +19,7 @@ WLayout::~WLayout()
 void WLayout::render()
 {
   assert(width_ > 0 && height_ > 0);
-  Renderer::getInstance().requestViewPort(left_, top_, width_, height_, square_);
+  Renderer::getInstance().requestViewPort(left_, top_, width_, height_, square_, rightAlign_);
   glDisable(GL_LIGHTING);
 
   glMatrixMode(GL_PROJECTION);
@@ -29,20 +29,20 @@ void WLayout::render()
   glPushMatrix();
   glLoadIdentity();
 
-  glColor3f(0.3, 0.3, 0);
-  glBegin(GL_LINE_LOOP);
-  glVertex3f(-0.99, -0.99, 0);
-  glVertex3f(0.99, -0.99, 0);
-  glVertex3f(0.99, 0.99, 0);
-  glVertex3f(-0.99, 0.99, 0);
-  glEnd();
-
-  glColor4f(0.3, 0.3, 0, 0.4);
+  glColor4f(0.1, 0.05, 0.4, 0.4);
   glBegin(GL_POLYGON);
   glVertex3f(-1, -1, 0.1);
   glVertex3f(1, -1, 0.1);
   glVertex3f(1, 1, 0.1);
   glVertex3f(-1, 1, 0.1);
+  glEnd();
+
+  glColor3f(0.1, 0.05, 0.4);
+  glBegin(GL_LINE_LOOP);
+  glVertex3f(-0.99, -0.99, 0);
+  glVertex3f(0.99, -0.99, 0);
+  glVertex3f(0.99, 0.99, 0);
+  glVertex3f(-0.99, 0.99, 0);
   glEnd();
 
   list<Widget*>::iterator itr = widgets_.begin();
@@ -110,7 +110,16 @@ void WLayout::setDimensions(double left, double top, double width, double height
 
 bool WLayout::isInside(double x, double y)
 {
-  x -= left_;
+  if (rightAlign_) {
+    if (square_) {
+      double trueWidth = width_ * Renderer::getInstance().getHeight() / (double)Renderer::getInstance().getWidth();
+      x -= (1 - trueWidth);
+    } else {
+      x -= (1 - width_);
+    }
+  } else {
+    x -= left_;
+  }
   y -= top_-height_;
   if (square_) {
     x *= Renderer::getInstance().getWidth() / (double)Renderer::getInstance().getHeight();

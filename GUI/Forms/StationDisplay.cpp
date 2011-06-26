@@ -13,7 +13,7 @@ StationDisplay::~StationDisplay()
 
 void StationDisplay::init()
 {
-  setDimensions(400, 600, 300, 300);
+  setDimensions(0.4, 0.8, 0.4, 0.4);
 }
 
 void StationDisplay::render()

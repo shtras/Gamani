@@ -40,7 +40,9 @@ void LayoutManager::render()
   set<WLayout*>::iterator itr = layouts_.begin();
   for (; itr != layouts_.end(); ++itr) {
     WLayout* layout = *itr;
-    renderer_->render(layout);
+    if (layout->isVisible()) {
+      renderer_->render(layout);
+    }
   }
 }
 
@@ -60,7 +62,15 @@ bool LayoutManager::handleMouseClick(WPARAM wParam, LPARAM lParam)
       WLayout* layout = *itr;
       if (layout->isVisible() && layout->isInside(dx, dy)) {
         cout << "Yes!" << endl;
-        dx -= layout->getLeft();
+        if (layout->isRightAlign()) {
+          double trueWidth = layout->getWidth();
+          if (layout->isSquare()) {
+            trueWidth *= Renderer::getInstance().getHeight() / (double)Renderer::getInstance().getWidth();
+          }
+          dx -= (1 - trueWidth);
+        } else {
+          dx -= layout->getLeft();
+        }
         dy -= layout->getBottom();
         dx /= layout->getWidth();
         dy /= layout->getHeight();

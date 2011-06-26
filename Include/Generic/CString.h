@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+using namespace std;
 
 class CString
 {
@@ -9,6 +11,7 @@ public:
   CString(int val);
   CString(float val);
   CString(double val);
+  CString(double val, int len);
   CString(long val);
   CString (char val);
   ~CString();
@@ -25,4 +28,6 @@ public:
 private:
   char* cont_;
   int len_;
+
+  string str_;
 };

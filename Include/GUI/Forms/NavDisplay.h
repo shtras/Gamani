@@ -40,6 +40,8 @@ protected:
   WText* shipNameText_;
   WText* gravityRefName_;
   WText* velData_;
+  WText* distData_;
+  WText* surfDistData_;
   WText* modeName_;
   WButton* modeButton_;
   WButton* refButton_;

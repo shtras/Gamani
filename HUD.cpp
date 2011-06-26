@@ -46,6 +46,7 @@ void HUD::init()
   NavDisplay* navDisplay1 = new NavDisplay();
   navDisplay1->init();
   navDisplay1->setDimensions(0.6, 0.4, 0.4, 0.4);
+  navDisplay1->setRightAlign(true);
   displays_.push_back(navDisplay1);
   AddLayout.emit(navDisplay1);
 }

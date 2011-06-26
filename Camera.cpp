@@ -108,8 +108,8 @@ void Camera::position()
     }
     Renderer::getInstance().textOut(-1,0.7,0, "%s", name.c_str());
 
-    Ship* ship = dynamic_cast<Ship*>(followed);
-    if (ship) {
+    if (followed && followed->getType() == Renderable::ShipType) {
+      Ship* ship = static_cast<Ship*>(followed);
       Renderer::getInstance().textOut(-1,0.65,0, "Landed: %d Docked: %s Yaw: %0.2f Program: %s", ship->isLanded(), (ship->isDocked()? "Docked" : (ship->dockedTo_?"Undocking":"No")), 
         ship->getYaw(), ship->getCurrProgName());
     }
@@ -131,7 +131,7 @@ void Camera::position()
   int seconds = decim/100LL;
   decim -= seconds*100LL;
 
-  Renderer::getInstance().textOut(-1,0.85,0, "%dY %dD %02d:%02d:%02d.%ld", years, days, hours, minutes, seconds, decim);
+  Renderer::getInstance().textOut(-0.5,0.95,0, "%dY %dD %02d:%02d:%02d.%02ld", years, days, hours, minutes, seconds, decim);
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();

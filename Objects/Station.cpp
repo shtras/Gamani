@@ -6,7 +6,7 @@ Station::Station()
 {
   mass_ = 1;
   type_ = StationType;
-  yaw_ = 20;
+  yaw_ = 0;
 }
 
 Station::~Station()
@@ -38,8 +38,51 @@ void Station::render()
     glutSolidCone(radius_*GLOBAL_MULT/4.0f, radius_*GLOBAL_MULT, 10, 5);
   }
 
-  renderPort();
+  //renderPort();
+
+  glPushMatrix();
+  glDisable(GL_LIGHTING);
+  glColor3f(0.5, 1, 0.4);
+  glRotatef(90, 1, 0, 0);
+//   glTranslatef(getDockingPort()[0], getDockingPort()[1], getDockingPort()[2]);
+//   glRotatef(getPortAngle(), 0, 0, 1);
+//   glRotatef(-90, 1, 0, 0);
+  for (int i=1; i<10; ++i) {
+    glPushMatrix();
+    glTranslatef(i*2, 0, 0);
+    glRotatef(getPortAngle(), 0, 0, 1);
+    glRotatef(-90, 1, 0, 0);
+    glBegin(GL_LINE_LOOP);
+    glVertex3f(-0.1, -0.1, 0);
+    glVertex3f(0.1, -0.1, 0);
+    glVertex3f(0.1, 0.1, 0);
+    glVertex3f(-0.1, 0.1, 0);
+    glEnd();
+    //glutWireSphere(0.1, 10, 10);
+    glPopMatrix();
+  }
+  glEnable(GL_LIGHTING);
+  glPopMatrix();
 
   drawName();
   glPopMatrix();
+}
+
+void Station::dock(Ship* ship)
+{
+  dockedShips_.push_back(ship);
+  display_->setVisible(true);
+}
+
+void Station::undock(Ship* ship)
+{
+  auto itr = dockedShips_.begin();
+  for (; itr != dockedShips_.end(); ++itr) {
+    Ship* shipItr = *itr;
+    if (shipItr == ship) {
+      dockedShips_.erase(itr);
+      display_->setVisible(false);
+      break;
+    }
+  }
 }

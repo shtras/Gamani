@@ -1,7 +1,6 @@
 #include "StdAfx.h"
-//Include Renderer should be BEFORE Ship. Otherwise causes annoying __exit conflict build error. Stupid VS...
-#include "Renderer.h"
 #include "Ship.h"
+#include "Renderer.h"
 #include "Gamani.h"
 #include "HUD.h"
 #include "APProgram.h"
@@ -10,7 +9,7 @@
 Ship::Ship():autopilot_(NULL)
 {
   mass_ = 0.00005;
-  yaw_ = 0;
+  yaw_ = 90;
   yawPower_ = 0.05;
   maxYawVel_ = 10;
   maxSpeed_ = 500;
@@ -73,7 +72,7 @@ void Ship::render()
   }
 
 
-  renderPort();
+  //renderPort();
 
   drawName();
 
@@ -740,7 +739,7 @@ void Ship::attemptDocking(Station* station)
     //Currently undocking
     return;
   }
-  if (portDist < 2) {
+  if (portDist < 1.5) {
     double stationPortAngle = station->getPortAngle() + station->getYaw();
     double myPortAngle = getPortAngle() + getYaw();
     double angleDelta = stationPortAngle - myPortAngle - 180.0;
@@ -752,6 +751,7 @@ void Ship::attemptDocking(Station* station)
     }
     if (angleDelta < 5 || angleDelta > 355) {
       docked_ = true;
+      station->dock(this);
       dockedTo_ = station;
       return;
     }
@@ -765,8 +765,10 @@ void Ship::checkUndocking()
   if (dockedTo_ && !docked_) {
     //Currently undocking
     double dist = (dockedTo_->getCoord() - getCoord()).getLength();
-    if (dist > (dockedTo_->getRadius() + getRadius())*1.2) {
+    //double ddd = (dockedTo_->getRadius() + getRadius())*1.2;
+    if (dist > (dockedTo_->getRadius() + getRadius())*2) {
       //Undocking completed
+      dockedTo_->undock(this);
       dockedTo_ = NULL;
     }
   }

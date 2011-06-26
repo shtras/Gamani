@@ -258,12 +258,19 @@ void Renderer::resize(int width, int height)
   camera_->setAspect((double)width_/(double)height_);
 }
 
-void Renderer::requestViewPort(double left, double top, double width, double height, bool square/* = false*/)
+void Renderer::requestViewPort(double left, double top, double width, double height, bool square/* = false*/, bool rightAlign_/* = false*/)
 {
+  double actualLeft = width_*left;
   if (square) {
-    glViewport(width_*left, height_*(top-height), height_*height, height_*height);
+    if (rightAlign_) {
+      actualLeft = width_ - height_*height;
+    }
+    glViewport(actualLeft, height_*(top-height), height_*height, height_*height);
   } else {
-    glViewport(width_*left, height_*(top-height), width_*width, height_*height);
+    if (rightAlign_) {
+      actualLeft = width_ - width_*width;
+    }
+    glViewport(actualLeft, height_*(top-height), width_*width, height_*height);
   }
 }
 
@@ -272,7 +279,8 @@ void Renderer::resetViewPort()
   glViewport(0, 0, width_, height_);
 }
 
-GLvoid *font_style = GLUT_BITMAP_HELVETICA_12;
+GLvoid *font_style = GLUT_BITMAP_8_BY_13;
+//GLvoid *font_style = GLUT_BITMAP_HELVETICA_12;
 
 void Renderer::textOutNoMove(double x, double y, double z, const char* format, ...)
 {
@@ -376,37 +384,37 @@ void Renderer::testCase()
   glutSolidCone(1,0.5,10,2);
 }
 
-CString Renderer::formatDistance(double dist)
+CString Renderer::formatDistance(double dist, int len/* = 20*/)
 {
   double km = dist * 1000.0;
   double AU = km / 149598000.0;
   double ly = km / 9.4605284e15;
   double m = km * 1000.0;
   if (ly > 0.1) {
-    return CString(ly) + " LY";
+    return CString(ly, len) + " LY";
   }
   if (AU > 0.1) {
-    return CString(AU) + " AU";
+    return CString(AU, len) + " AU";
   }
   if (km > 1) {
-    return CString(km) + " km";
+    return CString(km, len) + " km";
   }
-  return CString(m) + " m";
+  return CString(m, len) + " m";
 }
 
-CString Renderer::formatVelocity(double vel)
+CString Renderer::formatVelocity(double vel, int len/* = 20*/)
 {
   double ms = vel;
   double kmh = vel / 3.6;
   double kms = vel / 1000.0;
   double c = vel / 299792458.0;
   if (c > 0.01) {
-    return CString(c) + " C";
+    return CString(c, len) + " C";
   }
   if (kms > 1.0) {
-    return CString(kms) + " km/s";
+    return CString(kms, len) + " km/s";
   }
-  return CString(kmh) + " km/h";
+  return CString(kmh, len) + " km/h";
 }
 
 void Renderer::checkAndDrawAtmosphere()

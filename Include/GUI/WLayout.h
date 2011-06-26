@@ -23,7 +23,9 @@ public:
   void addWidgetToGC(Widget* widget) {widgetsToGC_.push_back(widget);}
   bool isVisible() {return visible_;}
   bool isSquare() {return square_;}
-
+  bool isRightAlign() {return rightAlign_;}
+  void setVisible(bool value) {visible_ = value;}
+  void setRightAlign(bool value) {rightAlign_ = value;}
 protected:
   list<Widget*> widgets_;
   list<Widget*> widgetsToGC_;
@@ -33,5 +35,6 @@ protected:
   double height_;
   bool visible_;
   bool square_;
+  bool rightAlign_;
 };
 

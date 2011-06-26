@@ -23,10 +23,10 @@ public:
   void textOutNoMove(double x, double y, double z, const char* format, ...);
 
   void textOut(double x, double y, double z, char* format, ...);
-  void requestViewPort(double left, double top, double width, double height, bool square = false);
+  void requestViewPort(double left, double top, double width, double height, bool square = false, bool rightAlign = false);
   void resetViewPort();
-  CString formatDistance (double dist);
-  CString formatVelocity (double vel);
+  CString formatDistance (double dist, int len = 4);
+  CString formatVelocity (double vel, int len = 4);
   void resize (int width, int height);
 private:
   Renderer();

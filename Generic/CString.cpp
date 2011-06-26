@@ -1,12 +1,14 @@
 #include "StdAfx.h"
 #include "CString.h"
 #include <sstream>
+#include <iomanip>
 
 CString::CString()
 {
   cont_ = (char*)malloc(1);
   cont_[0] = '\0';
   len_ = 0;
+  str_ = "";
 }
 
 CString::CString(const CString& other)
@@ -14,6 +16,8 @@ CString::CString(const CString& other)
   cont_ = (char*)malloc(other.len_+1);
   strcpy(cont_, other.cont_);
   len_ = other.len_;
+
+  str_ = other.str_;
 }
 
 CString::CString(const char* str)
@@ -21,6 +25,8 @@ CString::CString(const char* str)
   len_ = strlen(str);
   cont_ = (char*)malloc(len_+1);
   strcpy(cont_, str);
+
+  str_ = string(str);
 }
 
 CString::CString(int val)
@@ -34,11 +40,15 @@ CString::CString(int val)
   cont_ = (char*)malloc(len);
   _itoa(origval, cont_, 10);
   len_ = len;
+
+  std::stringstream ss;
+  ss << val;
+  str_ = ss.str();
 }
 
 CString::CString(float val)
 {
-
+  assert(0);
 }
 
 CString::CString(double val)
@@ -49,6 +59,20 @@ CString::CString(double val)
   len_ = str.size();
   cont_ = (char*)malloc(len_+1);
   strcpy(cont_, str.c_str());
+
+  str_ = str;
+}
+
+CString::CString(double val, int len)
+{
+  std::stringstream ss;
+  ss << setprecision(len) << setiosflags(ios_base::fixed) << val;
+  std::string str = ss.str();
+  len_ = str.size();
+  cont_ = (char*)malloc(len_+1);
+  strcpy(cont_, str.c_str());
+
+  str_ = str;
 }
 
 CString::CString(long val)
@@ -69,6 +93,7 @@ CString::~CString()
 
 int CString::getSize() const
 {
+  //return str_.length();
   return len_;
 }
 
