@@ -165,6 +165,9 @@ void World::updatePosition(Renderable* obj)
     } else if (ship->isDocked()) {
       ship->setDockedCoord();
       //ship->setCoord(ship->getDockedCoord());
+      if (ship == followedObject_) {
+        Renderer::getInstance().getCamera().position(followedObject_->getCoord());
+      }
       return;
     }
   }
@@ -173,6 +176,8 @@ void World::updatePosition(Renderable* obj)
     assert(dynObj->getType() == Renderable::ShipType);
     Ship* ship = (Ship*)dynObj;
     if (!ship->isLaunching()) {
+      double planetRotSpeed = ship->getLandedOn()->getRotationAngleSpeed();
+      dynObj->setYaw(dynObj->getYaw()-planetRotSpeed);
       dynObj->setCoord(dynObj->getLandedCoords());
       dynObj->setVelocity(dynObj->getRefBody()->getVelocity());
     }
@@ -191,9 +196,10 @@ void World::updatePosition(Renderable* obj)
     }
     dynObj->setYaw(newYaw);
 
-    if (followedObject_) {
-      Renderer::getInstance().getCamera().position(followedObject_->getCoord());
-    }
+  }
+
+  if (followedObject_) {
+    Renderer::getInstance().getCamera().position(followedObject_->getCoord());
   }
 }
 

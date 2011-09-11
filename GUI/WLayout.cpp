@@ -29,8 +29,9 @@ void WLayout::render()
   glPushMatrix();
   glLoadIdentity();
 
-  glColor4f(0.1, 0.05, 0.4, 0.4);
   glBegin(GL_POLYGON);
+  //glColor4f(0.4, 0.32, 0.45, 0.4);
+  glColor4f(0.2, 0.12, 0.45, 0.2);
   glVertex3f(-1, -1, 0.1);
   glVertex3f(1, -1, 0.1);
   glVertex3f(1, 1, 0.1);

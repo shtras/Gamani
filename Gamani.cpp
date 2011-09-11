@@ -489,7 +489,7 @@ void Gamani::testInit()
   star->addSatellite(planet);
 
   Ship* ship = new Ship();
-  ship->setCoord(Vector3(149590, 0, 0));
+  ship->setCoord(Vector3(149592, 0, 0));
   ship->setVelocity(Vector3(/*-6250*/1, 29783-6250, 0));
   ship->setRadius(0.00005);
   //ship->setGravityRef(planet);

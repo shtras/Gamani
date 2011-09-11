@@ -52,11 +52,11 @@ void Station::render()
     glTranslatef(i*2, 0, 0);
     glRotatef(getPortAngle(), 0, 0, 1);
     glRotatef(-90, 1, 0, 0);
-    glBegin(GL_LINE_LOOP);
-    glVertex3f(-0.1, -0.1, 0);
-    glVertex3f(0.1, -0.1, 0);
-    glVertex3f(0.1, 0.1, 0);
-    glVertex3f(-0.1, 0.1, 0);
+    glBegin(GL_LINES);
+    glVertex3f(-0.1, 0, -0.1);
+    glVertex3f(-0.1, 0, 0.1);
+    glVertex3f(0.1, 0, -0.1);
+    glVertex3f(0.1, 0, 0.1);
     glEnd();
     //glutWireSphere(0.1, 10, 10);
     glPopMatrix();

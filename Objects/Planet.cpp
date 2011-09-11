@@ -76,7 +76,7 @@ void Planet::render()
   glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0/*coord[2]*GLOBAL_MULT*/);
 
 
-  glRotatef(190, 1, 0, 0);
+  glRotatef(180, 1, 0, 0);
    
   if (1 || camDist > 5) {
     //glColor4f(1,1,1,0.2);

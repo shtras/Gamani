@@ -58,6 +58,11 @@ void AstralBody::setRotationPeriod(double speed)
    rotationSpeed_ = 360/speed;
 }
 
+double AstralBody::getRotationAngleSpeed()
+{
+   return rotationSpeed_ * Gamani::getInstance().getSpeedReduce();
+}
+
 void AstralBody::drawName()
 {
   if (!Gamani::getInstance().getDrawNames()) {

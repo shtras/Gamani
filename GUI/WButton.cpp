@@ -28,12 +28,12 @@ void WButton::render(double left, double top, double width, double height)
   glEnd();
 
 
-  glColor3f(0.2,0.2,0.4);
+  glColor4f(0.12,0.15,0.35, 0.9);
   glBegin(GL_POLYGON);
   glVertex3f(0, 0, 0);
   glVertex3f(width-0.04, 0, 0);
   glVertex3f(width, 0.04, 0);
-  glColor3f(1,0.2,0.6);
+  glColor4f(0.7,0.21,0.65, 0.9);
   glVertex3f(width, height, 0);
   glVertex3f(0, height, 0);
   glEnd();
