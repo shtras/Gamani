@@ -53,7 +53,7 @@ void HUD::init(Ship* ship)
 
   APDisplay* apDisp = new APDisplay();
   apDisp->init();
-  apDisp->setDimensions(0.21, 0.35, 0.45, 0.35);
+  apDisp->setDimensions(0.3, 0.35, 0.4, 0.35);
   displays_.push_back(apDisp);
   AddLayout.emit(apDisp);
 
