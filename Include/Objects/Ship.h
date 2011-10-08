@@ -29,6 +29,7 @@ public:
   bool isDocked() {return docked_;}
   AstralBody* getRefBody() {return landedOn_;}
   Vector3 getLandedCoords();
+  Vector3 getLandedVel();
   //void setGravityRef(AstralBody* body) {gravityRef_ = body;}
   void setHUD(HUD* hud);
   //AstralBody* getGravityRef() {return gravityRef_;}
@@ -44,6 +45,7 @@ public:
   void undock();
   void checkUndocking();
   bool isUndocking() {return !docked_ && dockedTo_;}
+  Autopilot* getAP() {return autopilot_;}
 public:
   //void testNavCom();
   //void testNavCom1();

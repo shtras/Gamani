@@ -27,6 +27,7 @@ public:
   void rotationStep();
   void setRotationPeriod(double speed); //Period in seconds to make 360 degrees turn
   double getRotationAngleSpeed(); //Angle per second rotation
+  double getSurfaceLinearSpeed();
   void drawName();
 protected:
   double radius_;

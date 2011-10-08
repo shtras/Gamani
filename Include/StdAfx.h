@@ -13,9 +13,12 @@
 #include <Windowsx.h>
 //#include <string>
 #include "CString.h"
+#include "auxFuncs.h"
 
 #include <gl/glew.h>
 #include <gl/glut.h>
+
+#define PI (3.14159265)
 
 using namespace std;
 using namespace sigslot;

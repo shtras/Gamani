@@ -405,7 +405,7 @@ CString Renderer::formatDistance(double dist, int len/* = 20*/)
 CString Renderer::formatVelocity(double vel, int len/* = 20*/)
 {
   double ms = vel;
-  double kmh = vel / 3.6;
+  double kmh = vel * 3.6;
   double kms = vel / 1000.0;
   double c = vel / 299792458.0;
   if (c > 0.01) {

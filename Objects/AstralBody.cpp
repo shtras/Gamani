@@ -14,7 +14,7 @@ AstralBody::AstralBody()
   color_[1] = 1;
   color_[2] = 0;
   name_ = "NoName";
-  rotation_ = 0;
+  rotation_ = -20;
   rotationSpeed_ = 0;
   type_ = AstralType;
 }
@@ -54,13 +54,21 @@ void AstralBody::rotationStep()
 
 void AstralBody::setRotationPeriod(double speed)
 {
-
-   rotationSpeed_ = 360/speed;
+  rotationSpeed_ = 360/speed;
+  //3600*24 sec  -  360 deg
+  //
 }
 
 double AstralBody::getRotationAngleSpeed()
 {
-   return rotationSpeed_ * Gamani::getInstance().getSpeedReduce();
+   return rotationSpeed_;
+}
+
+double AstralBody::getSurfaceLinearSpeed()
+{
+  double radAngleSpeed = DegToRad(getRotationAngleSpeed());
+
+  return radAngleSpeed * radius_ * 1e6;
 }
 
 void AstralBody::drawName()

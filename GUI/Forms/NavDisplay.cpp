@@ -15,7 +15,7 @@ NavDisplay::~NavDisplay()
 
 void NavDisplay::init()
 {
-  setDimensions(0, 0.45, 0.45, 0.45);
+  setDimensions(0, 0.4, 0.4, 0.4);
   square_ = true;
   shipNameText_ = new WText();
   shipNameText_->setDimensions(0.05, 0.95, 1, 1);

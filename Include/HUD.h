@@ -8,7 +8,7 @@ class HUD
 public:
   HUD();
   ~HUD();
-  void init();
+  void init(Ship* ship);
   void assignTo(Ship* ship);
   void updateData();
 

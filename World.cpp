@@ -176,10 +176,11 @@ void World::updatePosition(Renderable* obj)
     assert(dynObj->getType() == Renderable::ShipType);
     Ship* ship = (Ship*)dynObj;
     if (!ship->isLaunching()) {
-      double planetRotSpeed = ship->getLandedOn()->getRotationAngleSpeed();
+      double planetRotSpeed = ship->getLandedOn()->getRotationAngleSpeed() * Gamani::getInstance().getSpeedReduce();
       dynObj->setYaw(dynObj->getYaw()-planetRotSpeed);
       dynObj->setCoord(dynObj->getLandedCoords());
-      dynObj->setVelocity(dynObj->getRefBody()->getVelocity());
+      //dynObj->setVelocity(dynObj->getRefBody()->getVelocity());
+      dynObj->setVelocity(ship->getLandedVel());
     }
   } else {
     Vector3 coord = dynObj->getCoord();

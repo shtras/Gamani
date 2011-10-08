@@ -2,6 +2,7 @@
 #include "HUD.h"
 #include "NavDisplay.h"
 #include "Ship.h"
+#include "APDisplay.h"
 
 HUD::HUD():ship_(NULL)
 {
@@ -36,7 +37,7 @@ void HUD::assignTo(Ship* ship)
   }
 }
 
-void HUD::init()
+void HUD::init(Ship* ship)
 {
   NavDisplay* navDisplay = new NavDisplay();
   navDisplay->init();
@@ -49,4 +50,14 @@ void HUD::init()
   navDisplay1->setRightAlign(true);
   displays_.push_back(navDisplay1);
   AddLayout.emit(navDisplay1);
+
+  APDisplay* apDisp = new APDisplay();
+  apDisp->init();
+  apDisp->setDimensions(0.21, 0.35, 0.45, 0.35);
+  displays_.push_back(apDisp);
+  AddLayout.emit(apDisp);
+
+  //Has to be after all display initializations
+  ship->setHUD(this);
+  apDisp->setAP(ship->getAP());
 }

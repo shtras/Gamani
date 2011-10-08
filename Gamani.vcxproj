@@ -97,10 +97,12 @@
   <ItemGroup>
     <ClCompile Include="Autopilot\APProgram.cpp" />
     <ClCompile Include="Autopilot\Autopilot.cpp" />
+    <ClCompile Include="auxFuncs.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Gamani.cpp" />
     <ClCompile Include="Generic\CString.cpp" />
     <ClCompile Include="GUI\Display.cpp" />
+    <ClCompile Include="GUI\Forms\APDisplay.cpp" />
     <ClCompile Include="GUI\Forms\NavDisplay.cpp" />
     <ClCompile Include="GUI\Forms\StationDisplay.cpp" />
     <ClCompile Include="GUI\Forms\UpperPanel.cpp" />
@@ -137,12 +139,14 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="auxFuncs.h" />
     <ClInclude Include="Include\Autopilot\APProgram.h" />
     <ClInclude Include="Include\Autopilot\Autopilot.h" />
     <ClInclude Include="Include\Camera.h" />
     <ClInclude Include="Include\Gamani.h" />
     <ClInclude Include="Include\Generic\CString.h" />
     <ClInclude Include="Include\GUI\Display.h" />
+    <ClInclude Include="Include\GUI\Forms\APDisplay.h" />
     <ClInclude Include="Include\GUI\Forms\NavDisplay.h" />
     <ClInclude Include="Include\GUI\Forms\StationDisplay.h" />
     <ClInclude Include="Include\GUI\Forms\UpperPanel.h" />

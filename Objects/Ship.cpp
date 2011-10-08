@@ -820,6 +820,18 @@ Vector3 Ship::getLandedCoords()
   return res;
 }
 
+Vector3 Ship::getLandedVel()
+{
+  assert (landedOn_ && landed_);
+  Vector3 res = landedOn_->getVelocity();
+  double surfaceVel = landedOn_->getSurfaceLinearSpeed();
+  double dx = surfaceVel * -cos(DegToRad(yaw_));
+  double dy = surfaceVel * -sin(DegToRad(yaw_));
+  res[0] += dx;
+  res[1] += dy;
+  return res;
+}
+
 void Ship::setHUD(HUD* hud)
 {
   delete hud_;

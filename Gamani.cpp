@@ -489,7 +489,7 @@ void Gamani::testInit()
   star->addSatellite(planet);
 
   Ship* ship = new Ship();
-  ship->setCoord(Vector3(149592, 0, 0));
+  ship->setCoord(Vector3(149600 - 6.371, 0, 0));
   ship->setVelocity(Vector3(/*-6250*/1, 29783-6250, 0));
   ship->setRadius(0.00005);
   //ship->setGravityRef(planet);
@@ -497,8 +497,8 @@ void Gamani::testInit()
   HUD* shipHud = new HUD();
   shipHud->AddLayout.connect(&layoutManager_, &LayoutManager::addLayout);
   shipHud->RemoveLayout.connect(&layoutManager_, &LayoutManager::removeLayout);
-  shipHud->init();
-  ship->setHUD(shipHud);
+  shipHud->init(ship);
+  //ship->setHUD(shipHud);
   ship->test1_ = planet;
   ship->initModel("res/new.3ds");
   ship->setDockingPort(Vector3(0, 1.3, 0)); //Hey, screwed up axes. Again...
