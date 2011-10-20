@@ -18,6 +18,7 @@ public:
   void toggleAutoRef();
   void setGravityRef(AstralBody* body) {gravityRef_ = body;}
   void setManualRef(bool value) {manualRef_ = value;}
+  AstralBody* getGravityRef() {return gravityRef_;}
 protected:
   enum Mode {Orbit, SyncOrbit, Landing, Docking, Axes};
   void modeButtonClick();
@@ -37,7 +38,7 @@ protected:
   void updateGravityRef();
 
 
-  WText* shipNameText_;
+  WText* shipYawText_;
   WText* gravityRefName_;
   WText* velData_;
   WText* distData_;

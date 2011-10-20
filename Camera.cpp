@@ -97,22 +97,22 @@ void Camera::position()
   bool printData = Gamani::getInstance().getAuxPrints();
   glColor3f(1,1,1);
   if (printData) {
-    Renderer::getInstance().textOut(-1,0.8,0, "Zoom: %0.2f Pos (%0.2f, %0.2f, %0.2f) Pitch: %0.2f Heading: %0.2f, Speed: %.3f StepLength: %.3f", 
-      zoom_, position_[0], position_[1], position_[2], pitch_, heading_, Gamani::getInstance().getSpeed(), Gamani::getInstance().getSpeedReduce());
+    Renderer::getInstance().textOut(-0.2,0.95,0, "Pitch: %0.2f Heading: %0.2f, Speed: %.3f StepLength: %.3f", 
+      pitch_, heading_, Gamani::getInstance().getSpeed(), Gamani::getInstance().getSpeedReduce());
 
-    Renderable* followed = Gamani::getInstance().getFollowedObject();
-    string name = "Free camera";
-    if (followed) {
-      name = followed->getName();
-      Renderer::getInstance().textOut(-1,0.75,0,"Pos: (%.2f, %.2f) Vel: (%.2f, %.2f)", followed->getCoord()[0], followed->getCoord()[1], followed->getVelocity()[0], followed->getVelocity()[1]);
-    }
-    Renderer::getInstance().textOut(-1,0.7,0, "%s", name.c_str());
+    //Renderable* followed = Gamani::getInstance().getFollowedObject();
+    //string name = "Free camera";
+    //if (followed) {
+    //  name = followed->getName();
+    //  Renderer::getInstance().textOut(-1,0.75,0,"Pos: (%.2f, %.2f) Vel: (%.2f, %.2f)", followed->getCoord()[0], followed->getCoord()[1], followed->getVelocity()[0], followed->getVelocity()[1]);
+    //}
+    //Renderer::getInstance().textOut(-1,0.7,0, "%s", name.c_str());
 
-    if (followed && followed->getType() == Renderable::ShipType) {
-      Ship* ship = static_cast<Ship*>(followed);
-      Renderer::getInstance().textOut(-1,0.65,0, "Landed: %d Docked: %s Yaw: %0.2f Program: %s", ship->isLanded(), (ship->isDocked()? "Docked" : (ship->dockedTo_?"Undocking":"No")), 
-        ship->getYaw(), ship->getCurrProgName());
-    }
+    //if (followed && followed->getType() == Renderable::ShipType) {
+    //  Ship* ship = static_cast<Ship*>(followed);
+    //  Renderer::getInstance().textOut(-1,0.65,0, "Landed: %d Docked: %s Yaw: %0.2f Program: %s", ship->isLanded(), (ship->isDocked()? "Docked" : (ship->dockedTo_?"Undocking":"No")), 
+    //    ship->getYaw(), ship->getCurrProgName());
+    //}
   }
 
   if (Gamani::getInstance().isPaused()) {
@@ -131,7 +131,7 @@ void Camera::position()
   int seconds = decim/100LL;
   decim -= seconds*100LL;
 
-  Renderer::getInstance().textOut(-0.5,0.95,0, "%dY %dD %02d:%02d:%02d.%02ld", years, days, hours, minutes, seconds, decim);
+  Renderer::getInstance().textOut(-0.7,0.95,0, "%dY %dD %02d:%02d:%02d.%02ld", years, days, hours, minutes, seconds, decim);
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();

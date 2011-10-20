@@ -11,6 +11,8 @@ public:
   virtual ~APProgram();
   virtual void step() = 0;
   Autopilot::ProgID getID() {return id_;}
+  virtual CString getInfo() {return "Executing";}
+  virtual void init() = 0;
 protected:
   void endProgram();
   Ship* getShip();
@@ -25,6 +27,7 @@ public:
   KillRotProg(Autopilot* autopilot);
   virtual ~KillRotProg(){}
   virtual void step();
+  virtual void init();
 };
 
 class RotateProg: public APProgram
@@ -33,8 +36,10 @@ public:
   RotateProg(Autopilot* autopilot, double tgtYaw);
   virtual ~RotateProg(){}
   virtual void step();
+  virtual CString getInfo();
+  virtual void init();
 private:
-  void init();
+  //void init();
   bool rotateLeft_;
   double tgtYaw_;
   double startYaw_;
@@ -47,6 +52,18 @@ public:
   ApproachProg(Autopilot* autopilot);
   virtual ~ApproachProg(){}
   virtual void step();
+  virtual void init();
+private:
+  AstralBody* target_;
+};
+
+class ApproachProgStep2: public APProgram
+{
+public:
+  ApproachProgStep2(Autopilot* autopilot);
+  virtual ~ApproachProgStep2(){}
+  virtual void step();
+  virtual void init();
 private:
   AstralBody* target_;
 };
@@ -57,6 +74,7 @@ public:
   LaunchProg(Autopilot* autopilot);
   virtual ~LaunchProg(){}
   virtual void step();
+  virtual void init();
 private:
   AstralBody* launchingFrom_;
 };
@@ -67,6 +85,8 @@ public:
   AccelProg(Autopilot* autopilot, Vector3 coordsToStop);
   virtual ~AccelProg(){}
   virtual void step();
+  virtual CString getInfo();
+  virtual void init();
 private:
   Vector3 coordsToStop_;
   double lastDist_;
@@ -79,7 +99,28 @@ public:
   EqSpeedProg(Autopilot* autopilot, Vector3 spdToReach);
   virtual ~EqSpeedProg(){}
   virtual void step();
+  virtual void init();
 private:
   Vector3 spdToReach_;
   double lastDelta_;
+};
+
+class ProGradeProg: public APProgram
+{
+public:
+  ProGradeProg(Autopilot* autopilot);
+  virtual ~ProGradeProg() {}
+  virtual void step();
+  virtual void init();
+private:
+};
+
+class RetroGradeProg: public APProgram
+{
+public:
+  RetroGradeProg(Autopilot* autopilot);
+  virtual ~RetroGradeProg() {}
+  virtual void step();
+  virtual void init();
+private:
 };

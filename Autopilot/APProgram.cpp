@@ -46,6 +46,14 @@ void KillRotProg::step()
   }
 }
 
+void KillRotProg::init()
+{
+  if (init_) {
+    return;
+  }
+  init_ = true;
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 RotateProg::RotateProg(Autopilot* autopilot, double tgtYaw):APProgram(autopilot),tgtYaw_(tgtYaw)
@@ -61,9 +69,6 @@ RotateProg::RotateProg(Autopilot* autopilot, double tgtYaw):APProgram(autopilot)
 
 void RotateProg::step()
 {
-  if (!init_) {
-    init();
-  }
   double currDelta = getShip()->getYaw() - tgtYaw_;
   while (currDelta > 180.0) {
     currDelta -= 180.0;
@@ -78,7 +83,7 @@ void RotateProg::step()
     } else {
       getShip()->yawLeft();
     }
-    cout << "A: " << getShip()->getYaw() << endl;
+    //cout << "A: " << getShip()->getYaw() << endl;
     endProgram();
     autopilot_->addImmediateProgram(new KillRotProg(autopilot_));
     return;
@@ -90,6 +95,11 @@ void RotateProg::step()
   } else {
     getShip()->yawLeft();
   }
+}
+
+CString RotateProg::getInfo()
+{
+  return (rotateLeft_?CString("L"):CString("R")) + CString(tgtYaw_, 2) + " " + CString(getShip()->getYaw(),2) + " " + CString(lastDelta_, 2);
 }
 
 void RotateProg::init()
@@ -128,6 +138,11 @@ void RotateProg::init()
 ApproachProg::ApproachProg(Autopilot* autopilot):APProgram(autopilot)
 {
   id_ = Autopilot::Approach;
+  target_ = autopilot->getGravityRef();
+  if (!target_) {
+    autopilot_->setError("No ref defined");
+    return;
+  }
   //target_ = getShip()->getGravityRef();
   Vector3 tgtCoord = target_->getCoord();
   Vector3 shipCoord = getShip()->getCoord();
@@ -136,17 +151,15 @@ ApproachProg::ApproachProg(Autopilot* autopilot):APProgram(autopilot)
   //timeToDist *= 0.1;
   Vector3 tgtNewCord = (target_->getCoord()*1e6 + target_->getVelocity()*timeToDist) * 1e-6;
 
-  tgtCoord = tgtNewCord;
+  //tgtCoord = tgtNewCord;
   
   Vector3 dir = tgtCoord - shipCoord;
-  
-  double targetAngle = acos(dir[0]/dir[1]) * 180.0 / 3.14159265 - 90;
-  if (fabs(dir[1]) < 0.1) {
-    targetAngle = (dir[1] > 0)? 270 : 90;
-  }
+  double targetAngle = dir.getAngle();
 
-  Vector3 relSpd = target_->getVelocity() - getShip()->getVelocity();
-  double relSpdAngle = acos(relSpd[0]/relSpd[1]) * 180.0 / 3.14159265 - 90;
+  Vector3 relSpd = getShip()->getVelocity() - target_->getVelocity();
+  double relSpdAngle = relSpd.getAngle();
+
+  cout << "tgt " << targetAngle << " spd " << relSpdAngle << endl;
 
   autopilot_->addProgram(new RotateProg(autopilot_, relSpdAngle - 180.0));
   autopilot_->addProgram(new EqSpeedProg(autopilot_, target_->getVelocity()));
@@ -154,15 +167,72 @@ ApproachProg::ApproachProg(Autopilot* autopilot):APProgram(autopilot)
   autopilot_->addProgram(new RotateProg(autopilot_, targetAngle));
   autopilot_->addProgram(new RotateProg(autopilot_, targetAngle));
   autopilot_->addProgram(new RotateProg(autopilot_, targetAngle));
+  autopilot_->addProgram(new ApproachProgStep2(autopilot_));
 
-  autopilot_->addProgram(new AccelProg(autopilot_, (shipCoord + tgtCoord)*0.5));
-  autopilot_->addProgram(new RotateProg(autopilot_, targetAngle + 180.0));
-  autopilot_->addProgram(new AccelProg(autopilot_, tgtCoord));
+//   autopilot_->addProgram(new AccelProg(autopilot_, (shipCoord + tgtCoord)*0.5));
+//   autopilot_->addProgram(new RotateProg(autopilot_, targetAngle + 180.0));
+//   autopilot_->addProgram(new AccelProg(autopilot_, tgtCoord));
 }
 
 void ApproachProg::step()
 {
   endProgram();
+}
+
+void ApproachProg::init()
+{
+  if (init_) {
+    return;
+  }
+  init_ = true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+ApproachProgStep2::ApproachProgStep2(Autopilot* autopilot):APProgram(autopilot)
+{
+  id_ = Autopilot::Approach;
+}
+
+void ApproachProgStep2::step()
+{
+  endProgram();
+}
+
+void ApproachProgStep2::init()
+{
+  if (init_) {
+    return;
+  }
+  init_ = true;
+
+
+  target_ = autopilot_->getGravityRef();
+  if (!target_) {
+    autopilot_->setError("No ref defined");
+    return;
+  }
+
+  Vector3 tgtCoord = target_->getCoord();
+  Vector3 shipCoord = getShip()->getCoord();
+  double dist = (tgtCoord - shipCoord).getLength();
+  double timeToDist = sqrt(dist/2.0*1e6 / getShip()->gatMarchPower()) * 2;
+  //timeToDist *= 0.1;
+  Vector3 tgtNewCord = (target_->getCoord()*1e6 + target_->getVelocity()*timeToDist) * 1e-6;
+
+  //tgtCoord = tgtNewCord;
+
+  Vector3 dir = tgtCoord - shipCoord;
+  double targetAngle = dir.getAngle();
+
+  Vector3 relSpd = getShip()->getVelocity() - target_->getVelocity();
+  double relSpdAngle = relSpd.getAngle();
+
+  cout << "tgt " << targetAngle << " spd " << relSpdAngle << endl;
+  autopilot_->addProgram(new AccelProg(autopilot_, (shipCoord + tgtCoord)*0.5));
+  autopilot_->addProgram(new RotateProg(autopilot_, targetAngle + 180.0));
+  autopilot_->addProgram(new AccelProg(autopilot_, tgtCoord));
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -187,6 +257,14 @@ void LaunchProg::step()
   if (relSpdVal > 1000) {
     endProgram();
   }
+}
+
+void LaunchProg::init()
+{
+  if (init_) {
+    return;
+  }
+  init_ = true;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -218,12 +296,24 @@ void AccelProg::step()
   lastDist_ = currDist;
 }
 
+CString AccelProg::getInfo()
+{
+  return (approaching_?CString("Y"):CString("N")) + Renderer::getInstance().formatDistance(lastDist_);
+}
+
+void AccelProg::init()
+{
+  if (init_) {
+    return;
+  }
+  init_ = true;
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 EqSpeedProg::EqSpeedProg(Autopilot* autopilot, Vector3 spdToReach):APProgram(autopilot), spdToReach_(spdToReach)
 {
-  Vector3 vel = getShip()->getVelocity();
-  lastDelta_ = (vel - spdToReach).getLength();
+  id_ = Autopilot::EqSpeed;
 }
 
 void EqSpeedProg::step()
@@ -235,4 +325,70 @@ void EqSpeedProg::step()
     endProgram();
   }
   lastDelta_ = delta;
+}
+
+void EqSpeedProg::init()
+{
+  if (init_) {
+    return;
+  }
+  init_ = true;
+  Vector3 vel = getShip()->getVelocity();
+  lastDelta_ = (vel - spdToReach_).getLength();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+ProGradeProg::ProGradeProg(Autopilot* autopilot):APProgram(autopilot)
+{
+
+}
+
+void ProGradeProg::init()
+{
+  if (init_) {
+    return;
+  }
+  init_ = true;
+  AstralBody* tgt = autopilot_->getGravityRef();
+  if (!tgt) {
+    autopilot_->setError("No ref defined");
+    return;
+  }
+  Vector3 dir = tgt->getCoord() - autopilot_->getShip()->getCoord();
+  double angle = dir.getAngle();
+  autopilot_->addProgram(new RotateProg(autopilot_, angle + 90.0));
+}
+
+void ProGradeProg::step()
+{
+  endProgram();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+RetroGradeProg::RetroGradeProg(Autopilot* autopilot):APProgram(autopilot)
+{
+
+}
+
+void RetroGradeProg::init()
+{
+  if (init_) {
+    return;
+  }
+  init_ = true;
+  AstralBody* tgt = autopilot_->getGravityRef();
+  if (!tgt) {
+    autopilot_->setError("No ref defined");
+    return;
+  }
+  Vector3 dir = tgt->getCoord() - autopilot_->getShip()->getCoord();
+  double angle = dir.getAngle();
+  autopilot_->addProgram(new RotateProg(autopilot_, angle - 90.0));
+}
+
+void RetroGradeProg::step()
+{
+  endProgram();
 }

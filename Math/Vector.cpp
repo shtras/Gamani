@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Vector.h"
 #include "Matrix.h"
+#include <math.h>
 
 Vector3::Vector3()
 {
@@ -89,6 +90,27 @@ Vector3 Vector3::operator* (const double f) const
 Vector3 Vector3::operator- (const double f) const
 {
   return Vector3(cont_[0] - f, cont_[1] - f, cont_[2] - f);
+}
+
+double Vector3::getAngle()
+{
+  if (fabs(cont_[0]) < 0.00001) {
+    return (cont_[1] < 0)?0:180;
+  }
+  //double c = cont_[0]/cont_[1];
+  double ra = atan2(cont_[0], -cont_[1]);
+  return RadToDeg(ra);
+  //double da = -RadToDeg(ra) + 90.0;
+  //if (cont_[0] > 0 && cont_[1] > 0) {
+  //  return da;
+  //}
+  //if (cont_[0] < 0 && cont_[1] > 0) {
+  //  return 90.0 - da;
+  //}
+  //if (cont_[0] < 0 && cont_[1] < 0) {
+  //  return 90.0 + da;
+  //}
+  //return 180.0 - da;
 }
 
 //Vector4

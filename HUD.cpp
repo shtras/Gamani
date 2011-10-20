@@ -51,7 +51,7 @@ void HUD::init(Ship* ship)
   displays_.push_back(navDisplay1);
   AddLayout.emit(navDisplay1);
 
-  APDisplay* apDisp = new APDisplay();
+  APDisplay* apDisp = new APDisplay(navDisplay, navDisplay1);
   apDisp->init();
   apDisp->setDimensions(0.3, 0.35, 0.4, 0.35);
   displays_.push_back(apDisp);

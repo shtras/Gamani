@@ -17,10 +17,10 @@ void NavDisplay::init()
 {
   setDimensions(0, 0.4, 0.4, 0.4);
   square_ = true;
-  shipNameText_ = new WText();
-  shipNameText_->setDimensions(0.05, 0.95, 1, 1);
-  shipNameText_->setText("Hello!");
-  addWidget(shipNameText_);
+  shipYawText_ = new WText();
+  shipYawText_->setDimensions(0.05, 0.95, 1, 1);
+  shipYawText_->setText("Hello!");
+  addWidget(shipYawText_);
 
   modeName_ = new WText();
   modeName_->setDimensions(0.5, 0.95, 1, 1);
@@ -203,7 +203,7 @@ void NavDisplay::tgtToSyncOrbitButtonClick()
 void NavDisplay::modeButtonClick()
 {
   modeMenu_->setVisible(true);
-  shipNameText_->setText("World!");
+  shipYawText_->setText("World!");
 }
 
 void NavDisplay::refButtonClick()
@@ -253,7 +253,7 @@ void NavDisplay::updateData()
   if (!manualRef_ || !gravityRef_) {
     updateGravityRef();
   }
-  shipNameText_->setText(ship_->getName());
+  shipYawText_->setText(CString("Yaw: ") + CString(ship_->getYaw(), 2));
   gravityRefName_->setText(gravityRef_->getName());
   Vector3 relSpd = ship_->getVelocity() - gravityRef_->getVelocity();
   Vector3 relPos = ship_->getCoord() - gravityRef_->getCoord();

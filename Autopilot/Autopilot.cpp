@@ -3,7 +3,7 @@
 #include "Ship.h"
 #include "APProgram.h"
 
-Autopilot::Autopilot(Ship* ship):ship_(ship)
+Autopilot::Autopilot(Ship* ship):ship_(ship),ref_(NULL),lastError_("No errors")
 {
 
 }
@@ -38,6 +38,7 @@ void Autopilot::step()
     //}
     //cout << endl;
   }
+  programs_.front()->init();
   programs_.front()->step();
   GC();
 }
@@ -57,6 +58,7 @@ void Autopilot::GC()
 void Autopilot::addProgram(APProgram* prog)
 {
   programs_.push_back(prog);
+  lastError_ = "No errors";
 }
 
 void Autopilot::addImmediateProgram(APProgram* prog)
@@ -78,4 +80,12 @@ Autopilot::ProgID Autopilot::getCurrProg()
     return NoProgram;
   }
   return programs_.front()->getID();
+}
+
+CString Autopilot::getProgInfo()
+{
+  if (programs_.size() == 0) {
+    return "Idle";
+  }
+  return programs_.front()->getInfo();
 }

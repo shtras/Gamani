@@ -36,6 +36,7 @@ public:
   double& operator[] (const int i) {return cont_[i];}
   const double operator[] (const int i) const {return cont_[i];}
   operator double*() {return cont_;}
+  double getAngle();
 protected:
   double cont_[3];
 };

@@ -599,6 +599,12 @@ void Ship::setAutopilotTo(Autopilot::ProgID prog)
   case Autopilot::Approach:
     autopilot_->addProgram(new ApproachProg(autopilot_));
     break;
+  case Autopilot::ProGrade:
+    autopilot_->addProgram(new ProGradeProg(autopilot_));
+    break;
+  case Autopilot::RetroGrade:
+    autopilot_->addProgram(new RetroGradeProg(autopilot_));
+    break;
   }
   //currProg_ = prog;
   //if (prog == Launch) {
@@ -857,6 +863,8 @@ CString Ship::getCurrProgName()
     return "Accelerate";
   case Autopilot::Stop:
     return "Stop";
+  case Autopilot::EqSpeed:
+    return "Match speed";
   default:
     return "UnKnown";
   }
