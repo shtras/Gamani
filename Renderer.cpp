@@ -355,7 +355,7 @@ void Renderer::render()
   camera_->position();
   skyBox_->draw();
 
-  //checkAndDrawAtmosphere();
+  checkAndDrawAtmosphere();
   glClearDepth(1);
   //camera_->applyZoom();
   //testCase();
@@ -438,6 +438,9 @@ void Renderer::checkAndDrawAtmosphere()
   //dist *= 1/Renderer::getInstance().getCamera().getZoom();
   camPos *= 1/GLOBAL_MULT;
 
+  Star* sun = Gamani::getInstance().getWorld()->getCurrentSystem()->getStars().front();
+  assert(sun);
+  Vector3 sunPos = sun->getCoord();
 
   vector<AstralBody*>* objects = Gamani::getInstance().getWorld()->getAllObjects();
   int SZ = objects->size();
@@ -447,15 +450,19 @@ void Renderer::checkAndDrawAtmosphere()
       continue;
     }
     Planet* planet = (Planet*)body;
-    Vector3 dist = camPos - planet->getCoord();
+    Vector3 planetCoord = planet->getCoord();
+    Vector3 dist = camPos - planetCoord;
     double distance = dist.getLength();
     if (distance <= planet->getAtmRadius()) {
-      drawAtmosphere(planet, distance);
+      Vector3 sunToPlanet = planetCoord - sunPos;
+      double angle = RadToDeg(acos(sunToPlanet.getNormalized().dot(dist.getNormalized())));
+      cout << angle << endl;
+      drawAtmosphere(planet, distance, angle);
     }
   }
 }
 
-void Renderer::drawAtmosphere(Planet* planet, double dist)
+void Renderer::drawAtmosphere(Planet* planet, double dist, double angle)
 {
   double radius = planet->getAtmRadius();
   double height = radius - planet->getRadius();
@@ -463,13 +470,14 @@ void Renderer::drawAtmosphere(Planet* planet, double dist)
   double delta = height - camH;
   double d = delta / height;
   Vector3 color = planet->getAtmColor();
+  double mult = angle / 180.0;
 
   float size = 9000;
   glPushMatrix();
   glDisable(GL_LIGHTING);
   //glDisable(GL_DEPTH_TEST);
 
-  glColor4f(color[0], color[1], color[2], d);
+  glColor4f(color[0], color[1], color[2], d*mult);
   //glColor4f(0, 0, 0.5, 0.5);
 
   //front

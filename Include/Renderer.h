@@ -37,7 +37,7 @@ private:
 
   void testCase();
   void checkAndDrawAtmosphere();
-  void drawAtmosphere(Planet* planet, double dist);
+  void drawAtmosphere(Planet* planet, double dist, double angle);
 
   Camera* camera_;
   bool init_;
