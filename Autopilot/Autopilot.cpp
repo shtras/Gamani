@@ -2,6 +2,7 @@
 #include "Autopilot.h"
 #include "Ship.h"
 #include "APProgram.h"
+#include "Gamani.h"
 
 Autopilot::Autopilot(Ship* ship):ship_(ship),ref_(NULL),lastError_("No errors")
 {
@@ -31,7 +32,7 @@ void Autopilot::step()
     return;
   }
   {
-    list<APProgram*>::iterator itr = programs_.begin();
+    //list<APProgram*>::iterator itr = programs_.begin();
     //for (; itr != programs_.end(); ++itr) {
     //  APProgram* prog = *itr;
     //  cout << prog->getID() << " ";
@@ -66,12 +67,14 @@ void Autopilot::addImmediateProgram(APProgram* prog)
   programs_.push_front(prog);
 }
 
-
 void Autopilot::endCurrProg()
 {
   APProgram* prog = programs_.front();
   programs_.pop_front();
   garbage_.push_front(prog);
+  if (programs_.size() == 0) {
+    Gamani::getInstance().setSpeed1x();
+  }
 }
 
 Autopilot::ProgID Autopilot::getCurrProg()

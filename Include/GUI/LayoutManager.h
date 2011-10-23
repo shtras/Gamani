@@ -17,10 +17,13 @@ public:
   void setRenderer(GUIRenderer* renderer);
 
   bool handleMessage(UINT message,WPARAM wParam,LPARAM lParam);
+  bool focusGrabbed() {return focusOn_ != NULL;}
+  bool handlePressedKey(int key);
 private:
   bool handleMouseClick(WPARAM wParam, LPARAM lParam);
 
   set<WLayout*> layouts_;
   GUIRenderer* renderer_;
+  Widget* focusOn_;
 };
 

@@ -2,7 +2,7 @@
 #include "LayoutManager.h"
 #include "Renderer.h"
 
-LayoutManager::LayoutManager():renderer_(NULL)
+LayoutManager::LayoutManager():renderer_(NULL), focusOn_(NULL)
 {
 }
 
@@ -49,6 +49,10 @@ void LayoutManager::render()
 bool LayoutManager::handleMouseClick(WPARAM wParam, LPARAM lParam)
 {
   if (1 || wParam == MK_LBUTTON) {
+    if (focusOn_) {
+      focusOn_->loseFocus();
+      focusOn_ = NULL;
+    }
     int xPos = GET_X_LPARAM(lParam);
     int yPos = GET_Y_LPARAM(lParam);
     double dx = xPos / (double)Renderer::getInstance().getWidth();
@@ -77,11 +81,24 @@ bool LayoutManager::handleMouseClick(WPARAM wParam, LPARAM lParam)
         if (layout->isSquare()) {
           dx *= Renderer::getInstance().getWidth() / (double)Renderer::getInstance().getHeight();
         }
-        return layout->handleMouseClick(dx, dy);
+        Widget* res = layout->handleMouseClick(dx, dy);
+        if (res) {
+          if (res->grabsFocus()) {
+            res->getFocus();
+            focusOn_ = res;
+          }
+          return true;
+        }
       }
     }
   }
   return false;
+}
+
+bool LayoutManager::handlePressedKey(int key)
+{
+  assert(focusOn_);
+  return focusOn_->handlePressedKey(key);
 }
 
 bool LayoutManager::handleMessage(UINT message,WPARAM wParam,LPARAM lParam)

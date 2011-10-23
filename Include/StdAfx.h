@@ -1,5 +1,6 @@
 #pragma once
 
+//#include "VersionInfo.h"
 #include "sigslot.h"
 #include <assert.h>
 #include <iostream>
@@ -17,6 +18,12 @@
 
 #include <gl/glew.h>
 #include <gl/glut.h>
+
+#ifdef DEBUG
+#define BUILDSTR "Debug"
+#else
+#define BUILDSTR "Release"
+#endif
 
 #define PI (3.14159265)
 

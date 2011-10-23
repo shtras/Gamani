@@ -116,8 +116,8 @@ LRESULT CALLBACK MainLoop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 bool Renderer::init(HINSTANCE& hInstance)
 {
-  width_ = 1024;
-  height_ = 768;
+  width_ = 1280;
+  height_ = 800;
   hWnd_ = 0;
   hInstance_ = &hInstance;
   bool res = initWindow();
@@ -221,6 +221,8 @@ bool Renderer::initOpenGL()
   glEnable(GL_DITHER);
   glEnable(GL_COLOR_MATERIAL);
   glEnable(GL_NORMALIZE);
+  //glEnable(GL_LINE_SMOOTH);
+
   GLfloat light_position[] = { 0, 1, 0, 1};
   GLfloat light_color[] = { 1, 1, 1, 1.0f };
   GLfloat ambient_light_color[] = { 0, 0, 0, 1.0f };

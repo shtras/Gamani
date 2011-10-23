@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "SkyBox.h"
 #include "PngWrapper.h"
+#include "Gamani.h"
 #ifdef MINGW
 extern "C" long _ftol( double ); //defined by VC6 C libs
 extern "C" long _ftol2( double dblSource ) { return _ftol( dblSource ); }
@@ -14,6 +15,13 @@ SkyBox::SkyBox()
   right_ = new Texture();
   front_ = new Texture();
   back_ = new Texture();
+
+  up1_ = new Texture();
+  down1_ = new Texture();
+  left1_ = new Texture();
+  right1_ = new Texture();
+  front1_ = new Texture();
+  back1_ = new Texture();
 }
 
 SkyBox::~SkyBox()
@@ -24,6 +32,13 @@ SkyBox::~SkyBox()
   delete right_;
   delete front_;
   delete back_;
+
+  delete up1_;
+  delete down1_;
+  delete left1_;
+  delete right1_;
+  delete front1_;
+  delete back1_;
 }
 
 void SkyBox::initTextures()
@@ -35,11 +50,19 @@ void SkyBox::initTextures()
   res &= right_->load("SkyBox/sb_left2.png");
   res &= front_->load("SkyBox/sb_front5.png");
   res &= back_->load("SkyBox/sb_back6.png");
+
+  res &= up1_->load("SkyBox/sb_top3-1.png");
+  res &= down1_->load("SkyBox/sb_bottom4-1.png");
+  res &= left1_->load("SkyBox/sb_right1-1.png");
+  res &= right1_->load("SkyBox/sb_left2-1.png");
+  res &= front1_->load("SkyBox/sb_front5-1.png");
+  res &= back1_->load("SkyBox/sb_back6-1.png");
   assert(res);
 }
 
 void SkyBox::draw()
 {
+  bool skybox1 = Gamani::getInstance().usingSkyBox1();
   float size = 10000;
   glPushMatrix();
   glDisable(GL_LIGHTING);
@@ -47,7 +70,11 @@ void SkyBox::draw()
   //glDisable(GL_DEPTH_TEST);
 
   //front
-  front_->use();
+  if (skybox1) {
+    front_->use();
+  } else {
+    front1_->use();
+  }
   glBegin(GL_POLYGON);
   glTexCoord2f(0,0);
   glVertex3f(-size, -size, size);
@@ -59,7 +86,11 @@ void SkyBox::draw()
   glVertex3f(size, -size, size);
   glEnd();
   //Right
-  right_->use();
+  if (skybox1) {
+    right_->use();
+  } else {
+    right1_->use();
+  }
   glBegin(GL_POLYGON);
   glTexCoord2f(0,0);
   glVertex3f(-size, -size, -size);
@@ -71,7 +102,11 @@ void SkyBox::draw()
   glVertex3f(-size, -size, size);
   glEnd();
   //Left
-  left_->use();
+  if (skybox1) {
+    left_->use();
+  } else {
+    left1_->use();
+  }
   glBegin(GL_POLYGON);
   glTexCoord2f(0,0);
   glVertex3f(size, -size, size);
@@ -83,7 +118,11 @@ void SkyBox::draw()
   glVertex3f(size, -size, -size);
   glEnd();
   //Top
-  up_->use();
+  if (skybox1) {
+    up_->use();
+  } else {
+    up1_->use();
+  }
   glBegin(GL_POLYGON);
   glTexCoord2f(0,1);
   glVertex3f(-size, size, -size);
@@ -95,7 +134,11 @@ void SkyBox::draw()
   glVertex3f(-size, size, size);
   glEnd();
   //Bottom
-  down_->use();
+  if (skybox1) {
+    down_->use();
+  } else {
+    down1_->use();
+  }
   glBegin(GL_POLYGON);
   glTexCoord2f(0,0);
   glVertex3f(-size, -size, -size);
@@ -107,7 +150,11 @@ void SkyBox::draw()
   glVertex3f(size, -size, -size);
   glEnd();
   //Back
-  back_->use();
+  if (skybox1) {
+    back_->use();
+  } else {
+    back1_->use();
+  }
   glBegin(GL_POLYGON);
   glTexCoord2f(1,0);
   glVertex3f(-size, -size, -size);

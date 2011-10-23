@@ -1,5 +1,6 @@
 #pragma once
 #include "Widget.h"
+#include "WButton.h"
 
 class WLayout: public has_slots<>
 {
@@ -19,7 +20,7 @@ public:
   double getRight() {return left_ + width_;}
   double getBottom() {return top_ - height_;}
   bool isInside(double x, double y);
-  bool handleMouseClick(double x, double y);
+  Widget* handleMouseClick(double x, double y);
   void addWidgetToGC(Widget* widget) {widgetsToGC_.push_back(widget);}
   bool isVisible() {return visible_;}
   bool isSquare() {return square_;}
@@ -27,14 +28,22 @@ public:
   void setVisible(bool value) {visible_ = value;}
   void setRightAlign(bool value) {rightAlign_ = value;}
 protected:
+  void minimize();
+  WButton* minimizeButton_;
   list<Widget*> widgets_;
   list<Widget*> widgetsToGC_;
   double top_;
   double left_;
   double width_;
   double height_;
+  double maxTop_;
+  double maxLeft_;
+  double maxWidth_;
+  double maxHeght_;
   bool visible_;
   bool square_;
   bool rightAlign_;
+  bool minimized_;
+private:
 };
 

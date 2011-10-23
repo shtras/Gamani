@@ -8,14 +8,15 @@ public:
   CString();
   CString(const CString& other);
   CString(const char* str);
+  CString(char c);
   CString(int val);
   CString(float val);
   CString(double val);
   CString(double val, int len);
   CString(long val);
-  CString (char val);
   ~CString();
 
+  CString left(int idx);
   int getSize() const;
   CString append(const CString& other) const;
   int getIndex(char c) const;

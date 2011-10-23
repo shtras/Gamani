@@ -28,30 +28,40 @@ void DynamicBody::render()
   glPushMatrix();
   Renderer::getInstance().getCamera().applyZoom();
   glDisable(GL_LIGHTING);
-  glColor3f(1,1,1);
-  if (name_ == CString("Jupiter")) {
-    glColor3f(1,1,1);
-  } else if (name_ == CString("Io")) {
-    glColor3f(1,0,0);
+  Vector3 color(0.4,0.8,0.1);
+  if (name_ == CString("Io")) {
+    color = Vector3(0.8,0,0);
   } else if (name_ == CString("Europa")) {
-    glColor3f(0,1,0);
+    color = Vector3(0,0.8,0);
   } else if (name_ == CString("Ganymede")) {
-    glColor3f(0,0,1);
+    color = Vector3(0,0,0.8);
   } else if (name_ == CString("Callisto")) {
-    glColor3f(1,0,1);
+    color = Vector3(0.8,0,0.8);
   }
+  float sizes[2];
+  glGetFloatv(GL_LINE_WIDTH_RANGE, sizes);
+  glLineWidth(4.0f);
+
   glBegin(GL_LINE_STRIP);
+  //glGetFloatv(GL_LINE_WIDTH_GRANULARITY, &increment);
   list<Vector3>::iterator itr = points_.begin();
+  int SZ = points_.size();
+  double i=0;
   for (; itr != points_.end(); ++itr) {
+    double transp = i/(double)SZ;
+    i += 0.5;
+    glColor4f(color[0],color[1],color[2],transp);
     Vector3 cp = *itr;
     Vector3 coord = getRealCoordinates(cp);
     glVertex3f(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0/*coord[2]*GLOBAL_MULT*/);
     //glVertex3f(cp[0]*GLOBAL_MULT, cp[1]*GLOBAL_MULT, cp[2]*GLOBAL_MULT);
   }
   Vector3 coord = getRealCoordinates(coord_);
+  glColor4f(color[0],color[1],color[2],i/(double)SZ);
   glVertex3f(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0/*coord[2]*GLOBAL_MULT*/);
   //glVertex3f(coord_[0]*GLOBAL_MULT, coord_[1]*GLOBAL_MULT, coord_[2]*GLOBAL_MULT);
   glEnd();
+  glLineWidth(1.0f);
   glEnable(GL_LIGHTING);
   glPopMatrix();
 }
@@ -62,7 +72,7 @@ void DynamicBody::snapshot()
  // if (name_ == "Galactica" || name_ == "Earth") {
     points_.push_back(Vector3(coord_));
  // }
-  if (points_.size() > 1000) {
+  if (points_.size() > 10000) {
     points_.pop_front();
   }
 }

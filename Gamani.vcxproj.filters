@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Header Files\Math">
       <UniqueIdentifier>{3ba98402-9f1c-4c0c-b7b6-39d1a45ca3f9}</UniqueIdentifier>
     </Filter>
@@ -54,6 +50,12 @@
     </Filter>
     <Filter Include="Header Files\Autopilot">
       <UniqueIdentifier>{77a69a61-4de4-4dee-a5c3-fb9994fd9a4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Missions">
+      <UniqueIdentifier>{95c1b6f5-7e39-4d63-a75b-a08ed7ced245}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Missions">
+      <UniqueIdentifier>{79515a4c-d617-493e-9324-1907ab79c63d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +175,15 @@
     </ClCompile>
     <ClCompile Include="GUI\Forms\APDisplay.cpp">
       <Filter>Source Files\GUI\Forms</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\WInput.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Missions\MissionManager.cpp">
+      <Filter>Source Files\Missions</Filter>
+    </ClCompile>
+    <ClCompile Include="Missions\Mission.cpp">
+      <Filter>Source Files\Missions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -298,6 +309,21 @@
     </ClInclude>
     <ClInclude Include="Include\GUI\Forms\APDisplay.h">
       <Filter>Header Files\GUI\Forms</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GUI\WInput.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Missions\MissionManager.h">
+      <Filter>Header Files\Missions</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Missions\Mission.h">
+      <Filter>Header Files\Missions</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\VersionInfo.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

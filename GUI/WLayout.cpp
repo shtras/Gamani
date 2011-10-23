@@ -3,8 +3,15 @@
 #include "Renderer.h"
 
 WLayout::WLayout(int left, int top, int width, int height):
-  top_(top), left_(left), height_(height), width_(width), visible_(false), square_(false), rightAlign_(false)
+  top_(top), left_(left), height_(height), width_(width), visible_(false), square_(false), rightAlign_(false),
+  maxTop_(top),maxLeft_(left),maxHeght_(height),maxWidth_(width),minimized_(false)
 {
+  minimizeButton_ = new WButton();
+  minimizeButton_->setDimensions(0.01,0.95,0.05,0.04);
+  minimizeButton_->setLabel("*");
+  minimizeButton_->sigClick.connect(this, &WLayout::minimize);
+  minimizeButton_->setVisible(false);
+  addWidget(minimizeButton_);
 }
 
 WLayout::~WLayout()
@@ -13,6 +20,39 @@ WLayout::~WLayout()
   for (; itr != widgets_.end(); ++itr) {
     Widget* widget = *itr;
     delete widget;
+  }
+}
+
+void WLayout::minimize()
+{
+  if (!minimized_) {
+    maxHeght_ = height_;
+    maxWidth_ = width_;
+    height_ = 0.05;
+    width_ = 0.05;
+    list<Widget*>::iterator itr = widgets_.begin();
+    for (; itr != widgets_.end(); ++itr) {
+      Widget* w = *itr;
+      if (w == minimizeButton_) {
+        w->setDimensions(0.01,0.01,0.95,0.95);
+        continue;
+      }
+      w->setVisible(false);
+    }
+    minimized_ = true;
+  } else {
+    height_ = maxHeght_;
+    width_ = maxWidth_;
+    list<Widget*>::iterator itr = widgets_.begin();
+    for (; itr != widgets_.end(); ++itr) {
+      Widget* w = *itr;
+      if (w == minimizeButton_) {
+        w->setDimensions(0.01,0.95,0.05,0.05);
+        continue;
+      }
+      w->setVisible(true);
+    }
+    minimized_ = false;
   }
 }
 
@@ -128,16 +168,17 @@ bool WLayout::isInside(double x, double y)
   return ((x >= 0) && (x <= width_) && (y >= 0) && (y <= height_));
 }
 
-bool WLayout::handleMouseClick(double x, double y)
+Widget* WLayout::handleMouseClick(double x, double y)
 {
   list<Widget*>::iterator itr = widgets_.begin();
   for (; itr != widgets_.end(); ++itr) {
     Widget* widget = *itr;
     if (widget->isInteractive() && widget->isInside(x, y) && widget->isVisible()) {
+      
       widget->click();
-      return true;
+      return widget;
     }
   }
-  return false;
+  return NULL;
 }
 

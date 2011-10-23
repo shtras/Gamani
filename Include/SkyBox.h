@@ -27,4 +27,11 @@ private:
   Texture* right_;
   Texture* front_;
   Texture* back_;
+
+  Texture* up1_;
+  Texture* down1_;
+  Texture* left1_;
+  Texture* right1_;
+  Texture* front1_;
+  Texture* back1_;
 };

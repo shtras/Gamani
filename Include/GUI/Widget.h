@@ -20,6 +20,10 @@ public:
   virtual void click() = 0;
   virtual bool isInteractive() {return false;}
   virtual void collectGarbage() {}
+  virtual bool grabsFocus() {return false;}
+  virtual void getFocus() {}
+  virtual void loseFocus() {}
+  virtual bool handlePressedKey(int key) {assert(0); return false;}
 protected:
   double top_;
   double left_;

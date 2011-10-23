@@ -29,6 +29,14 @@ CString::CString(const char* str)
   str_ = string(str);
 }
 
+CString::CString(char c)
+{
+  len_ = 1;
+  cont_ = (char*)malloc(2);
+  cont_[0] = c;
+  cont_[1] = '\0';
+}
+
 CString::CString(int val)
 {
   int origval = val;
@@ -80,11 +88,6 @@ CString::CString(long val)
 
 }
 
-CString::CString (char val)
-{
-
-}
-
 CString::~CString()
 {
   free(cont_);
@@ -95,6 +98,20 @@ int CString::getSize() const
 {
   //return str_.length();
   return len_;
+}
+
+CString CString::left(int idx)
+{
+  assert(idx<len_ && idx>=0);
+  CString res;
+  free(res.cont_);
+  res.cont_ = (char*)malloc(idx+1);
+  for (int i=0; i<idx; ++i) {
+    res.cont_[i] = cont_[i];
+  }
+  res.cont_[idx] = '\0';
+  res.len_ = idx;
+  return res;
 }
 
 CString CString::append(const CString& other) const

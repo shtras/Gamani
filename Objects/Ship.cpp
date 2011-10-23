@@ -13,7 +13,7 @@ Ship::Ship():autopilot_(NULL)
   yawPower_ = 0.05;
   maxYawVel_ = 10;
   maxSpeed_ = 500;
-  marchPower_ = 5;
+  marchPower_ = 0.5;
   radius_ = 0.05;
 //   currProg_ = NoProgram;
 //   targetAngle_ = -100;

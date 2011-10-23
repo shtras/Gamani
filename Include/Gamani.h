@@ -25,6 +25,8 @@ public:
   void speedUp();
   void speedDown();
   void pause();
+  bool usingSkyBox1() {return skybox1_;}
+  void setSpeed1x() {speed_ = 1;}
 private:
   void testInit();
   void layoutTest();
@@ -58,5 +60,6 @@ private:
   bool names_;
 
   UpperPanel* upperPanel_;
+  bool skybox1_;
 };
 

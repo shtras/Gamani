@@ -8,6 +8,7 @@
 #include "WLayout.h"
 #include "NavDisplay.h"
 #include "HUD.h"
+#include "VersionInfo.h"
 
 #ifdef DEBUG
 #define _CRTDBG_MAP_ALLOC
@@ -41,7 +42,7 @@ void toggleVSync()
 }
 
 Gamani::Gamani():world_(new World()), paused_(true), speed_(1.0), calcStepLength_(0.05), dtModifier_(50),auxAxes_(false),lmDown_(false),rmDown_(false),
-  lmDrag_(false), rmDrag_(false), tracers_(false), auxPrint_(true), interface_(true), names_(false)
+  lmDrag_(false), rmDrag_(false), tracers_(false), auxPrint_(true), interface_(true), names_(false),skybox1_(false)
 {
   nonContKeys_.insert('M');
   nonContKeys_.insert('V');
@@ -65,6 +66,7 @@ Gamani::Gamani():world_(new World()), paused_(true), speed_(1.0), calcStepLength
   nonContKeys_.insert(0x34);
   nonContKeys_.insert(0x35);
   nonContKeys_.insert(0x39);
+  nonContKeys_.insert(0x36);
 }
 
 
@@ -104,8 +106,8 @@ bool Gamani::mainLoop()
   double accumKeys = 0.0f;
   double dtKeys = 1;
 
-  double traceT = 0.0f;
-  double traceDT = 500.0f;
+  //double traceT = 0.0f;
+  //double traceDT = 500.0f;
 
   /************************************************************************/
   /* Interface test initialization. Temporary code                        */
@@ -124,8 +126,9 @@ bool Gamani::mainLoop()
   upperPanel_ = new UpperPanel();
   upperPanel_->init();
   layoutManager_.addLayout(upperPanel_);
-
+  int snapshotTimer = 0;
   MSG msg={0};
+  world_->snapshot();
   while(WM_QUIT!=msg.message) {
     if (PeekMessage(&msg,NULL,0,0,PM_REMOVE)) {
       TranslateMessage(&msg);
@@ -137,7 +140,7 @@ bool Gamani::mainLoop()
       currentTime = time;
       accumulator += delta;
       accumKeys += delta;
-      traceT += delta;
+//      traceT += delta;
 
       if (speed_ < 1) {
         dt = 1.0f/speed_;
@@ -147,18 +150,22 @@ bool Gamani::mainLoop()
 
       dt *= dtModifier_;
 
-      while (traceT >= traceDT) {
-        if (!paused_) {
-          world_->snapshot();
-        }
-        traceT -= traceDT;
-      }
+//       while (traceT >= traceDT) {
+//         if (!paused_) {
+//           //world_->snapshot();
+//         }
+//         traceT -= traceDT;
+//       }
 
       while(accumulator >= dt) {
         if (!paused_) {
           for (int i=0; i<speed_; ++i) {
             seconds_ += calcStepLength_*dt * (100/dtModifier_);
             world_->interactionStep();
+            if (++snapshotTimer > 10000) {
+              world_->snapshot();
+              snapshotTimer = 0;
+            }
           }
         }
         accumulator -= dt;
@@ -176,7 +183,7 @@ bool Gamani::mainLoop()
         timebase = time;
         frame = 0;
         char cfps[200];
-        sprintf(cfps, "FPS: %.lf IPS: %.lf", fps, speed_*1000/dt);
+        sprintf(cfps, "0.3.0.%d %s FPS: %.lf", BUILD_NUM, BUILDSTR, fps);
         SetWindowTextA(Renderer::getInstance().getHwnd(), (LPCSTR)(cfps));
         if (fps < 5) {
           paused_ = true;
@@ -203,6 +210,11 @@ bool Gamani::mainLoop()
 
 void Gamani::handlePressedKey(int key)
 {
+  if (layoutManager_.focusGrabbed() && interface_) {
+    if (layoutManager_.handlePressedKey(key)) {
+      return;
+    }
+  }
   switch (key) {
   case VK_LEFT:
     Renderer::getInstance().getCamera().move(-0.1, 0, 1);
@@ -285,6 +297,9 @@ void Gamani::handlePressedKey(int key)
   case 0x35:
     names_ = !names_;
     break;
+  case 0x36:
+    skybox1_ = !skybox1_;
+    break;
   default:
     world_->handlePressedKey(key);
     break;
@@ -296,7 +311,7 @@ void Gamani::handlePressedKeys()
   set<int>::iterator itr = pressedKeys_.begin();
   for (; itr != pressedKeys_.end(); ++itr) {
     int key = *itr;
-    if (nonContKeys_.count(key) > 0) {
+    if (nonContKeys_.count(key) > 0 || layoutManager_.focusGrabbed()) {
       continue;
     }
     //cout << key << " -- " << 0x30 << endl;
@@ -344,7 +359,7 @@ void Gamani::handleMessage(UINT message, WPARAM wParam, LPARAM lParam)
     break;
   case WM_LBUTTONUP:
     lmDown_ = false;
-    if (!lmDrag_) {
+    if (!lmDrag_ && interface_) {
       layoutManager_.handleMessage(message, wParam, lParam);
     }
     lmDrag_ = false;
@@ -354,7 +369,7 @@ void Gamani::handleMessage(UINT message, WPARAM wParam, LPARAM lParam)
     break;
   case WM_KEYUP:
     assert(pressedKeys_.count(wParam) == 1);
-    if (nonContKeys_.count(wParam) > 0) {
+    if (nonContKeys_.count(wParam) > 0 || layoutManager_.focusGrabbed()) {
       handlePressedKey(wParam);
     }
     pressedKeys_.erase(wParam);
@@ -409,7 +424,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   FILE* stream = NULL;
   errno_t err = freopen_s(&stream, "CON", "w", stdout);
   _CrtMemState s1;
-  _CrtMemCheckpoint( &s1 );
+  _CrtMemCheckpoint(&s1);
 #endif
 
   int res = body(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
@@ -420,8 +435,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   _CrtMemState s3;
   _CrtMemCheckpoint( &s2 );
 
-  if ( _CrtMemDifference( &s3, &s1, &s2) )
+  if (_CrtMemDifference(&s3, &s1, &s2)) {
     _CrtMemDumpStatistics( &s3 );
+    //_CrtDumpMemoryLeaks();
+  }
 #endif
   return res;
 }
@@ -484,7 +501,7 @@ void Gamani::testInit()
   planet->setVelocity(Vector3(0, 29783, 0));
   planet->setName("Earth");
   planet->setRotationPeriod(24*3600);
-  planet->setAtmRadius(6.471);
+  planet->setAtmRadius(6.971);
   planet->setAtmColor(Vector3(0, 0.75, 1));
   star->addSatellite(planet);
 
@@ -543,6 +560,8 @@ void Gamani::testInit()
   planet->setVelocity(Vector3(0, 24130, 0));
   planet->setName("Mars");
   planet->setRotationPeriod(88776);
+  planet->setAtmColor(Vector3(216.0/255.0, 134.0/255.0, 79.0/255.0));
+  planet->setAtmRadius(3.496);
   star->addSatellite(planet);
 
   //Phobos

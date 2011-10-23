@@ -576,6 +576,9 @@ void NavDisplay::drawAxes()
 void NavDisplay::render()
 {
   WLayout::render();
+  if (minimized_) {
+    return;
+  }
   updateGravityRef();
   glDisable(GL_LIGHTING);
 
