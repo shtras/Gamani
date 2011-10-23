@@ -129,6 +129,9 @@ bool Gamani::mainLoop()
   int snapshotTimer = 0;
   MSG msg={0};
   world_->snapshot();
+  double lastDelta = 0;
+  double delta = 0;
+  int cntToPause = 0;
   while(WM_QUIT!=msg.message) {
     if (PeekMessage(&msg,NULL,0,0,PM_REMOVE)) {
       TranslateMessage(&msg);
@@ -136,7 +139,21 @@ bool Gamani::mainLoop()
     } else {
       time = GetTickCount();
       ++frame;
-      double delta = time - currentTime;
+      lastDelta = delta;
+      delta = time - currentTime;
+      //cout << cntToPause << " " << lastDelta << " " << delta << endl;
+      if ((delta > lastDelta)) {
+        cntToPause++;
+        if (cntToPause > 3) {
+          pause();
+          cntToPause = 0;
+        }
+      } else {
+        cntToPause = 0;
+      }
+      if (delta > 100) {
+        pause();
+      }
       currentTime = time;
       accumulator += delta;
       accumKeys += delta;
@@ -156,7 +173,6 @@ bool Gamani::mainLoop()
 //         }
 //         traceT -= traceDT;
 //       }
-
       while(accumulator >= dt) {
         if (!paused_) {
           for (int i=0; i<speed_; ++i) {
@@ -170,7 +186,7 @@ bool Gamani::mainLoop()
         }
         accumulator -= dt;
       }
-
+      
       while (accumKeys >= dt) {
         for (int i=0; i<speed_; ++i) {
           handlePressedKeys();
@@ -186,7 +202,7 @@ bool Gamani::mainLoop()
         sprintf(cfps, "0.3.0.%d %s FPS: %.lf", BUILD_NUM, BUILDSTR, fps);
         SetWindowTextA(Renderer::getInstance().getHwnd(), (LPCSTR)(cfps));
         if (fps < 5) {
-          paused_ = true;
+          //paused_ = true;
         }
       }
 
@@ -670,6 +686,9 @@ void Gamani::testInit()
 
   StarSystem* system = new StarSystem();
   system->addStar(star);
+
+  system->skipTime(1e15);
+
   world_->setStarSystem(system);
 
   world_->addFreeObject(station);

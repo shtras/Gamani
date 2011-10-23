@@ -40,7 +40,7 @@ void DynamicBody::render()
   }
   float sizes[2];
   glGetFloatv(GL_LINE_WIDTH_RANGE, sizes);
-  glLineWidth(4.0f);
+  //glLineWidth(4.0f);
 
   glBegin(GL_LINE_STRIP);
   //glGetFloatv(GL_LINE_WIDTH_GRANULARITY, &increment);
@@ -72,7 +72,7 @@ void DynamicBody::snapshot()
  // if (name_ == "Galactica" || name_ == "Earth") {
     points_.push_back(Vector3(coord_));
  // }
-  if (points_.size() > 10000) {
+  if (points_.size() > 2000) {
     points_.pop_front();
   }
 }

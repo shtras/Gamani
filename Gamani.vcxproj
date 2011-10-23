@@ -148,9 +148,9 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="auxFuncs.h" />
     <ClInclude Include="Include\Autopilot\APProgram.h" />
     <ClInclude Include="Include\Autopilot\Autopilot.h" />
+    <ClInclude Include="Include\auxFuncs.h" />
     <ClInclude Include="Include\Camera.h" />
     <ClInclude Include="Include\Gamani.h" />
     <ClInclude Include="Include\Generic\CString.h" />

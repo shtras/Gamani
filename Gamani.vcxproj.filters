@@ -304,9 +304,6 @@
     <ClInclude Include="Include\Objects\Dockable.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="auxFuncs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\GUI\Forms\APDisplay.h">
       <Filter>Header Files\GUI\Forms</Filter>
     </ClInclude>
@@ -323,6 +320,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\VersionInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\auxFuncs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
