@@ -111,12 +111,8 @@ ModelObject::~ModelObject()
 
 void ModelObject::draw() const
 {
-  GLenum err;
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
-  //checkError();
-  err = glGetError();
-  assert(err == 0);
   glTranslatef(coord_[0], coord_[1], coord_[2]);
 
   glBindBuffer(GL_ARRAY_BUFFER, modelVBO);
@@ -132,8 +128,6 @@ void ModelObject::draw() const
   glColorPointer(4, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(12));
   glVertexPointer(3, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(0));
 
-  err = glGetError();
-  assert(err == 0);
   glDrawElements(GL_TRIANGLES, numFaces_, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
@@ -141,8 +135,6 @@ void ModelObject::draw() const
   glDisableClientState(GL_VERTEX_ARRAY);
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
-  err = glGetError();
-  assert(err == 0);
 }
 
 void ModelObject::updateMinMax()
@@ -183,10 +175,6 @@ void ModelObject::normalize(float scale)
 
 void ModelObject::initVBO()
 {
-  GLenum err;
-  err = glGetError();
-  assert (err == 0);
-
   glEnableClientState(GL_COLOR_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
   glEnableClientState(GL_VERTEX_ARRAY);
@@ -248,21 +236,11 @@ void ModelObject::initVBO()
     }
   }
 
-  err = glGetError();
-  assert (err == 0);
   glewInit();
   glGenBuffers(1, &modelVBO);
-  err = glGetError();
-  assert (err == 0);
   glBindBuffer(GL_ARRAY_BUFFER, modelVBO);
-  err = glGetError();
-  assert (err == 0);
   glBufferData(GL_ARRAY_BUFFER, sizeof(VBOVertex)*numVertexes_, 0, GL_STATIC_DRAW);
-  err = glGetError();
-  assert (err == 0);
   glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(VBOVertex)*numVertexes_, verts_);
-  err = glGetError();
-  assert (err == 0);
 
   glTexCoordPointer(2, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(40));
   glNormalPointer(GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(28));

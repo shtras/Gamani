@@ -22,6 +22,7 @@ public:
   void setStarSystem(StarSystem* system);
   const StarSystem* getCurrentSystem() const {return currentSystem_;}
   void selectShip();
+  void clearTracks();
 private:
   void interactGravity(Renderable* obj1, Renderable* obj2);
   void updatePosition(Renderable* obj);

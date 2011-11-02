@@ -80,7 +80,8 @@ void Planet::render()
    
   if (1 || camDist > 5) {
     //glColor4f(1,1,1,0.2);
-    glRotatef(rotation_, 0, 0, 1);
+    //yaw_ = 360 - rotation_;
+    glRotatef(yaw_, 0, 0, -1);
     if (texture_ == (GLuint)-1) {
       quadric_ = gluNewQuadric();
       gluQuadricTexture( quadric_, GL_TRUE);

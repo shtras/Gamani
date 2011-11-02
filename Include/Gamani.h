@@ -21,12 +21,15 @@ public:
   bool getTracers() {return tracers_;}
   bool getAuxPrints() {return auxPrint_;}
   bool getDrawNames() {return names_;}
+  bool drawInterface() {return interface_;}
 
   void speedUp();
   void speedDown();
   void pause();
   bool usingSkyBox1() {return skybox1_;}
   void setSpeed1x() {speed_ = 1;}
+  bool drawRelativeOrbits() {return relativeOrbits_;}
+  bool rotateCameraWithObject() {return rotateCameraWithObject_;}
 private:
   void testInit();
   void layoutTest();
@@ -61,5 +64,8 @@ private:
 
   UpperPanel* upperPanel_;
   bool skybox1_;
+  bool relativeOrbits_;
+
+  bool rotateCameraWithObject_;
 };
 

@@ -14,7 +14,7 @@ AstralBody::AstralBody()
   color_[1] = 1;
   color_[2] = 0;
   name_ = "NoName";
-  rotation_ = -20;
+  yaw_ = -20;
   rotationSpeed_ = 0;
   type_ = AstralType;
 }
@@ -43,12 +43,12 @@ bool AstralBody::removeSatellite(AstralBody* satellite)
 
 void AstralBody::rotationStep()
 {
-  rotation_ += rotationSpeed_ * Gamani::getInstance().getSpeedReduce();
-  while (rotation_ > 360) {
-    rotation_ -= 360;
+  yaw_ -= rotationSpeed_ * Gamani::getInstance().getSpeedReduce();
+  while (yaw_ > 360) {
+    yaw_ -= 360;
   }
-  while(rotation_ < 0) {
-    rotation_ += 360;
+  while(yaw_ < 0) {
+    yaw_ += 360;
   }
 }
 

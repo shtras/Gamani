@@ -12,6 +12,7 @@
 #include "Vector.h"
 #include "Matrix.h"
 #include <Windowsx.h>
+#include <process.h>
 //#include <string>
 #include "CString.h"
 #include "auxFuncs.h"

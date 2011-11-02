@@ -141,6 +141,15 @@ void World::handlePressedKey(int key)
   }
 }
 
+void World::clearTracks()
+{
+  int SZ = objects_->size();
+  for (int i=0; i<SZ; ++i) {
+    DynamicBody* body = (DynamicBody*)(*objects_)[i];
+    body->cleatTrack();
+  }
+}
+
 void World::selectShip()
 {
   followedObject_ = controlledShip_;

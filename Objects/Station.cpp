@@ -29,7 +29,6 @@ void Station::render()
   glRotatef(-90, 1, 0, 0);
   glRotatef(180-yaw_, 0, 1, 0);
   //glTranslatef(0, 0, -radius_*GLOBAL_MULT/2.0);
-
   const Model* model = getModel();
   if (model) {
     glScalef(radius_*GLOBAL_MULT, radius_*GLOBAL_MULT, radius_*GLOBAL_MULT);

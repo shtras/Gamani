@@ -19,6 +19,8 @@ public:
   virtual void setVelocity(Vector3 vel) {assert(0);}
   virtual double getRadius() {return radius_;}
   virtual void collideWith(AstralBody* body) {/*assert(0);*/}
+  double getYaw() {return yaw_;}
+  void setYaw(double yaw) {yaw_ = yaw;}
   CString getName() {return name_;}
   void setName(CString name) {name_ = name;}
   vector<AstralBody*>& getSatellites() {return satellites_;}
@@ -35,8 +37,9 @@ protected:
   double mass_;
   Vector3 color_;
   CString name_;
+  double yaw_;
 
-  double rotation_;
+  //double rotation_;
   double rotationSpeed_;
 
   vector<AstralBody*> satellites_;

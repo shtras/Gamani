@@ -74,7 +74,7 @@ void Star::render()
   //glRotatef(90, 0, 1, 0);
   glRotatef(190, 1, 0, 0);
 
-  glRotatef(rotation_, 0, 0, 1);
+  glRotatef(yaw_, 0, 0, -1);
   gluSphere( earth, /*2000*/radius_*GLOBAL_MULT, 36, 72);
   glDisable ( GL_TEXTURE_2D );
 

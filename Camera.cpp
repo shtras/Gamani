@@ -94,6 +94,11 @@ void Camera::rotate(double x, double y, double z)
 
 void Camera::position()
 {
+  double testHeading = heading_;
+  if (Gamani::getInstance().rotateCameraWithObject() && Gamani::getInstance().getWorld()->getFollowedObject()) {
+    testHeading -= ((DynamicBody*)(Gamani::getInstance().getWorld()->getFollowedObject()))->getYaw();
+  }
+
   bool printData = Gamani::getInstance().getAuxPrints();
   glColor3f(1,1,1);
   if (printData) {
@@ -148,7 +153,7 @@ void Camera::position()
   glRotatef(-pitch_, 1, 0, 0);
   //glTranslatef(0, position_[2], 0);
   glRotatef(180, 1, 0, 0);
-  glRotatef(heading_, 0, 0, 1);
+  glRotatef(testHeading, 0, 0, 1);
   //glTranslatef(0, 0, 10);
 
   //glTranslatef(10, 0, 0);

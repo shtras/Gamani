@@ -42,7 +42,8 @@ void toggleVSync()
 }
 
 Gamani::Gamani():world_(new World()), paused_(true), speed_(1.0), calcStepLength_(0.05), dtModifier_(50),auxAxes_(false),lmDown_(false),rmDown_(false),
-  lmDrag_(false), rmDrag_(false), tracers_(false), auxPrint_(true), interface_(true), names_(false),skybox1_(false)
+  lmDrag_(false), rmDrag_(false), tracers_(false), auxPrint_(true), interface_(true), names_(false),skybox1_(false),relativeOrbits_(false),
+  rotateCameraWithObject_(true)
 {
   nonContKeys_.insert('M');
   nonContKeys_.insert('V');
@@ -67,6 +68,7 @@ Gamani::Gamani():world_(new World()), paused_(true), speed_(1.0), calcStepLength
   nonContKeys_.insert(0x35);
   nonContKeys_.insert(0x39);
   nonContKeys_.insert(0x36);
+  nonContKeys_.insert(0x37);
 }
 
 
@@ -145,14 +147,14 @@ bool Gamani::mainLoop()
       if ((delta > lastDelta)) {
         cntToPause++;
         if (cntToPause > 3) {
-          pause();
+          paused_ = true;
           cntToPause = 0;
         }
       } else {
         cntToPause = 0;
       }
       if (delta > 100) {
-        pause();
+        paused_ = true;
       }
       currentTime = time;
       accumulator += delta;
@@ -274,7 +276,9 @@ void Gamani::handlePressedKey(int key)
     toggleVSync();
     break;
   case 'M':
-    Renderer::getInstance().getCamera().toggleGlobalView();
+    //Renderer::getInstance().getCamera().toggleGlobalView();
+    //void Ship::scrollGravityRef()
+    relativeOrbits_ = !relativeOrbits_;
     break;
   case 'P':
     pause();
@@ -295,7 +299,8 @@ void Gamani::handlePressedKey(int key)
     calcStepLength_ /= 1.5;
     break;
   case 'O':
-    auxAxes_ = !auxAxes_;
+    //auxAxes_ = !auxAxes_;
+    world_->clearTracks();
     break;
   case 0x31:
     tracers_ = !tracers_;
@@ -315,6 +320,21 @@ void Gamani::handlePressedKey(int key)
     break;
   case 0x36:
     skybox1_ = !skybox1_;
+    break;
+  case 0x37:
+    rotateCameraWithObject_ = !rotateCameraWithObject_;
+    //Dirty hack. Temporary. Yeah, I know, it will probably stay here forever...
+    if (rotateCameraWithObject_) {
+      if (world_->getFollowedObject()) {
+        Camera& camera = Renderer::getInstance().getCamera();
+        camera.setHeading(camera.getHeading() + world_->getFollowedObject()->getYaw());
+      }
+    } else {
+      if (world_->getFollowedObject()) {
+        Camera& camera = Renderer::getInstance().getCamera();
+        camera.setHeading(camera.getHeading() - world_->getFollowedObject()->getYaw());
+      }
+    }
     break;
   default:
     world_->handlePressedKey(key);
@@ -687,7 +707,7 @@ void Gamani::testInit()
   StarSystem* system = new StarSystem();
   system->addStar(star);
 
-  system->skipTime(1e15);
+  //system->skipTime(1e15);
 
   world_->setStarSystem(system);
 
