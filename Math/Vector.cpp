@@ -99,7 +99,15 @@ double Vector3::getAngle()
   }
   //double c = cont_[0]/cont_[1];
   double ra = atan2(cont_[0], -cont_[1]);
-  return RadToDeg(ra);
+  double res = RadToDeg(ra);
+  if (res < 180.0) {
+    res += 360.0;
+  }
+  if (res > 180.0) {
+    res -= 360.0;
+  }
+  assert(res >= -180.0 && res <= 180.0);
+  return res;
   //double da = -RadToDeg(ra) + 90.0;
   //if (cont_[0] > 0 && cont_[1] > 0) {
   //  return da;

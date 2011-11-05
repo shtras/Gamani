@@ -38,7 +38,7 @@ void WInput::render(double left, double top, double width, double height)
   if (focus_) {
     textToShow = textToShow + CString("|");
   }
-  Renderer::getInstance().textOutNoMove(0.01, height/2, -0.1, "%s", textToShow.operator const char *());
+  Renderer::getInstance().textOut(left, top+height/2, -0.1, "%s", textToShow.operator const char *());
   glEnable(GL_LIGHTING);
 }
 

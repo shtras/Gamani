@@ -49,9 +49,9 @@ public:
 	void LoadTGAResource(char *name);				// Load a targa from the resources
 	void LoadBMPResource(char *name);				// Load a bitmap from the resources
 	void LoadFromResource(char *name);				// Load the texture from a resource
-	void LoadTGA(char *name);						// Loads a targa file
-	void LoadBMP(char *name);						// Loads a bitmap file
-	void Load(char *name);							// Load the texture
+	bool LoadTGA(char *name);						// Loads a targa file
+	bool LoadBMP(char *name);						// Loads a bitmap file
+	bool Load(char *name);							// Load the texture
 	GLTexture();									// Constructor
 	virtual ~GLTexture();							// Destructor
 

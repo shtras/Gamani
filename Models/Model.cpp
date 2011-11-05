@@ -32,12 +32,17 @@ void Model::initVBOs()
 
 void Model::draw() const
 {
+  //glDisable(GL_LIGHTING);
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, materials_[0]->texture[0]);
   glPushMatrix();
   glTranslatef(coord_[0], coord_[1], coord_[2]);
   for (unsigned int i=0; i<objects_.size(); ++i) {
     objects_[i]->draw();
   }
   glPopMatrix();
+  glDisable(GL_TEXTURE_2D);
+  //glEnable(GL_LIGHTING);
 }
 
 void Model::normalize()
@@ -185,8 +190,14 @@ void ModelObject::initVBO()
 
   int idx = 0;
   int faceIdx = 0;
+  int mymatidx = matIndexes_[0];
+  assert(matIndexes_.size() == vertices_.size());
 
   for (unsigned int j=0; j<vertices_.size(); ++j) {
+    if (mymatidx != matIndexes_[j]) {
+      int a = matIndexes_[j];
+      int b = 0;
+    }
     Vector3* vertex = vertices_[j];
     Vector3* normal = normals_[j];
 

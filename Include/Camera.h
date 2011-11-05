@@ -21,7 +21,7 @@ public:
   void handleMessage(UINT message, WPARAM wParam, LPARAM lParam);
   const double* getPosition() const {return position_;}
   double getZoom() const {return zoom_;}
-  double getHeading() const {return heading_;}
+  double getHeading() const;
   double getPitch() const {return pitch_;}
   void setPitch(double pitch) {pitch_ = pitch;}
   void setHeading(double heading) {heading_ = heading;}

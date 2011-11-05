@@ -30,5 +30,5 @@ private:
   char* cont_;
   int len_;
 
-  string str_;
+  //string str_;
 };

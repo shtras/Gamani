@@ -31,6 +31,9 @@ public:
   double getRotationAngleSpeed(); //Angle per second rotation
   double getSurfaceLinearSpeed();
   void drawName();
+  virtual bool hasAtmosphere() {return false;}
+  virtual double getAtmRadius() {return 0;}
+  virtual Vector3 getAtmColor() {return Vector3(0,0,0);}
 protected:
   double radius_;
   Vector3 coord_;

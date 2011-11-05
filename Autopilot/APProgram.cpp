@@ -159,7 +159,7 @@ ApproachProg::ApproachProg(Autopilot* autopilot):APProgram(autopilot)
   Vector3 relSpd = getShip()->getVelocity() - target_->getVelocity();
   double relSpdAngle = relSpd.getAngle();
 
-  cout << "tgt " << targetAngle << " spd " << relSpdAngle << endl;
+  //cout << "tgt " << targetAngle << " spd " << relSpdAngle << endl;
 
   autopilot_->addProgram(new RotateProg(autopilot_, relSpdAngle - 180.0));
   autopilot_->addProgram(new EqSpeedProg(autopilot_, target_->getVelocity()));
@@ -228,7 +228,7 @@ void ApproachProgStep2::init()
   Vector3 relSpd = getShip()->getVelocity() - target_->getVelocity();
   double relSpdAngle = relSpd.getAngle();
 
-  cout << "tgt " << targetAngle << " spd " << relSpdAngle << endl;
+  //cout << "tgt " << targetAngle << " spd " << relSpdAngle << endl;
   autopilot_->addProgram(new AccelProg(autopilot_, (shipCoord + tgtCoord)*0.5));
   autopilot_->addProgram(new RotateProg(autopilot_, targetAngle + 180.0));
   autopilot_->addProgram(new AccelProg(autopilot_, tgtCoord));
@@ -355,9 +355,14 @@ void ProGradeProg::init()
     autopilot_->setError("No ref defined");
     return;
   }
-  Vector3 dir = tgt->getCoord() - autopilot_->getShip()->getCoord();
+  Vector3 dir = autopilot_->getShip()->getCoord() - tgt->getCoord();
+  Vector3 vel = autopilot_->getShip()->getVelocity() - tgt->getVelocity();
+  Vector3 dirToVel = dir + vel.getNormalized();
+
   double angle = dir.getAngle();
-  autopilot_->addProgram(new RotateProg(autopilot_, angle + 90.0));
+  double angle1 = dirToVel.getAngle();
+  double delta = ((angle) < (angle1))?90.0:-90.0;
+  autopilot_->addProgram(new RotateProg(autopilot_, angle + delta));
 }
 
 void ProGradeProg::step()
@@ -383,9 +388,14 @@ void RetroGradeProg::init()
     autopilot_->setError("No ref defined");
     return;
   }
-  Vector3 dir = tgt->getCoord() - autopilot_->getShip()->getCoord();
+  Vector3 dir = autopilot_->getShip()->getCoord() - tgt->getCoord();
+  Vector3 vel = autopilot_->getShip()->getVelocity() - tgt->getVelocity();
+  Vector3 dirToVel = dir + vel.getNormalized();
+
   double angle = dir.getAngle();
-  autopilot_->addProgram(new RotateProg(autopilot_, angle - 90.0));
+  double angle1 = dirToVel.getAngle();
+  double delta = ((angle) < (angle1))?90.0:-90.0;
+  autopilot_->addProgram(new RotateProg(autopilot_, angle - delta));
 }
 
 void RetroGradeProg::step()

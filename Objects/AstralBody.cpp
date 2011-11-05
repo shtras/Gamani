@@ -31,6 +31,7 @@ void AstralBody::render()
 void AstralBody::addSatellite(AstralBody* satellite)
 {
   satellites_.push_back(satellite);
+  satellite->setRank(rank_ + 1);
 }
 
 bool AstralBody::removeSatellite(AstralBody* satellite)

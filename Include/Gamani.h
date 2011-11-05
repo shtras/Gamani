@@ -46,6 +46,7 @@ private:
   double long seconds_;
   double calcStepLength_;
   double dtModifier_;
+  bool shiptPressed_;
 
   bool tracers_;
   bool auxPrint_;

@@ -5,7 +5,7 @@
 #include "Gamani.h"
 #include "Renderer.h"
 
-NavDisplay::NavDisplay():syncOrbitRef_(NULL), mode_(Orbit),selectRef_(false),gravityRef_(NULL),manualRef_(false)
+NavDisplay::NavDisplay():syncOrbitRef_(NULL), mode_(Orbit),selectRef_(false),gravityRef_(NULL),manualRef_(false),dp_(0),da_(0)
 {
 }
 
@@ -46,6 +46,14 @@ void NavDisplay::init()
   surfDistData_->setDimensions(0.05, 0.75, 1, 1);
   surfDistData_->setText("AAA!");
   addWidget(surfDistData_);
+
+  apoText_ = new WText();
+  apoText_->setDimensions(0.05, 0.7, 1, 1);
+  addWidget(apoText_);
+
+  periText_ = new WText();
+  periText_->setDimensions(0.05, 0.65, 1, 1);
+  addWidget(periText_);
 
   modeButton_ = new WButton();
   modeButton_->setDimensions(0.41, 0.01, 0.19, 0.07);
@@ -262,16 +270,22 @@ void NavDisplay::updateData()
 
   
 
-  CString vel = Renderer::getInstance().formatVelocity(relSpd.getLength(), 3);
+  CString vel = Renderer::getInstance().formatVelocity(relSpd.getLength(), 2);
   char sprStr[100];
-  sprintf(sprStr, "Vel: %s", vel.operator const char *());
+  sprintf(sprStr, "V: %s", vel.operator const char *());
   velData_->setText(sprStr);
 
-  sprintf(sprStr, "Dist: %s", Renderer::getInstance().formatDistance(dist, 3).operator const char *());
+  sprintf(sprStr, "D: %s", Renderer::getInstance().formatDistance(dist, 2).operator const char *());
   distData_->setText(sprStr);
 
-  sprintf(sprStr, "Height: %s", Renderer::getInstance().formatDistance(sdist, 3));
+  sprintf(sprStr, "H: %s", Renderer::getInstance().formatDistance(sdist, 2));
   surfDistData_->setText(sprStr);
+
+  sprintf(sprStr, "Da: %s", Renderer::getInstance().formatDistance(da_, 2));
+  apoText_->setText(sprStr);
+
+  sprintf(sprStr, "Dp: %s", Renderer::getInstance().formatDistance(dp_, 2));
+  periText_->setText(sprStr);
 }
 
 void NavDisplay::drawSyncOrbit(Ship* ship, DynamicBody* ref)
@@ -412,6 +426,9 @@ void NavDisplay::drawOrbit(Ship* ship)
   Vector3 e = (r*(v.dot(v) - myu/r.getLength()) - v*(r.dot(v)))*(1.0/myu);
   double E = v.dot(v)/2.0 - myu/r.getLength();
   double a = -myu/2.0/E;
+  if (a < 0) {
+    a = -a;
+  }
   double elen = e.getLength();
   double b = sqrt(a*a*(1.0-e.dot(e)));
   double theta = h[2]/h.getLength();
@@ -432,9 +449,14 @@ void NavDisplay::drawOrbit(Ship* ship)
     eps = 0;
   }
 
+  double T = 2*PI*sqrt(a*a*a/myu); //period in seconds
+
   double maxDiameter = 2*a*1e-6;
   double translateDist = eps*a*1e-6;
   double scaleFactor = a/b * maxDiameter / 2.0;
+
+  dp_ = a*(1-eps) * 1e-6;
+  da_ = a*(1+eps) * 1e-6;
 
   //Renderer::getInstance().textOut(0.5, 0.5, 0, "a: %lf, b: %lf, maxDiameter: %lf, translateDist: %lf, ScaleFactor: %lf", a*1e-6, b*1e-6, e[0], e[1], e[2]);
   glColor3f(0.2, 0.7, 0.1);
@@ -450,6 +472,21 @@ void NavDisplay::drawOrbit(Ship* ship)
 
   glPushMatrix();
   static double plAng = 0;
+
+  if (gravityRef_->hasAtmosphere()) {
+    double atm = gravityRef_->getAtmRadius();
+    glColor3f(0.3,0.3,0.3);
+    glBegin(GL_LINE_STRIP);
+    for (double i=0.0; i<361.0; i+=1.0) {
+      double ang = i*3.14159265/180.0;
+      glVertex3f(cos(ang)*atm, sin(ang)*atm, 0);
+    }
+    glEnd();
+    glColor3f(0.2, 0.7, 0.1);
+
+  }
+
+
   glRotatef(75, 1, 0, 0);
   glRotatef(plAng, 0, 0, 1);
   plAng += 0.05;

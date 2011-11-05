@@ -36,6 +36,10 @@ vector<AstralBody*>* World::getAllObjects()
 
 void World::switchControlledShip(Ship* ship)
 {
+  if (controlledShip_) {
+    controlledShip_->setRank(2);
+  }
+  ship->setRank(1);
   controlledShip_ = ship;
 }
 
@@ -379,6 +383,7 @@ void World::setStarSystem(StarSystem* system)
 
 void World::addFreeObject(AstralBody* object)
 {
+  object->setRank(3);
   freeObjects_.push_back(object);
   objects_->push_back(object);
 }

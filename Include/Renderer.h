@@ -3,6 +3,7 @@
 #include "AstralBody.h"
 #include "SkyBox.h"
 #include "Planet.h"
+#include "Renderable.h"
 
 using namespace std;
 
@@ -29,6 +30,10 @@ public:
   CString formatVelocity (double vel, int len = 4);
   void resize (int width, int height);
 private:
+  class TextToWrite
+  {
+
+  };
   Renderer();
   ~Renderer();
 
@@ -39,12 +44,15 @@ private:
   void checkAndDrawAtmosphere();
   void drawAtmosphere(Planet* planet, double dist, double angle);
 
+  bool rankEnoughToRender(Renderable* object);
+
   Camera* camera_;
   bool init_;
   HWND hWnd_;
   HINSTANCE* hInstance_;
   int height_;
   int width_;
+  bool customViewPort_;
 
   SkyBox* skyBox_;
 

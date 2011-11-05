@@ -92,11 +92,20 @@ void Camera::rotate(double x, double y, double z)
   }
 }
 
+double Camera::getHeading() const
+{
+  if (Gamani::getInstance().rotateCameraWithObject() && Gamani::getInstance().getWorld()->getFollowedObject()) {
+    return heading_ - Gamani::getInstance().getWorld()->getFollowedObject()->getYaw();
+  } else {
+    return heading_;
+  }
+}
+
 void Camera::position()
 {
   double testHeading = heading_;
   if (Gamani::getInstance().rotateCameraWithObject() && Gamani::getInstance().getWorld()->getFollowedObject()) {
-    testHeading -= ((DynamicBody*)(Gamani::getInstance().getWorld()->getFollowedObject()))->getYaw();
+    testHeading -= Gamani::getInstance().getWorld()->getFollowedObject()->getYaw();
   }
 
   bool printData = Gamani::getInstance().getAuxPrints();
@@ -200,6 +209,6 @@ void Camera::handleMessage(UINT message, WPARAM wParam, LPARAM lParam)
   int dy = yPos - lastY_;
   lastX_ = xPos;
   lastY_ = yPos;
-  cout << dx << " " << dy << endl;
+  //cout << dx << " " << dy << endl;
   rotate(dx*0.1, dy*0.1, 0);
 }

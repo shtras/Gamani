@@ -5,34 +5,30 @@
 
 CString::CString()
 {
-  cont_ = (char*)malloc(1);
+  cont_ = new char[1];
   cont_[0] = '\0';
   len_ = 0;
-  str_ = "";
+  //str_ = "";
 }
 
-CString::CString(const CString& other)
+CString::CString(const CString& other)//:str_(other)
 {
-  cont_ = (char*)malloc(other.len_+1);
+  cont_ = new char[other.len_+1];
   strcpy(cont_, other.cont_);
   len_ = other.len_;
-
-  str_ = other.str_;
 }
 
-CString::CString(const char* str)
+CString::CString(const char* str)//:str_(str)
 {
   len_ = strlen(str);
-  cont_ = (char*)malloc(len_+1);
+  cont_ = new char[len_+1];
   strcpy(cont_, str);
-
-  str_ = string(str);
 }
 
 CString::CString(char c)
 {
   len_ = 1;
-  cont_ = (char*)malloc(2);
+  cont_ = new char[2];
   cont_[0] = c;
   cont_[1] = '\0';
 }
@@ -45,13 +41,13 @@ CString::CString(int val)
     val /= 10;
     len++;
   }
-  cont_ = (char*)malloc(len);
+  cont_ = new char[len];
   _itoa(origval, cont_, 10);
   len_ = len;
 
   std::stringstream ss;
   ss << val;
-  str_ = ss.str();
+  //str_ = ss.str();
 }
 
 CString::CString(float val)
@@ -65,10 +61,10 @@ CString::CString(double val)
   ss << val;
   std::string str = ss.str();
   len_ = str.size();
-  cont_ = (char*)malloc(len_+1);
+  cont_ = new char[len_+1];
   strcpy(cont_, str.c_str());
 
-  str_ = str;
+  //str_ = str;
 }
 
 CString::CString(double val, int len)
@@ -77,10 +73,10 @@ CString::CString(double val, int len)
   ss << setprecision(len) << setiosflags(ios_base::fixed) << val;
   std::string str = ss.str();
   len_ = str.size();
-  cont_ = (char*)malloc(len_+1);
+  cont_ = new char[len_+1];
   strcpy(cont_, str.c_str());
 
-  str_ = str;
+  //str_ = str;
 }
 
 CString::CString(long val)
@@ -90,7 +86,7 @@ CString::CString(long val)
 
 CString::~CString()
 {
-  free(cont_);
+  delete[] cont_;
   cont_ = NULL;
 }
 
@@ -104,8 +100,8 @@ CString CString::left(int idx)
 {
   assert(idx<len_ && idx>=0);
   CString res;
-  free(res.cont_);
-  res.cont_ = (char*)malloc(idx+1);
+  delete[] res.cont_;
+  res.cont_ = new char[idx+1];
   for (int i=0; i<idx; ++i) {
     res.cont_[i] = cont_[i];
   }
@@ -117,8 +113,8 @@ CString CString::left(int idx)
 CString CString::append(const CString& other) const
 {
   CString res;
-  free(res.cont_);
-  res.cont_ = (char*)malloc(len_ + other.len_ + 1);
+  delete[] res.cont_;
+  res.cont_ = new char[len_ + other.len_ + 1];
   strcpy(res.cont_, cont_);
   strcpy(res.cont_ + len_, other.cont_);
   res.len_ = len_ + other.len_;
@@ -147,8 +143,8 @@ CString CString::operator+ (const CString& other) const
 
 CString& CString::operator= (CString& other)
 {
-  free(cont_);
-  cont_ = (char*)malloc(other.len_+1);
+  delete[] cont_;
+  cont_ = new char[other.len_+1];
   strcpy(cont_, other.cont_);
   len_ = other.len_;
   return *this;
@@ -156,9 +152,9 @@ CString& CString::operator= (CString& other)
 
 CString& CString::operator= (const char* str)
 {
-  free(cont_);
+  delete[] cont_;
   len_ = strlen(str);
-  cont_ = (char*)malloc(len_+1);
+  cont_ = new char[len_+1];
   strcpy(cont_, str);
   return *this;
 }

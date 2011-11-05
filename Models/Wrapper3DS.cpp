@@ -74,7 +74,6 @@ Model* Wrapper3DS::Load(CString fileName)
 
   totalVerts = 0;
   totalFaces = 0;
-
   char* name = new char[fileName.getSize()+1];
   strcpy(name, fileName);
 
@@ -162,6 +161,7 @@ Model* Wrapper3DS::Load(CString fileName)
     mat->color.g = Materials[i].color.g;
     mat->color.b = Materials[i].color.b;
     mat->color.a = Materials[i].color.a;
+    *mat->texture = *Materials[i].tex.texture;
     model->materials_.push_back(mat);
   }
   for (int i=0; i<numObjects; ++i) {
@@ -196,14 +196,17 @@ Model* Wrapper3DS::Load(CString fileName)
       }
       face->vertIndexes_.push_back(obj.Faces[j]);
     }
+    int test = 0;
     modelObj->faces_.push_back(face);
     for (int j=0; j<obj.numMatFaces; ++j) {
       MaterialFaces& matFaces = obj.MatFaces[j];
+      test += matFaces.numSubFaces;
       for (int k=0; k<matFaces.numSubFaces; ++k) {
         //modelObj->faces_[matFaces.subFaces[k]]->matIndex_ = matFaces.MatIndex;
         modelObj->matIndexes_[matFaces.subFaces[k]] = matFaces.MatIndex;
       }
     }
+    assert(test == obj.numFaces);
   }
   model->normalize();
   delete[] path;
@@ -623,8 +626,8 @@ void Wrapper3DS::MapNameChunkProcessor(long length, long findex, int matindex)
   // Load the name and indicate that the material has a texture
   char fullname[80];
   sprintf(fullname, "%s", name);
-  Materials[matindex].tex.Load(fullname);
-  Materials[matindex].textured = true;
+  bool res = Materials[matindex].tex.Load(fullname);
+  Materials[matindex].textured = res;
 
   // move the file pointer back to where we got it so
   // that the ProcessChunk() which we interrupted will read

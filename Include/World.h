@@ -20,7 +20,7 @@ public:
   void switchFollowedObject(AstralBody* object) {followedObject_ = object;}
   AstralBody* getFollowedObject() {return followedObject_;}
   void setStarSystem(StarSystem* system);
-  const StarSystem* getCurrentSystem() const {return currentSystem_;}
+  StarSystem* getCurrentSystem() {return currentSystem_;}
   void selectShip();
   void clearTracks();
 private:

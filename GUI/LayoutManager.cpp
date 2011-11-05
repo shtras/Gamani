@@ -65,7 +65,7 @@ bool LayoutManager::handleMouseClick(WPARAM wParam, LPARAM lParam)
     for (; itr != layouts_.end(); ++itr) {
       WLayout* layout = *itr;
       if (layout->isVisible() && layout->isInside(dx, dy)) {
-        cout << "Yes!" << endl;
+        //cout << "Yes!" << endl;
         if (layout->isRightAlign()) {
           double trueWidth = layout->getWidth();
           if (layout->isSquare()) {

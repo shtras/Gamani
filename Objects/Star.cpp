@@ -7,6 +7,7 @@ Star::Star()
   color_ = Vector3(1, 1, 0);
   mass_ = 198.0e18;
   type_ = StarType;
+  rank_ = 0;
 }
 
 
@@ -19,6 +20,7 @@ void Star::render()
   DynamicBody::render();
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
+
 
   Vector3 coord = getRealCoordinates(coord_);
   double dist = coord.getLength();

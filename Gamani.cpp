@@ -41,9 +41,9 @@ void toggleVSync()
   }
 }
 
-Gamani::Gamani():world_(new World()), paused_(true), speed_(1.0), calcStepLength_(0.05), dtModifier_(50),auxAxes_(false),lmDown_(false),rmDown_(false),
+Gamani::Gamani():world_(new World()), paused_(true), speed_(1), calcStepLength_(0.05), dtModifier_(50),auxAxes_(false),lmDown_(false),rmDown_(false),
   lmDrag_(false), rmDrag_(false), tracers_(false), auxPrint_(true), interface_(true), names_(false),skybox1_(false),relativeOrbits_(false),
-  rotateCameraWithObject_(true)
+  rotateCameraWithObject_(true),shiptPressed_(false)
 {
   nonContKeys_.insert('M');
   nonContKeys_.insert('V');
@@ -55,6 +55,7 @@ Gamani::Gamani():world_(new World()), paused_(true), speed_(1.0), calcStepLength
   nonContKeys_.insert('L');
   nonContKeys_.insert('X');
   nonContKeys_.insert('C');
+  nonContKeys_.insert('Z');
   //nonContKeys_.insert('Q');
   //nonContKeys_.insert('E');
   nonContKeys_.insert('O');
@@ -162,9 +163,9 @@ bool Gamani::mainLoop()
 //      traceT += delta;
 
       if (speed_ < 1) {
-        dt = 1.0f/speed_;
+        dt = 1.0/speed_;
       } else {
-        dt = 1.0f;
+        dt = 1.0;
       }
 
       dt *= dtModifier_;
@@ -180,6 +181,7 @@ bool Gamani::mainLoop()
           for (int i=0; i<speed_; ++i) {
             seconds_ += calcStepLength_*dt * (100/dtModifier_);
             world_->interactionStep();
+            handlePressedKeys();
             if (++snapshotTimer > 10000) {
               world_->snapshot();
               snapshotTimer = 0;
@@ -189,12 +191,12 @@ bool Gamani::mainLoop()
         accumulator -= dt;
       }
       
-      while (accumKeys >= dt) {
-        for (int i=0; i<speed_; ++i) {
-          handlePressedKeys();
-        }
-        accumKeys -= dt;
-      }
+      //while (accumKeys >= dt) {
+      //  for (int i=0; i<speed_; ++i) {
+      //    //handlePressedKeys();
+      //  }
+      //  accumKeys -= dt;
+      //}
 
       if (time - timebase > 1000) {
         double fps = frame*1000.0/(time-timebase);
@@ -293,10 +295,24 @@ void Gamani::handlePressedKey(int key)
     //speed_ /= 2;
     break;
   case 'X':
-    calcStepLength_ *= 1.5;
+    if (shiptPressed_) {
+      calcStepLength_ += 2;
+    } else {
+      calcStepLength_ += 0.05;
+    }
+    if (calcStepLength_ < 0.0001) {
+      calcStepLength_ = 0.05;
+    }
     break;
   case 'C':
-    calcStepLength_ /= 1.5;
+    if (shiptPressed_) {
+      calcStepLength_ -= 2;
+    } else {
+      calcStepLength_ -= 0.05;
+    }
+    if (calcStepLength_ < 0.0001) {
+      calcStepLength_ = 0.05;
+    }
     break;
   case 'O':
     //auxAxes_ = !auxAxes_;
@@ -312,8 +328,9 @@ void Gamani::handlePressedKey(int key)
     interface_ = !interface_;
     break;
   case 0x34:
-    Renderer::getInstance().getCamera().setPitch(0);
-    Renderer::getInstance().getCamera().setHeading(90);
+    //Renderer::getInstance().getCamera().setPitch(0);
+    //Renderer::getInstance().getCamera().setHeading(90);
+    world_->getCurrentSystem()->skipTime(1e4);
     break;
   case 0x35:
     names_ = !names_;
@@ -401,9 +418,17 @@ void Gamani::handleMessage(UINT message, WPARAM wParam, LPARAM lParam)
     lmDrag_ = false;
     break;
   case WM_KEYDOWN:
+    if (wParam == 0x10) {
+      shiptPressed_ = true;
+      break;
+    }
     pressedKeys_.insert(wParam);
     break;
   case WM_KEYUP:
+    if (wParam == 0x10) {
+      shiptPressed_ = false;
+      break;
+    }
     assert(pressedKeys_.count(wParam) == 1);
     if (nonContKeys_.count(wParam) > 0 || layoutManager_.focusGrabbed()) {
       handlePressedKey(wParam);
@@ -420,12 +445,20 @@ void Gamani::handleMessage(UINT message, WPARAM wParam, LPARAM lParam)
 
 void Gamani::speedUp()
 {
-  speed_ *= 2;
+  if (shiptPressed_) {
+    speed_ = 3000;
+  } else {
+    speed_ *= 2;
+  }
 }
 
 void Gamani::speedDown()
 {
-  speed_ /= 2;
+  if (shiptPressed_) {
+    speed_ = 1;
+  } else {
+    speed_ /= 2;
+  }
 }
 
 void Gamani::pause()
@@ -557,19 +590,20 @@ void Gamani::testInit()
   ship->setDockingPort(Vector3(0, 1.3, 0)); //Hey, screwed up axes. Again...
   ship->setPortAngle(0);
 
-  Station* station = new Station();
-  station->setCoord(Vector3(149590.01, 0, 0));
-  station->setVelocity(Vector3(/*-6250*/0, 29783-6250, 0));
-  station->setRadius(0.001);
-  station->setName("Shipyard");
-  StationDisplay* stationDisplay = new StationDisplay();
-  stationDisplay->init();
-  stationDisplay->setVisible(false);
-  layoutManager_.addLayout(stationDisplay);
-  station->setDisplay(stationDisplay);
-  station->initModel("res/station.3ds");
-  station->setDockingPort(Vector3(0.65, 0.03, 0.1));
-  station->setPortAngle(270);
+  //Station* station = new Station();
+  //station->setCoord(Vector3(149590.01, 0, 0));
+  //station->setVelocity(Vector3(/*-6250*/0, 29783-6250, 0));
+  //station->setRadius(0.001);
+  //station->setName("Shipyard");
+  //StationDisplay* stationDisplay = new StationDisplay();
+  //stationDisplay->init();
+  //stationDisplay->setVisible(false);
+  //layoutManager_.addLayout(stationDisplay);
+  //station->setDisplay(stationDisplay);
+  //station->initModel("res/station.3ds");
+  //station->setDockingPort(Vector3(0.65, 0.03, 0.1));
+  //station->setPortAngle(270);
+  //planet->addSatellite(station);
 
   //station->setYawVel(1);
   //ship->dockedTo_ = station;
@@ -711,7 +745,7 @@ void Gamani::testInit()
 
   world_->setStarSystem(system);
 
-  world_->addFreeObject(station);
+  //world_->addFreeObject(station);
   world_->addFreeObject(ship);
   world_->switchControlledShip(ship);
 }

@@ -17,6 +17,7 @@ Vector3 getRealCoordinates(Vector3 coord)
 
 Renderable::Renderable()
 {
+  rank_ = 10;
 }
 
 

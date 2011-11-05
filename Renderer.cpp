@@ -86,7 +86,7 @@ int LoadBitmap11(const char *filename)
 }
 
 
-Renderer::Renderer():init_(false),hInstance_(NULL),camera_(new Camera()), renderList_(NULL)
+Renderer::Renderer():init_(false),hInstance_(NULL),camera_(new Camera()), renderList_(NULL),customViewPort_(false)
 {
 }
 
@@ -263,22 +263,35 @@ void Renderer::resize(int width, int height)
 void Renderer::requestViewPort(double left, double top, double width, double height, bool square/* = false*/, bool rightAlign_/* = false*/)
 {
   double actualLeft = width_*left;
+  double x = 0;
+  double y = 0;
+  double w = 0;
+  double h = 0;
   if (square) {
     if (rightAlign_) {
       actualLeft = width_ - height_*height;
     }
-    glViewport(actualLeft, height_*(top-height), height_*height, height_*height);
+    x = actualLeft;
+    y = height_*(top-height);
+    w = height_*height;
+    h =height_*height;
   } else {
     if (rightAlign_) {
       actualLeft = width_ - width_*width;
     }
-    glViewport(actualLeft, height_*(top-height), width_*width, height_*height);
+    x = actualLeft;
+    y = height_*(top-height);
+    w = width_*width;
+    h =height_*height;
   }
+  glViewport(x, y, w, h);
+  customViewPort_ = true;
 }
 
 void Renderer::resetViewPort()
 {
   glViewport(0, 0, width_, height_);
+  customViewPort_ = false;
 }
 
 GLvoid *font_style = GLUT_BITMAP_8_BY_13;
@@ -296,21 +309,18 @@ void Renderer::textOutNoMove(double x, double y, double z, const char* format, .
   vsprintf(text, format, args);
   va_end(args);
 
+  int size = strlen(text);
+
   glDisable(GL_LIGHTING);
-
-
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glTranslatef(x,y,z);
-
   glRasterPos3f (0, 0, 0);
   for (i = 0; text[i] != '\0'; i++) {
     glutBitmapCharacter(font_style, text[i]);
   }
   free(text);
-
   glPopMatrix();
-
   glEnable(GL_LIGHTING);
 }
 
@@ -327,7 +337,6 @@ void Renderer::textOut(double x, double y, double z, char* format, ...)
   va_end(args);
  
   glDisable(GL_LIGHTING);
- 
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
@@ -335,20 +344,60 @@ void Renderer::textOut(double x, double y, double z, char* format, ...)
   glPushMatrix();
   glLoadIdentity();
   glTranslatef(x,y,z);
- 
   glColor3f(1,1,1);
   glRasterPos3f (0, 0, 0);
   for (i = 0; text[i] != '\0'; i++) {
     glutBitmapCharacter(font_style, text[i]);
   }
   free(text);
- 
   glPopMatrix();
   glMatrixMode(GL_PROJECTION);
   glPopMatrix();
   glMatrixMode(GL_MODELVIEW);
 
   glEnable(GL_LIGHTING);
+}
+
+bool Renderer::rankEnoughToRender(Renderable* object)
+{
+  Camera& camera = Renderer::getInstance().getCamera();
+  const double* dCamPos = camera.getPosition();
+  Vector3 camPos = Vector3(-dCamPos[0], -dCamPos[1], /*dCamPos[2]*/0);
+  double camDirAlpha = camera.getHeading();
+  double camDirPhi = camera.getPitch();
+  double camZoom = camera.getZoom();
+  double ralpha = camDirAlpha * 3.14159265 / 180.0;
+  double rphi = camDirPhi * 3.14159265 / 180.0;
+  Vector3 camDir(sin(ralpha), cos(ralpha), sin(rphi));
+  camDir *= 10/camZoom;
+  camPos -= camDir;
+  camPos *= 1/GLOBAL_MULT;
+  double camDist = (camPos - object->getCoord()).getLength();
+
+  switch (object->getRank()) {
+  case 0:
+    break;
+  case 1:
+    if (camDist > 5e7) {
+      return false;
+    }
+    break;
+  case 2:
+    if (camDist > 1e4) {
+      return false;
+    }
+    break;
+  case 3:
+    if (camDist > 1e3) {
+      return false;
+    }
+    break;
+  default:
+    if (camDist > 1e2) {
+      return false;
+    }
+  }
+  return true;
 }
 
 void Renderer::render()
@@ -361,12 +410,15 @@ void Renderer::render()
   glClearDepth(1);
   //camera_->applyZoom();
   //testCase();
+
   if (renderList_) {
     //list<Renderable*>::iterator itr = renderList_->begin();
     //for (; itr != renderList_->end(); ++itr) {
     for (unsigned int i=0; i<renderList_->size(); ++i) {
       Renderable* object = /**itr*/(*renderList_)[i];
-      object->render();
+      if (rankEnoughToRender(object)) {
+        object->render();
+      }
     }
   }
   camera_->test();
@@ -375,6 +427,7 @@ void Renderer::render()
 
 void Renderer::renderEnd()
 {
+  
   glFlush();
   SwapBuffers(GetDC(hWnd_));
 }
@@ -458,7 +511,7 @@ void Renderer::checkAndDrawAtmosphere()
     if (distance <= planet->getAtmRadius()) {
       Vector3 sunToPlanet = planetCoord - sunPos;
       double angle = RadToDeg(acos(sunToPlanet.getNormalized().dot(dist.getNormalized())));
-      cout << angle << endl;
+      //cout << angle << endl;
       drawAtmosphere(planet, distance, angle);
     }
   }

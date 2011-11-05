@@ -44,6 +44,7 @@ struct Material
   CString name;
   Color color;
   bool textured;
+  unsigned int texture[1];
 };
 
 class Model

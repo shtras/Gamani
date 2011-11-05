@@ -51,7 +51,7 @@ GLTexture::~GLTexture()
 
 }
 
-void GLTexture::Load(char *name)
+bool GLTexture::Load(char *name)
 {
 	// make the texture name all lower case
 	texturename = _strlwr(_strdup(name));
@@ -62,9 +62,10 @@ void GLTexture::Load(char *name)
 
 	// check the file extension to see what type of texture
 	if(strstr(texturename, ".bmp"))	
-		LoadBMP(texturename);
+		return LoadBMP(texturename);
 	if(strstr(texturename, ".jpg"))	
-		LoadTGA(texturename);
+		return LoadTGA(texturename);
+  return false;
 }
 
 void GLTexture::LoadFromResource(char *name)
@@ -85,9 +86,10 @@ void GLTexture::Use()
 	glBindTexture(GL_TEXTURE_2D, texture[0]);				// Bind the texture as the current one
 }
 
-void GLTexture::LoadBMP(char *name)
+bool GLTexture::LoadBMP(char *name)
 {
   assert(0);
+  return false;
 	//// Create a place to store the texture
 	//AUX_RGBImageRec *TextureImage[1];
 
@@ -124,7 +126,7 @@ void GLTexture::LoadBMP(char *name)
 	//}
 }
 
-void GLTexture::LoadTGA(char *name)
+bool GLTexture::LoadTGA(char *name)
 {
 	GLubyte		TGAheader[12]	= {0,0,2,0,0,0,0,0,0,0,0,0};// Uncompressed TGA header
 	GLubyte		TGAcompare[12];								// Used to compare TGA header
@@ -145,11 +147,11 @@ void GLTexture::LoadTGA(char *name)
 	   fread(header,1,sizeof(header),file) != sizeof(header))				// If so then read the next 6 header bytes
 	{
 		if (file == NULL)									// If the file didn't exist then return
-			return;
+			return false;
 		else
 		{
 			fclose(file);									// If something broke then close the file and return
-			return;
+			return false;
 		}
 	}
 
@@ -163,7 +165,7 @@ void GLTexture::LoadTGA(char *name)
 	   (header[4] != 24 && header[4] != 32))				// Is it 24 or 32 bit?
 	{
 		fclose(file);										// If anything didn't check out then close the file and return
-		return;
+		return false;
 	}
 
 	bpp				= header[4];							// Grab the bits per pixel
@@ -181,7 +183,7 @@ void GLTexture::LoadTGA(char *name)
 			free(imageData);								// If so, then release the image data
 
 		fclose(file);										// Close the file
-		return;
+		return false;
 	}
 
 	// Loop through the image data and swap the 1st and 3rd bytes (red and blue)
@@ -214,6 +216,7 @@ void GLTexture::LoadTGA(char *name)
 
 	// Cleanup
 	free(imageData);
+  return true;
 }
 
 

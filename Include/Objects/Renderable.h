@@ -19,6 +19,9 @@ public:
   virtual CString getName() = 0;
   virtual Vector3 getVelocity() = 0;
   RenderableType getType() const {return type_;}
+  int getRank() {return rank_;}
+  void setRank(int rank) {rank_ = rank;}
 protected:
   RenderableType type_;
+  int rank_;
 };

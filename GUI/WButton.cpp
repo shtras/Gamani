@@ -39,6 +39,6 @@ void WButton::render(double left, double top, double width, double height)
   glEnd();
 
   glColor3f(0.8,0.8,0.8);
-  Renderer::getInstance().textOutNoMove(0.01, height/2, -0.1, "%s", label_.operator const char *());
+  Renderer::getInstance().textOut(left + width/10, top+height/2, -0.1, "%s", label_.operator const char *());
   glEnable(GL_LIGHTING);
 }

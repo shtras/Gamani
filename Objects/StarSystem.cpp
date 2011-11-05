@@ -13,6 +13,7 @@ StarSystem::~StarSystem()
 
 void StarSystem::addStar(Star* star)
 {
+  star->setRank(0);
   stars_.push_back(star);
 }
 
@@ -87,10 +88,10 @@ void StarSystem::advancePosition(AstralBody* from, AstralBody* to, double time)
     newAngle -= 360.0;
   }
   assert(newAngle <= 360.0);
-  double rangle = DegToRad(newAngle);
+  double rangle = DegToRad(90 - newAngle);
   double len = fromTo.getLength();
   
-  Vector3 newCoord = Vector3(fromCoord[0] + cos(rangle)*len, fromCoord[1] + sin(rangle)*len, 0);
+  Vector3 newCoord = Vector3(fromCoord[0] + cos(rangle)*len, fromCoord[1] - sin(rangle)*len, 0);
 
   Vector3 fromVel = from->getVelocity();
   Vector3 toVel = to->getVelocity();
@@ -98,8 +99,8 @@ void StarSystem::advancePosition(AstralBody* from, AstralBody* to, double time)
   double velAngle = fromToVel.getAngle();
   double velVal = fromToVel.getLength();
   double newVelAngle = velAngle + deltaAngle;
-  double rvelAngle = DegToRad(newVelAngle);
-  Vector3 newVel = Vector3(fromVel[0] + cos(rvelAngle)*velVal, fromVel[1] + sin(rvelAngle)*velVal, 0);
+  double rvelAngle = DegToRad(90 - newVelAngle);
+  Vector3 newVel = Vector3(fromVel[0] + cos(rvelAngle)*velVal, fromVel[1] - sin(rvelAngle)*velVal, 0);
   //////////////////////////////////////////////////////////////////////////
   //Here we assume that the orbit is circular (will work as a temporary assumption until I can come up with a way to calculate the new parameters for more complex cases)
   //PS yes, I'm lazy bastard
