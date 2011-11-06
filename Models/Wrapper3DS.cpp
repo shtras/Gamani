@@ -170,43 +170,79 @@ Model* Wrapper3DS::Load(CString fileName)
     modelObj->coord_[0] = obj.pos.x;
     modelObj->coord_[1] = obj.pos.y;
     modelObj->coord_[2] = obj.pos.z;
-    modelObj->numVertexes_ = obj.numVerts;
-    modelObj->numFaces_ = obj.numFaces;
+    assert(obj.numVerts == obj.numTexCoords);
     for (int j=0; j<obj.numVerts; ++j) {
-      Vector3* vert = new Vector3(obj.Vertexes[j*3], obj.Vertexes[j*3+1], obj.Vertexes[j*3+2]);
+      Vector3 vert = Vector3(obj.Vertexes[j*3], obj.Vertexes[j*3+1], obj.Vertexes[j*3+2]);
+      Vector3 norm = Vector3(obj.Normals[j*3], obj.Normals[j*3+1], obj.Normals[j*3+2]);
+      TexCoord tc;
+      tc.u = obj.TexCoords[j*2];
+      tc.v = obj.TexCoords[j*2+1];
       modelObj->vertices_.push_back(vert);
-      Vector3* norm = new Vector3(obj.Normals[j*3], obj.Normals[j*3+1], obj.Normals[j*3+2]);
       modelObj->normals_.push_back(norm);
-      modelObj->matIndexes_.push_back(-1);
+      modelObj->texCoords_.push_back(tc);
     }
-    for (int j=0; j<obj.numTexCoords; ++j) {
-      TexCoord* texCoord = new TexCoord();
-      texCoord->u = obj.TexCoords[j*2];
-      texCoord->v = obj.TexCoords[j*2+1];
-      modelObj->texCoords_.push_back(texCoord);
+    for (int j=0; j<obj.numMatFaces; ++j) {
+      MaterialObject* matObj = new MaterialObject(modelObj);
+      MaterialFaces& matFace = obj.MatFaces[j];
+      for (int k=0; k<matFace.numSubFaces; k+=3) {
+        int v1 = matFace.subFaces[k];
+        int v2 = matFace.subFaces[k+1];
+        int v3 = matFace.subFaces[k+2];
+        matObj->faces_.push_back(v1);
+        matObj->faces_.push_back(v2);
+        matObj->faces_.push_back(v3);
+      }
+      matObj->matIdx_ = matFace.MatIndex;
+      modelObj->objects_.push_back(matObj);
     }
     model->objects_.push_back(modelObj);
-    Face* face = NULL;
-    for (int j=0; j<obj.numFaces; ++j) {
-      if (j%3 == 0 && j > 0) {
-        modelObj->faces_.push_back(face);
-      }
-      if (j%3 == 0 && j != obj.numFaces - 1) {
-        face = new Face();
-      }
-      face->vertIndexes_.push_back(obj.Faces[j]);
-    }
-    int test = 0;
-    modelObj->faces_.push_back(face);
-    for (int j=0; j<obj.numMatFaces; ++j) {
-      MaterialFaces& matFaces = obj.MatFaces[j];
-      test += matFaces.numSubFaces;
-      for (int k=0; k<matFaces.numSubFaces; ++k) {
-        //modelObj->faces_[matFaces.subFaces[k]]->matIndex_ = matFaces.MatIndex;
-        modelObj->matIndexes_[matFaces.subFaces[k]] = matFaces.MatIndex;
-      }
-    }
-    assert(test == obj.numFaces);
+
+    //MaterialObject* modelObj = new MaterialObject(model);
+    //modelObj->coord_[0] = obj.pos.x;
+    //modelObj->coord_[1] = obj.pos.y;
+    //modelObj->coord_[2] = obj.pos.z;
+    //modelObj->numVertexes_ = obj.numVerts;
+    //modelObj->numFaces_ = obj.numFaces;
+    //for (int j=0; j<obj.numVerts; ++j) {
+    //  Vector3* vert = new Vector3(obj.Vertexes[j*3], obj.Vertexes[j*3+1], obj.Vertexes[j*3+2]);
+    //  modelObj->vertices_.push_back(vert);
+    //  Vector3* norm = new Vector3(obj.Normals[j*3], obj.Normals[j*3+1], obj.Normals[j*3+2]);
+    //  modelObj->normals_.push_back(norm);
+    //  //modelObj->matIndexes_.push_back(-1);
+    //}
+    //for (int j=0; j<obj.numTexCoords; ++j) {
+    //  TexCoord* texCoord = new TexCoord();
+    //  texCoord->u = obj.TexCoords[j*2];
+    //  texCoord->v = obj.TexCoords[j*2+1];
+    //  modelObj->texCoords_.push_back(texCoord);
+    //}
+    //model->objects_.push_back(modelObj);
+    //Face* face = NULL;
+    //for (int j=0; j<obj.numFaces; ++j) {
+    //  if (j%3 == 0 && j > 0) {
+    //    modelObj->faces_.push_back(face);
+    //  }
+    //  if (j%3 == 0 && j != obj.numFaces - 1) {
+    //    face = new Face();
+    //  }
+    //  face->vertIndexes_.push_back(obj.Faces[j]);
+    //}
+    //modelObj->faces_.push_back(face);
+    ////assert(obj.numMatFaces == 1); //Currently supporting only single material per object
+    //if (obj.numMatFaces != 1) {
+    //  int a = 0;
+    //}
+    //int subFacesNum = 0;
+    //for (int j=0; j<obj.numMatFaces; ++j) {
+    //  MaterialFaces& matFaces = obj.MatFaces[j];
+    //  modelObj->matIdx_ = matFaces.MatIndex;
+    //  subFacesNum += matFaces.numSubFaces;
+    //  //for (int k=0; k<matFaces.numSubFaces; ++k) {
+    //  //  //modelObj->faces_[matFaces.subFaces[k]]->matIndex_ = matFaces.MatIndex;
+    //  //  modelObj->matIndexes_[matFaces.subFaces[k]] = matFaces.MatIndex;
+    //  //}
+    //}
+    //int a = 0;
   }
   model->normalize();
   delete[] path;

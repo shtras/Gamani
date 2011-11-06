@@ -590,20 +590,20 @@ void Gamani::testInit()
   ship->setDockingPort(Vector3(0, 1.3, 0)); //Hey, screwed up axes. Again...
   ship->setPortAngle(0);
 
-  //Station* station = new Station();
-  //station->setCoord(Vector3(149590.01, 0, 0));
-  //station->setVelocity(Vector3(/*-6250*/0, 29783-6250, 0));
-  //station->setRadius(0.001);
-  //station->setName("Shipyard");
-  //StationDisplay* stationDisplay = new StationDisplay();
-  //stationDisplay->init();
-  //stationDisplay->setVisible(false);
-  //layoutManager_.addLayout(stationDisplay);
-  //station->setDisplay(stationDisplay);
-  //station->initModel("res/station.3ds");
-  //station->setDockingPort(Vector3(0.65, 0.03, 0.1));
-  //station->setPortAngle(270);
-  //planet->addSatellite(station);
+  Station* station = new Station();
+  station->setCoord(Vector3(149590.01, 0, 0));
+  station->setVelocity(Vector3(/*-6250*/0, 29783-6250, 0));
+  station->setRadius(0.001);
+  station->setName("Shipyard");
+  StationDisplay* stationDisplay = new StationDisplay();
+  stationDisplay->init();
+  stationDisplay->setVisible(false);
+  layoutManager_.addLayout(stationDisplay);
+  station->setDisplay(stationDisplay);
+  station->initModel("res/station.3ds");
+  station->setDockingPort(Vector3(0.65, 0.03, 0.1));
+  station->setPortAngle(270);
+  planet->addSatellite(station);
 
   //station->setYawVel(1);
   //ship->dockedTo_ = station;

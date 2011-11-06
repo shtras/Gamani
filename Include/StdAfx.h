@@ -17,6 +17,12 @@
 #include "CString.h"
 #include "auxFuncs.h"
 
+#ifdef DEBUG
+#define checkError() checkErrorDebug()
+#else
+#define checkError()
+#endif
+
 #include <gl/glew.h>
 #include <gl/glut.h>
 

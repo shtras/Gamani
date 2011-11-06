@@ -29,3 +29,9 @@ bool isLetterChar(int key)
   }
   return false;
 }
+
+void checkErrorDebug()
+{
+  GLenum err = glGetError();
+  assert(err == 0);
+}

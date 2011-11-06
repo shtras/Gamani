@@ -1,7 +1,7 @@
 #pragma once
 
-
 class ModelObject;
+class MaterialObject;
 class Face;
 
 struct Box
@@ -51,6 +51,7 @@ class Model
 {
   friend class Wrapper3DS;
   friend class ModelObject;
+  friend class MaterialObject;
 public:
   Model();
   ~Model();
@@ -73,10 +74,37 @@ private:
 class ModelObject
 {
   friend class Wrapper3DS;
+  friend class MaterialObject;
   friend class Model;
 public:
-  ModelObject(Model* m);
+  ModelObject(Model* model);
   ~ModelObject();
+  void draw() const;
+  void initVBO();
+private:
+  void normalize(float scale);
+  void updateMinMax();
+
+  Model* model_;
+  vector<Vector3> vertices_;
+  vector<Vector3> normals_;
+  vector<TexCoord> texCoords_;
+  vector<MaterialObject*> objects_;
+  Vector3 min_;
+  Vector3 max_;
+
+  Vector3 coord_;
+  Matrix4 rotation_;
+};
+
+class MaterialObject
+{
+  friend class Wrapper3DS;
+  friend class ModelObject;
+  friend class Model;
+public:
+  MaterialObject(ModelObject* m);
+  ~MaterialObject();
   Box getBoundingBox();
   void initVBO();
   void draw() const;
@@ -84,34 +112,33 @@ private:
   void normalize(float scale);
   void updateMinMax();
   //Offset from model coordinates
-  Vector3 coord_;
-  Matrix4 rotation_;
-  Model* model_;
+  ModelObject* object_;
 
-  vector<Vector3*> vertices_;
-  vector<Vector3*> normals_;
-  vector<TexCoord*> texCoords_;
-  vector<int> matIndexes_;
-  vector<Face*> faces_;
+//   vector<Vector3*> vertices_;
+//   vector<Vector3*> normals_;
+//   vector<TexCoord*> texCoords_;
+  vector<int> faces_; //indexes to collection in ModelObject (3 entries per face)
+  int matIdx_;
+  //vector<Face*> faces_;
 
   VBOVertex* verts_;
   GLuint* indexes_;
   GLuint indexVBOID;
   GLuint modelVBO;
-  int numVertexes_;
-  int numFaces_;
+  //int numVertexes_;
+  //int numFaces_;
   Vector3 min_;
   Vector3 max_;
 };
 
-class Face
-{
-  friend class Wrapper3DS;
-  friend class ModelObject;
-public:
-  Face();
-  ~Face();
-private:
-  vector<int> vertIndexes_;
-  int matIndex_;
-};
+//class Face
+//{
+//  friend class Wrapper3DS;
+//  friend class MaterialObject;
+//public:
+//  Face();
+//  ~Face();
+//private:
+//  vector<int> vertIndexes_;
+//  int matIndex_;
+//};
