@@ -14,10 +14,16 @@ public:
   void speedDownButtonClick();
   void pauseButtonClick();
   void minimizeButtonClick();
+  void namesButtonClick();
+  void tracksButtonClick();
+  void hideGUIButtonClick();
 private:
   bool minimized_;
   WButton* minimizeButton_;
   WButton* speedDownButton_;
   WButton* pauseButton_;
   WButton* speedUpButton_;
+  WButton* namesButton_;
+  WButton* tracksButton_;
+  WButton* hideGUIButton_;
 };

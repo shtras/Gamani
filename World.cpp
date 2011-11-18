@@ -128,7 +128,11 @@ void World::handlePressedKey(int key)
     }
     break;
   case 'N':
-    scrollFollowedObject();
+    if (Gamani::getInstance().shiftPressed()) {
+      scrollFollowedObject(-1);
+    } else {
+      scrollFollowedObject(1);
+    }
     if (followedObject_) {
       Renderer::getInstance().getCamera().position(followedObject_);
     }
@@ -272,11 +276,15 @@ void World::interactGravity(Renderable* from, Renderable* to)
   //}
 }
 
-void World::scrollFollowedObject()
+void World::scrollFollowedObject(int delta/* = 1*/)
 {
   if (!followedObject_) {
     if (objects_->size() > 0) {
-      followedObject_ = (*objects_)[0];//*objects_->begin();
+      if (delta > 0) {
+        followedObject_ = (*objects_)[0];//*objects_->begin();
+      } else {
+        followedObject_ = (*objects_)[objects_->size()-1];
+      }
     }
     return;
   }
@@ -295,12 +303,13 @@ void World::scrollFollowedObject()
     //  return;
     //}
     if (followedObject_ == (*objects_)[i]) {
-      if (i == objects_->size()-1) {
+      unsigned int newIdx = i + delta;
+      if (newIdx >= objects_->size()/* || newIdx < 0*/) { //unsigned int will cause < 0 turn into > size
         followedObject_ = NULL;
         Renderer::getInstance().getCamera().reset();
         return;
       }
-      followedObject_ = (*objects_)[i+1];
+      followedObject_ = (*objects_)[newIdx];
       return;
     }
   }

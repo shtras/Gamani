@@ -189,7 +189,7 @@ void MaterialObject::draw() const
   glColorPointer(4, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(12));
   glVertexPointer(3, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(0));
 
-  glDrawElements(GL_TRIANGLES, faces_.size(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+  glDrawElements(GL_TRIANGLES, numFaces_, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_NORMAL_ARRAY);
@@ -215,14 +215,28 @@ void MaterialObject::initVBO()
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   //glPolygonMode(GL_FRONT,GL_LINE);
-  verts_ = new VBOVertex[faces_.size()];
-  indexes_ = new GLuint[faces_.size()];
+
+  map<int, int> vertMap; //old value -> new index
+  vector<int> uniqVerts;
+  for (unsigned int i=0; i<faces_.size(); ++i) {
+    int vertIdx = faces_[i];
+    if (vertMap.count(vertIdx) == 0) {
+      uniqVerts.push_back(vertIdx);
+      vertMap[vertIdx] = uniqVerts.size() - 1;
+    }
+  }
+
+  numVertexes_ = uniqVerts.size();
+  numFaces_ = faces_.size();
+
+  verts_ = new VBOVertex[numVertexes_];
+  indexes_ = new GLuint[numFaces_];
 
   int idx = 0;
   int faceIdx = 0;
 
-  for (unsigned int j=0; j<faces_.size(); ++j) {
-    int idx = faces_[j];
+  for (unsigned int j=0; j<uniqVerts.size(); ++j) {
+    int idx = uniqVerts[j];
     Vector3 vertex = object_->vertices_[idx];
     Vector3 normal = object_->normals_[idx];
 
@@ -253,10 +267,13 @@ void MaterialObject::initVBO()
     verts_[j].normal[1] = normal[1];
     verts_[j].normal[2] = normal[2];
 
-    indexes_[j] = j;
+    //indexes_[j] = j;
 
     //indexes_[idx] = idx;
     ++idx;
+  }
+  for (unsigned int i=0; i<faces_.size(); ++i) {
+    indexes_[i] = vertMap[faces_[i]];
   }
   //for (unsigned int k=0; k<faces_.size(); ++k) {
   //  Face* face = faces_[k];
@@ -282,9 +299,9 @@ void MaterialObject::initVBO()
   checkError();
   glBindBuffer(GL_ARRAY_BUFFER, modelVBO);
   checkError();
-  glBufferData(GL_ARRAY_BUFFER, sizeof(VBOVertex)*faces_.size(), 0, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(VBOVertex)*numVertexes_, 0, GL_STATIC_DRAW);
   checkError();
-  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(VBOVertex)*faces_.size(), verts_);
+  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(VBOVertex)*numVertexes_, verts_);
   checkError();
 
   glTexCoordPointer(2, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(40));
@@ -300,7 +317,7 @@ void MaterialObject::initVBO()
   checkError();
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
   checkError();
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, faces_.size() * sizeof(GLuint), indexes_, GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, numFaces_ * sizeof(GLuint), indexes_, GL_STATIC_DRAW);
   checkError();
 
   delete[] verts_;

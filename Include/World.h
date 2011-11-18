@@ -28,7 +28,7 @@ private:
   void updatePosition(Renderable* obj);
   bool checkCollision(AstralBody* body1, AstralBody* body2);
   void interactCollision(Renderable* obj1, Renderable* obj2);
-  void scrollFollowedObject();
+  void scrollFollowedObject(int delta = 1);
   void gravityWithinLevelInteraction(AstralBody* head, vector<AstralBody*>& level);
   void gravitySubLevelsInteraction(AstralBody* head, vector<AstralBody*>& level, bool mutual);
   vector<AstralBody*>* objects_;

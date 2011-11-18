@@ -63,7 +63,7 @@ bool GLTexture::Load(char *name)
 	// check the file extension to see what type of texture
 	if(strstr(texturename, ".bmp"))	
 		return LoadBMP(texturename);
-	if(strstr(texturename, ".jpg"))	
+	if(strstr(texturename, ".tga"))	
 		return LoadTGA(texturename);
   return false;
 }

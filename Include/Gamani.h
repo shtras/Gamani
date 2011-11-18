@@ -30,6 +30,10 @@ public:
   void setSpeed1x() {speed_ = 1;}
   bool drawRelativeOrbits() {return relativeOrbits_;}
   bool rotateCameraWithObject() {return rotateCameraWithObject_;}
+  bool shiftPressed() {return shiptPressed_;}
+  void toggleTracers() {tracers_ = !tracers_;}
+  void toggleNames() {names_ = !names_;}
+  void toggleGUI() {interface_ = !interface_;}
 private:
   void testInit();
   void layoutTest();

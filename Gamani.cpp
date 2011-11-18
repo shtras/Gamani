@@ -319,13 +319,13 @@ void Gamani::handlePressedKey(int key)
     world_->clearTracks();
     break;
   case 0x31:
-    tracers_ = !tracers_;
+    toggleTracers();
     break;
   case 0x32:
     auxPrint_ = !auxPrint_;
     break;
   case 0x33:
-    interface_ = !interface_;
+    toggleGUI();
     break;
   case 0x34:
     //Renderer::getInstance().getCamera().setPitch(0);
@@ -333,7 +333,7 @@ void Gamani::handlePressedKey(int key)
     world_->getCurrentSystem()->skipTime(1e4);
     break;
   case 0x35:
-    names_ = !names_;
+    toggleNames();
     break;
   case 0x36:
     skybox1_ = !skybox1_;
@@ -586,7 +586,7 @@ void Gamani::testInit()
   shipHud->init(ship);
   //ship->setHUD(shipHud);
   ship->test1_ = planet;
-  ship->initModel("res/new.3ds");
+  ship->initModel("res/ss2.3ds");
   ship->setDockingPort(Vector3(0, 1.3, 0)); //Hey, screwed up axes. Again...
   ship->setPortAngle(0);
 

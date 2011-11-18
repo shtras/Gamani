@@ -9,6 +9,7 @@
 #include <vector>
 #include <list>
 #include <set>
+#include <map>
 #include "Vector.h"
 #include "Matrix.h"
 #include <Windowsx.h>

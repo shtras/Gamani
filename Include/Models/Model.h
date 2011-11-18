@@ -125,8 +125,8 @@ private:
   GLuint* indexes_;
   GLuint indexVBOID;
   GLuint modelVBO;
-  //int numVertexes_;
-  //int numFaces_;
+  int numVertexes_;
+  int numFaces_;
   Vector3 min_;
   Vector3 max_;
 };

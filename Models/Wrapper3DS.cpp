@@ -398,8 +398,30 @@ void Wrapper3DS::EditChunkProcessor(long length, long findex)
     Objects = new Object[numObjects]; //deleted
 
     // Set the textured variable to false until we find a texture
-    for (int k = 0; k < numObjects; k++)
+    for (int k = 0; k < numObjects; k++) {
+        /*
+        char name[80];    // The object name
+        float *Vertexes;   // The array of vertices
+        float *Normals;    // The array of the normals for the vertices
+        float *TexCoords;   // The array of texture coordinates for the vertices
+        unsigned short *Faces;  // The array of face indices
+        int numFaces;    // The number of faces
+        int numMatFaces;   // The number of differnet material faces
+        int numVerts;    // The number of vertices
+        int numTexCoords;   // The number of vertices
+        bool textured;    // True: the object has textures
+        MaterialFaces *MatFaces; // The faces are divided by materials
+        Vector pos;     // The position to move the object to
+        Vector rot;     // The angles to rotate the object
+        */
       Objects[k].textured = false;
+      Objects[k].Vertexes = NULL;
+      Objects[k].Normals = NULL;
+      Objects[k].TexCoords = NULL;
+      Objects[k].Faces = NULL;
+      Objects[k].MatFaces = NULL;
+      Objects[k].numFaces = Objects[k].numVerts = Objects[k].numTexCoords = Objects[k].numMatFaces = 0;
+    }
 
     // Zero the objects position and rotation
     for (int m = 0; m < numObjects; m++)

@@ -111,7 +111,7 @@ void Camera::position()
   bool printData = Gamani::getInstance().getAuxPrints();
   glColor3f(1,1,1);
   if (printData) {
-    Renderer::getInstance().textOut(-0.2,0.95,0, "Pitch: %0.2f Heading: %0.2f, Speed: %.3f StepLength: %.3f", 
+    Renderer::getInstance().textOut(0.2,0.95,0, "Pitch: %0.2f Heading: %0.2f, Speed: %.3f StepLength: %.3f", 
       pitch_, heading_, Gamani::getInstance().getSpeed(), Gamani::getInstance().getSpeedReduce());
 
     //Renderable* followed = Gamani::getInstance().getFollowedObject();
@@ -145,7 +145,7 @@ void Camera::position()
   int seconds = decim/100LL;
   decim -= seconds*100LL;
 
-  Renderer::getInstance().textOut(-0.7,0.95,0, "%dY %dD %02d:%02d:%02d.%02ld", years, days, hours, minutes, seconds, decim);
+  Renderer::getInstance().textOut(-0.5,0.95,0, "%dY %dD %02d:%02d:%02d.%02ld", years, days, hours, minutes, seconds, decim);
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();

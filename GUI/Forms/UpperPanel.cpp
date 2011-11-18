@@ -44,6 +44,24 @@ void UpperPanel::init()
   speedUpButton_->setVisible(true);
   speedUpButton_->sigClick.connect(this, &UpperPanel::speedUpButtonClick);
   addWidget(speedUpButton_);
+
+  namesButton_ = new WButton();
+  namesButton_->setDimensions(0.1, 0, 0.05, 1);
+  namesButton_->setLabel("Names");
+  namesButton_->sigClick.connect(this, &UpperPanel::namesButtonClick);
+  addWidget(namesButton_);
+
+  tracksButton_ = new WButton();
+  tracksButton_->setDimensions(0.15, 0, 0.05, 1);
+  tracksButton_->setLabel("Tracks");
+  tracksButton_->sigClick.connect(this, &UpperPanel::tracksButtonClick);
+  addWidget(tracksButton_);
+
+  //hideGUIButton_ = new WButton();
+  //hideGUIButton_->setDimensions(0.2, 0, 0.05, 1);
+  //hideGUIButton_->setLabel("GUI");
+  //hideGUIButton_->sigClick.connect(this, &UpperPanel::hideGUIButtonClick);
+  //addWidget(hideGUIButton_);
 }
 
 void UpperPanel::render()
@@ -64,6 +82,21 @@ void UpperPanel::speedDownButtonClick()
 void UpperPanel::pauseButtonClick()
 {
   Gamani::getInstance().pause();
+}
+
+void UpperPanel::namesButtonClick()
+{
+  Gamani::getInstance().toggleNames();
+}
+
+void UpperPanel::tracksButtonClick()
+{
+  Gamani::getInstance().toggleTracers();
+}
+
+void UpperPanel::hideGUIButtonClick()
+{
+  Gamani::getInstance().toggleGUI();
 }
 
 void UpperPanel::minimizeButtonClick()

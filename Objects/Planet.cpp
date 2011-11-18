@@ -79,6 +79,15 @@ void Planet::render()
   glRotatef(180, 1, 0, 0);
    
   if (1 || camDist > 5) {
+    int slices = 32;
+    int stacks = 64;
+    if (camDist < 10) {
+      slices = 100;
+      stacks = 200;
+    } else if (camDist > 1e3) {
+      slices = 5;
+      stacks = 10;
+    }
     //glColor4f(1,1,1,0.2);
     //yaw_ = 360 - rotation_;
     glRotatef(yaw_, 0, 0, -1);
@@ -90,7 +99,7 @@ void Planet::render()
     }
     glEnable ( GL_TEXTURE_2D );
     glBindTexture ( GL_TEXTURE_2D, texture_);
-    gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, 36, 72);
+    gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, slices, stacks);
     glDisable ( GL_TEXTURE_2D );
   } else {
     Vector3 dir = coord_ - camPos;
