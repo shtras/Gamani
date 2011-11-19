@@ -26,6 +26,7 @@ public:
   CString& operator= (CString& other);
   CString& operator= (const char* str);
   bool operator== (const CString& other) const;
+  bool operator< (const CString& other) const;
 private:
   char* cont_;
   int len_;

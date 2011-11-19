@@ -7,7 +7,8 @@ MissionManager& MissionManager::getInstance()
   return instance;
 }
 
-MissionManager::MissionManager()
+MissionManager::MissionManager():
+  display_(NULL)
 {
 
 }
@@ -15,4 +16,10 @@ MissionManager::MissionManager()
 MissionManager::~MissionManager()
 {
 
+}
+
+void MissionManager::setDisplay(MissionDisplay* display)
+{
+  assert(!display_);
+  display_ = display;
 }

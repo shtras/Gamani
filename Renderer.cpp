@@ -162,6 +162,7 @@ bool Renderer::initWindow()
     WS_OVERLAPPEDWINDOW|WS_VISIBLE, 0, 0, width_, height_, NULL, NULL, *hInstance_, NULL);
   DWORD Error = GetLastError();
   if(!hWnd_) {
+    Logger::getInstance().log(ERROR_LOG_NAME, "Failed to create window");
     return false;
   }
   ShowWindow(hWnd_,SW_SHOW);
@@ -172,7 +173,7 @@ bool Renderer::initWindow()
 
   width_ = actualRect.right;
   height_ = actualRect.bottom;
-
+  Logger::getInstance().log(INFO_LOG_NAME, "Successfully created window");
   return true;
 }
 
@@ -194,16 +195,19 @@ bool Renderer::initOpenGL()
   SetPixelFormat( hDC, iFormat, &pfd );
   HGLRC hRC = wglCreateContext(hDC);
   if (!hRC) {
+    Logger::getInstance().log(ERROR_LOG_NAME, "Failed to create context");
     return false;
   }
 
   if (!wglMakeCurrent(hDC, hRC)) {
+    Logger::getInstance().log(ERROR_LOG_NAME, "Failed to make current");
     return false;
   }
 
   GLenum res = glewInit();
   const GLubyte* bbb = glewGetErrorString(res);
   if (res != GLEW_OK) {
+    Logger::getInstance().log(ERROR_LOG_NAME, "Failed to init Glew");
     return false;
   }
 
@@ -222,6 +226,7 @@ bool Renderer::initOpenGL()
   glEnable(GL_COLOR_MATERIAL);
   glEnable(GL_NORMALIZE);
   //glEnable(GL_LINE_SMOOTH);
+  checkReleaseError("Set parameters 1 error");
 
   GLfloat light_position[] = { 0, 1, 0, 1};
   GLfloat light_color[] = { 1, 1, 1, 1.0f };
@@ -237,6 +242,7 @@ bool Renderer::initOpenGL()
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  checkReleaseError("Set parameters 2 error");
 
    //glMatrixMode(GL_PROJECTION);
    ////gluPerspective(45, (double)width_ / (double)height_, 0.1, 10);
@@ -247,8 +253,10 @@ bool Renderer::initOpenGL()
 
   GLenum err = glGetError();
   if (err != 0) {
+    Logger::getInstance().log(ERROR_LOG_NAME, CString("Error while initializing OpenGL: ") + CString((int)err));
     return false;
   }
+  Logger::getInstance().log(INFO_LOG_NAME, "Successfully initialized OpenGL");
   return true;
 }
 

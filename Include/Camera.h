@@ -22,6 +22,7 @@ public:
   const double* getPosition() const {return position_;}
   double getZoom() const {return zoom_;}
   double getHeading() const;
+  double getTrueHeading() const {return heading_;}
   double getPitch() const {return pitch_;}
   void setPitch(double pitch) {pitch_ = pitch;}
   void setHeading(double heading) {heading_ = heading;}

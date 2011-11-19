@@ -112,7 +112,7 @@ void Camera::position()
   glColor3f(1,1,1);
   if (printData) {
     Renderer::getInstance().textOut(0.2,0.95,0, "Pitch: %0.2f Heading: %0.2f, Speed: %.3f StepLength: %.3f", 
-      pitch_, heading_, Gamani::getInstance().getSpeed(), Gamani::getInstance().getSpeedReduce());
+      pitch_, testHeading, Gamani::getInstance().getSpeed(), Gamani::getInstance().getSpeedReduce());
 
     //Renderable* followed = Gamani::getInstance().getFollowedObject();
     //string name = "Free camera";

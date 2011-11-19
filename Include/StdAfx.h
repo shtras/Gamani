@@ -17,11 +17,12 @@
 //#include <string>
 #include "CString.h"
 #include "auxFuncs.h"
+#include "Logger.h"
 
 #ifdef DEBUG
-#define checkError() checkErrorDebug()
+#define checkError(n) checkErrorDebug(n)
 #else
-#define checkError()
+#define checkError(n)
 #endif
 
 #include <gl/glew.h>
@@ -32,6 +33,9 @@
 #else
 #define BUILDSTR "Release"
 #endif
+
+#define INFO_LOG_NAME "info.log"
+#define ERROR_LOG_NAME "error.log"
 
 #define PI (3.14159265)
 

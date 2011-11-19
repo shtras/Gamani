@@ -30,8 +30,16 @@ bool isLetterChar(int key)
   return false;
 }
 
-void checkErrorDebug()
+void checkErrorDebug(CString errorMsg/* = ""*/)
 {
   GLenum err = glGetError();
+  if (err != 0) {
+    Logger::getInstance().log(ERROR_LOG_NAME, errorMsg + CString(" OpenGL error: ") + CString((int)err));
+  }
   assert(err == 0);
+}
+
+void checkReleaseError(CString errorMsg)
+{
+  checkErrorDebug(errorMsg);
 }

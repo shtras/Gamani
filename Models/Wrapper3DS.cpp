@@ -98,6 +98,10 @@ Model* Wrapper3DS::Load(CString fileName)
     path[src-name] = 0;
   }
   bin3ds = fopen(name, "rb");
+  if (!bin3ds) {
+    Logger::getInstance().log(ERROR_LOG_NAME, CString("Failed to open model file: ") + fileName);
+    return NULL;
+  }
   fseek(bin3ds, 0, SEEK_SET);
   fread(&main.id,sizeof(main.id),1,bin3ds);
   fread(&main.len,sizeof(main.len),1,bin3ds);
@@ -261,6 +265,7 @@ Model* Wrapper3DS::Load(CString fileName)
     delete[] obj.MatFaces;
   }
   delete[] Objects;
+  Logger::getInstance().log(INFO_LOG_NAME, CString("Successfully loaded: ") + fileName);
   return model;
 }
 

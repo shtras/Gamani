@@ -185,6 +185,12 @@
     <ClCompile Include="Missions\Mission.cpp">
       <Filter>Source Files\Missions</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\Forms\MissionDisplay.cpp">
+      <Filter>Source Files\GUI\Forms</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Math\Matrix.h">
@@ -323,6 +329,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\auxFuncs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GUI\Forms\MissionDisplay.h">
+      <Filter>Header Files\GUI\Forms</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

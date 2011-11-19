@@ -196,6 +196,7 @@ void MaterialObject::draw() const
   glDisableClientState(GL_VERTEX_ARRAY);
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
+  checkError("Draw error");
 }
 
 void MaterialObject::updateMinMax()
@@ -294,31 +295,19 @@ void MaterialObject::initVBO()
   //}
 
   glewInit();
-  checkError();
   glGenBuffers(1, &modelVBO);
-  checkError();
   glBindBuffer(GL_ARRAY_BUFFER, modelVBO);
-  checkError();
   glBufferData(GL_ARRAY_BUFFER, sizeof(VBOVertex)*numVertexes_, 0, GL_STATIC_DRAW);
-  checkError();
   glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(VBOVertex)*numVertexes_, verts_);
-  checkError();
 
   glTexCoordPointer(2, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(40));
-  checkError();
   glNormalPointer(GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(28));
-  checkError();
   glColorPointer(4, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(12));
-  checkError();
   glVertexPointer(3, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(0));
-  checkError();
 
   glGenBuffers(1, &indexVBOID); // Generate buffer
-  checkError();
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBOID);
-  checkError();
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, numFaces_ * sizeof(GLuint), indexes_, GL_STATIC_DRAW);
-  checkError();
 
   delete[] verts_;
   delete[] indexes_;
@@ -326,6 +315,7 @@ void MaterialObject::initVBO()
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_NORMAL_ARRAY);
   glDisableClientState(GL_VERTEX_ARRAY);
+  checkReleaseError("Error while initializing VBO");
 }
 
 //void MaterialObject::initVBO()

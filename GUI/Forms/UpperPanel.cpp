@@ -17,12 +17,12 @@ void UpperPanel::init()
   setDimensions(0, 1, 1, 0.03);
   visible_ = true;
 
-  minimizeButton_ = new WButton();
-  minimizeButton_->setDimensions(0, 0, 0.01, 1);
-  minimizeButton_->setLabel("^");
-  minimizeButton_->setVisible(true);
-  minimizeButton_->sigClick.connect(this, &UpperPanel::minimizeButtonClick);
-  addWidget(minimizeButton_);
+  //minimizeButton_ = new WButton();
+  //minimizeButton_->setDimensions(0, 0, 0.01, 1);
+  //minimizeButton_->setLabel("^");
+  //minimizeButton_->setVisible(true);
+  //minimizeButton_->sigClick.connect(this, &UpperPanel::minimizeButtonClick);
+  //addWidget(minimizeButton_);
 
   speedDownButton_ = new WButton();
   speedDownButton_->setDimensions(0.01, 0, 0.03, 1);

@@ -4,13 +4,13 @@
 
 WLayout::WLayout(int left, int top, int width, int height):
   top_(top), left_(left), height_(height), width_(width), visible_(false), square_(false), rightAlign_(false),
-  maxTop_(top),maxLeft_(left),maxHeght_(height),maxWidth_(width),minimized_(false)
+  maxTop_(top),maxLeft_(left),maxHeght_(height),maxWidth_(width),minimized_(false),bottom_(false)
 {
   minimizeButton_ = new WButton();
   minimizeButton_->setDimensions(0.01,0.95,0.05,0.04);
   minimizeButton_->setLabel("*");
   minimizeButton_->sigClick.connect(this, &WLayout::minimize);
-  minimizeButton_->setVisible(false);
+  minimizeButton_->setVisible(true);
   addWidget(minimizeButton_);
 }
 
@@ -28,8 +28,12 @@ void WLayout::minimize()
   if (!minimized_) {
     maxHeght_ = height_;
     maxWidth_ = width_;
-    height_ = 0.05;
-    width_ = 0.05;
+    maxTop_ = top_;
+    if (bottom_) {
+      top_ = 0.02;
+    }
+    height_ = 0.02;
+    width_ = 0.02;
     list<Widget*>::iterator itr = widgets_.begin();
     for (; itr != widgets_.end(); ++itr) {
       Widget* w = *itr;
@@ -37,12 +41,13 @@ void WLayout::minimize()
         w->setDimensions(0.01,0.01,0.95,0.95);
         continue;
       }
-      w->setVisible(false);
+      //w->setVisible(false);
     }
     minimized_ = true;
   } else {
     height_ = maxHeght_;
     width_ = maxWidth_;
+    top_ = maxTop_;
     list<Widget*>::iterator itr = widgets_.begin();
     for (; itr != widgets_.end(); ++itr) {
       Widget* w = *itr;
@@ -50,7 +55,7 @@ void WLayout::minimize()
         w->setDimensions(0.01,0.95,0.05,0.05);
         continue;
       }
-      w->setVisible(true);
+      //w->setVisible(true);
     }
     minimized_ = false;
   }
@@ -90,6 +95,9 @@ void WLayout::render()
   for (; itr != widgets_.end(); ++itr) {
     Widget* widget = *itr;
     if (!widget->isVisible()) {
+      continue;
+    }
+    if (minimized_ && widget != minimizeButton_) {
       continue;
     }
     glPushMatrix();

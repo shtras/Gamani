@@ -166,3 +166,8 @@ bool CString::operator== (const CString& other) const
   }
   return (strcmp(cont_, other.cont_) == 0);
 }
+
+bool CString::operator< (const CString& other) const
+{
+  return strcmp(cont_, other.cont_) < 0;
+}

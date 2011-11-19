@@ -17,6 +17,8 @@
 #endif //DEBUG
 #include "Station.h"
 #include "StationDisplay.h"
+#include "MissionDisplay.h"
+#include "MissionManager.h"
 
 typedef BOOL (APIENTRY *PFNWGLSWAPINTERVALFARPROC)( int );
 PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT = 0;
@@ -129,6 +131,13 @@ bool Gamani::mainLoop()
   upperPanel_ = new UpperPanel();
   upperPanel_->init();
   layoutManager_.addLayout(upperPanel_);
+
+  MissionDisplay* missionDisplay = new MissionDisplay();
+  missionDisplay->init();
+  missionDisplay->setDimensions(0, 0.9, 0.2, 0.4);
+  layoutManager_.addLayout(missionDisplay);
+  MissionManager::getInstance().setDisplay(missionDisplay);
+
   int snapshotTimer = 0;
   MSG msg={0};
   world_->snapshot();
@@ -203,7 +212,7 @@ bool Gamani::mainLoop()
         timebase = time;
         frame = 0;
         char cfps[200];
-        sprintf(cfps, "0.3.0.%d %s FPS: %.lf", BUILD_NUM, BUILDSTR, fps);
+        sprintf(cfps, "0.3.1.%d %s FPS: %.lf", BUILD_NUM, BUILDSTR, fps);
         SetWindowTextA(Renderer::getInstance().getHwnd(), (LPCSTR)(cfps));
         if (fps < 5) {
           //paused_ = true;
@@ -215,12 +224,7 @@ bool Gamani::mainLoop()
         layoutManager_.render();
       }
       Renderer::getInstance().renderEnd();
-
-      GLenum err = glGetError();
-
-      if (err != 0) {
-        return false;
-      }
+      checkReleaseError("Main cycle OpenGL error");
     }
   }
 
@@ -344,7 +348,7 @@ void Gamani::handlePressedKey(int key)
     if (rotateCameraWithObject_) {
       if (world_->getFollowedObject()) {
         Camera& camera = Renderer::getInstance().getCamera();
-        camera.setHeading(camera.getHeading() + world_->getFollowedObject()->getYaw());
+        camera.setHeading(camera.getTrueHeading() + world_->getFollowedObject()->getYaw());
       }
     } else {
       if (world_->getFollowedObject()) {
@@ -495,7 +499,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   _CrtMemState s1;
   _CrtMemCheckpoint(&s1);
 #endif
-
+  Logger::getInstance().log(INFO_LOG_NAME, "Application started");
   int res = body(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
 
 #ifdef DEBUG

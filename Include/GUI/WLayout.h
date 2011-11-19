@@ -27,6 +27,7 @@ public:
   bool isRightAlign() {return rightAlign_;}
   void setVisible(bool value) {visible_ = value;}
   void setRightAlign(bool value) {rightAlign_ = value;}
+  void setBottom(bool value) {bottom_ = value;}
 protected:
   void minimize();
   WButton* minimizeButton_;
@@ -44,6 +45,7 @@ protected:
   bool square_;
   bool rightAlign_;
   bool minimized_;
+  bool bottom_;
 private:
 };
 

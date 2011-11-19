@@ -6,4 +6,6 @@ double DegToRad(double deg);
 bool isNumberChar(int key);
 bool isLetterChar(int key);
 
-void checkErrorDebug();
+void checkErrorDebug(CString errorMsg = "");
+
+void checkReleaseError(CString errorMsg);

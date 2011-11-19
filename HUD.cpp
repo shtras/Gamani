@@ -41,6 +41,7 @@ void HUD::init(Ship* ship)
 {
   NavDisplay* navDisplay = new NavDisplay();
   navDisplay->init();
+  navDisplay->setBottom(true);
   displays_.push_back(navDisplay);
   AddLayout.emit(navDisplay);
 
@@ -48,12 +49,14 @@ void HUD::init(Ship* ship)
   navDisplay1->init();
   navDisplay1->setDimensions(0.6, 0.4, 0.4, 0.4);
   navDisplay1->setRightAlign(true);
+  navDisplay1->setBottom(true);
   displays_.push_back(navDisplay1);
   AddLayout.emit(navDisplay1);
 
   APDisplay* apDisp = new APDisplay(navDisplay, navDisplay1);
   apDisp->init();
   apDisp->setDimensions(0.3, 0.35, 0.4, 0.35);
+  apDisp->setBottom(true);
   displays_.push_back(apDisp);
   AddLayout.emit(apDisp);
 
