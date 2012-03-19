@@ -203,6 +203,7 @@ bool Renderer::initOpenGL()
     Logger::getInstance().log(ERROR_LOG_NAME, "Failed to make current");
     return false;
   }
+  checkReleaseError("Before OpenGL error");
 
   GLenum res = glewInit();
   const GLubyte* bbb = glewGetErrorString(res);
@@ -210,25 +211,44 @@ bool Renderer::initOpenGL()
     Logger::getInstance().log(ERROR_LOG_NAME, "Failed to init Glew");
     return false;
   }
-
+  checkReleaseError("Glew initialization error");
 
   glViewport(0, 0, width_, height_);
+  checkReleaseError("Viewport error");
   camera_->setAspect((double)width_/(double)height_);
 
+
+  const char* verstr = (const char*)glGetString( GL_VERSION );
+  if (verstr) {
+    Logger::getInstance().log(INFO_LOG_NAME, CString("OpenGL version: ") + CString(verstr));
+  } else {
+    Logger::getInstance().log(INFO_LOG_NAME, CString("Couldn't determine OpenGL version"));
+  }
+
+  checkReleaseError("Pre parameters error");
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+  checkReleaseError("Clear color error");
   glClearDepth( 1.0f );
+  checkReleaseError("Clear depth error");
   glEnable(GL_DEPTH_TEST);
+  checkReleaseError("Depth test error");
   glEnable(GL_CULL_FACE);
+  checkReleaseError("Cull face error");
   glCullFace(GL_BACK);
+  checkReleaseError("Cull face back error");
   glShadeModel (GL_SMOOTH);
-  glEnable(GL_VERTEX_ARRAY);
+  checkReleaseError("Smooth error");
+  //glEnableClientState(GL_VERTEX_ARRAY);
+  //checkReleaseError("VArray error");
   glEnable(GL_DITHER);
+  checkReleaseError("Dither error");
   glEnable(GL_COLOR_MATERIAL);
+  checkReleaseError("Color material error");
   glEnable(GL_NORMALIZE);
   //glEnable(GL_LINE_SMOOTH);
   checkReleaseError("Set parameters 1 error");
 
-  GLfloat light_position[] = { 0, 1, 0, 1};
+  GLfloat light_position[] = { 0, 0, 0, 1};
   GLfloat light_color[] = { 1, 1, 1, 1.0f };
   GLfloat ambient_light_color[] = { 0, 0, 0, 1.0f };
   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
@@ -236,6 +256,7 @@ bool Renderer::initOpenGL()
   glLightfv(GL_LIGHT0, GL_SPECULAR, light_color);
   glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light_color);
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_light_color);
+  //glLightModelf(GL_LIGHT_MODEL_COLOR_CONTROL,GL_SEPARATE_SPECULAR_COLOR);
 
   glEnable(GL_LIGHT0);
   glEnable(GL_LIGHTING);
@@ -251,12 +272,17 @@ bool Renderer::initOpenGL()
    //gluLookAt(0,0,5,0,0,0,0,1,0);
   glMatrixMode(GL_MODELVIEW);
 
+  GLint bits;
+  glGetIntegerv(GL_DEPTH_BITS, &bits);
+  Logger::getInstance().log(INFO_LOG_NAME, CString("Using z-buffer depth: ") + CString((int)bits));
+
   GLenum err = glGetError();
   if (err != 0) {
     Logger::getInstance().log(ERROR_LOG_NAME, CString("Error while initializing OpenGL: ") + CString((int)err));
     return false;
   }
   Logger::getInstance().log(INFO_LOG_NAME, "Successfully initialized OpenGL");
+
   return true;
 }
 
@@ -535,7 +561,7 @@ void Renderer::drawAtmosphere(Planet* planet, double dist, double angle)
   Vector3 color = planet->getAtmColor();
   double mult = angle / 180.0;
 
-  float size = 9000;
+  float size = 5000;
   glPushMatrix();
   glDisable(GL_LIGHTING);
   //glDisable(GL_DEPTH_TEST);

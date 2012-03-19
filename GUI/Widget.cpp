@@ -2,7 +2,7 @@
 #include "Widget.h"
 
 
-Widget::Widget():top_(0), left_(0), width_(0), height_(0), visible_(true)
+Widget::Widget():top_(0), left_(0), width_(0), height_(0), visible_(true),hovered_(false),pressed_(false)
 {
 }
 

@@ -191,6 +191,9 @@
     <ClCompile Include="Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SystemParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Math\Matrix.h">
@@ -335,6 +338,9 @@
       <Filter>Header Files\GUI\Forms</Filter>
     </ClInclude>
     <ClInclude Include="Logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SystemParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

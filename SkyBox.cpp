@@ -63,7 +63,7 @@ void SkyBox::initTextures()
 void SkyBox::draw()
 {
   bool skybox1 = Gamani::getInstance().usingSkyBox1();
-  float size = 10000;
+  double size = 1e5;
   glPushMatrix();
   glDisable(GL_LIGHTING);
   glEnable(GL_TEXTURE_2D);

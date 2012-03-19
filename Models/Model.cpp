@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Model.h"
+#include "Gamani.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 //////////////////////////////////////////////////////////////////////////
@@ -189,7 +190,7 @@ void MaterialObject::draw() const
   glColorPointer(4, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(12));
   glVertexPointer(3, GL_FLOAT, sizeof(VBOVertex), BUFFER_OFFSET(0));
 
-  glDrawElements(GL_TRIANGLES, numFaces_, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+  glDrawElements(Gamani::getInstance().getDrawingMode(), numFaces_, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_NORMAL_ARRAY);

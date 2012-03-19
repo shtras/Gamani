@@ -20,7 +20,7 @@ public:
   bool focusGrabbed() {return focusOn_ != NULL;}
   bool handlePressedKey(int key);
 private:
-  bool handleMouseClick(WPARAM wParam, LPARAM lParam);
+  bool handleMouseEvent(UINT message, WPARAM wParam, LPARAM lParam);
 
   set<WLayout*> layouts_;
   GUIRenderer* renderer_;

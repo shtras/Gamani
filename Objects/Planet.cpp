@@ -64,7 +64,8 @@ void Planet::render()
   double dist = coord.getLength();
 
   double zoom = Renderer::getInstance().getCamera().getZoom();
-  double distMOne = 1/dist * 1e8 * 0.5;
+  double distMOne = 1/dist * 1e8 * 0.9;
+  distMOne = 1 / pow(dist, 1/3.0) * 1e7 * 0.5;
   if (zoom > distMOne) {
     glScalef(distMOne, distMOne, distMOne);
   } else {
@@ -75,17 +76,23 @@ void Planet::render()
 
   glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0/*coord[2]*GLOBAL_MULT*/);
 
-
+  //glEnable(GL_COLOR_SUM_EXT); 
+  //glColor4f(0, 0.3, 0.50,1);
+  //glSecondaryColor3fEXT(1, 1, 0.8);
+  //glMaterialfv(GL_FRONT, GL_SPECULAR, mcolor);
+  //glMateriali(GL_FRONT, GL_SHININESS, 96);
+  //float specReflection[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+  //glMaterialfv(GL_FRONT, GL_SPECULAR, specReflection);
   glRotatef(180, 1, 0, 0);
    
   if (1 || camDist > 5) {
     int slices = 32;
     int stacks = 64;
     if (camDist < 10) {
-      slices = 100;
+      slices = 200;
       stacks = 200;
     } else if (camDist > 1e3) {
-      slices = 5;
+      slices = 10;
       stacks = 10;
     }
     //glColor4f(1,1,1,0.2);
@@ -114,6 +121,7 @@ void Planet::render()
     glVertex3f(0,GLOBAL_MULT,GLOBAL_MULT);
     glEnd();
   }
+  //glDisable(GL_COLOR_SUM_EXT); 
 
   drawName();
 

@@ -1,0 +1,189 @@
+Info {
+  Version = 1.0;
+}
+
+Star {
+  Mass = 1.98e24;
+  Radius = 695.5;
+  Name = Sun;
+
+  //Mercury
+  Planet {
+    Coord = (57900, 0, 0);
+    Radius = 2.4397;
+    Mass = 3.3e17;
+    Velocity = (0, -47870, 0);
+    Name = Mercury;
+    RotationPeriod = 5067000;
+  }
+  
+  //Venus
+  Planet {
+  Coord = (108000, 0, 0);
+  Radius = 6.0518;
+  Mass = 4.8685e18;
+  Velocity = (0, -35000, 0);
+  Name = Venus;
+  RotationPeriod = 20996798.4;
+  }
+
+  //Earth
+  Planet {
+    Coord = (149600, 0, 0);
+    Radius = 6.371;
+    Mass = 6.0e18;
+    Velocity = (0, -29783, 0);
+    Name = Earth;
+    RotationPeriod = 86400;
+    AtmRadius = 6.971;
+    AtmColor = (0, 0.75, 1);
+
+    Station {
+      Coord = (149590.01, 0, 0);
+      Velocity = (0, -36033, 0);
+      Radius = 0.001;
+      Name = Shipyard;
+      Model = res/station.3ds;
+      DockingPort = (0.65, 0.03, 0.1);
+      PortAngle = 270;
+    }
+    
+    //Moon
+    Planet {
+      Coord = (149600, -374.399, 0);
+      Radius = 1.736;
+      Mass = 7.3477e16;
+      Velocity = (-1022, -29783, 0);
+      Color = (1,1,1);
+      Name = Moon;
+      RotationPeriod = 2360584.6848;
+    }
+  }
+
+  //Mars
+  Planet {
+    Coord = (249600, 0, 0);
+    Radius = 3.386;
+    Mass = 6.4185e17;
+    Velocity = (0, -24130, 0);
+    Name = Mars;
+    RotationPeriod = 88776;
+    AtmColor = (0.84, 0.52, 0.30);
+    AtmRadius = 3.496;
+    
+    //Phobos
+    Planet {
+      Coord = (249600, 9.380, 0);
+      Radius = 11.1e-3;
+      Mass = 1.972e10;
+      Velocity = (1840, -24130, 0);
+      Name = Phobos;
+      RotationPeriod = 27552;
+    }
+
+    //Deimos
+    Planet {
+      Coord = (249600, 23.460, 0);
+      Radius = 6.2e-3;
+      Mass = 1.48e9;
+      Velocity = (1350, -24130, 0);
+      Name = Deimos;
+      RotationPeriod = 109074.816;
+    }
+  }
+
+  //Jupiter
+  Planet {
+    Coord = (760000, 0, 0);
+    Radius = 71.492;
+    Mass = 1.8986e21;
+    Velocity = (0, -13070, 0);
+    Name = Jupiter;
+    RotationPeriod = 35730;
+
+    //Io
+    Planet {
+      Coord = (760000, 421.7, 0);
+      Radius = 1.321;
+      Mass = 8.9319e16;
+      Velocity = (17430, -13070, 0);
+      Color = (1,1,1);
+      Name = Io;
+      RotationPeriod = 152853.5047104;
+    }
+
+    //Europa
+    Planet {
+      Coord = (760000, 670.99, 0);
+      Radius = 1.569;
+      Mass = 4.8e16;
+      Velocity = (13740, -13070, 0);
+      Color = (1,1,1);
+      Name = Europa;
+      RotationPeriod = 306822.0384;
+    }
+
+    //Ganymede
+    Planet {
+      Coord = (760000, 1070.4, 0);
+      Radius = 2.6341;
+      Mass = 1.4819e17;
+      Velocity = (10880, -13070, 0);
+      Color = (1,1,1);
+      Name = Ganymede;
+      RotationPeriod = 618153.375744;
+    }
+
+    //Callisto
+    Planet {
+      Coord = (760000, 1882.7, 0);
+      Radius = 2.4103;
+      Mass = 1.0759e17;
+      Velocity = (8210, -13070, 0);
+      Color = (1,1,1);
+      Name = Callisto;
+      RotationPeriod = 1441931.18976;
+    }
+  }
+
+  //Saturn
+  Planet {
+    Coord = (1420000, 0, 0);
+    Radius = 60.268;
+    Mass = 5.6846e20;
+    Velocity = (0, -9690, 0);
+    Name = Saturn;
+    RotationPeriod = 38053;
+  }
+    
+  //Uranus
+  Planet {
+    Coord = (2876679.082, 0, 0);
+    Radius = 25.559;
+    Mass = 8.6832e19;
+    Velocity = (0, -6810, 0);
+    Name = Uranus;
+    RotationPeriod = 62063.712;
+  }
+
+  //Neptune
+  Planet {
+    Coord = (4503443.661, 0, 0);
+    Radius = 24.341;
+    Mass = 1.0243e20;
+    Velocity = (0, -5430, 0);
+    Name = Neptune;
+    RotationPeriod = 58000.32;
+  }
+  
+  Ship {
+    Coord = (149590, 0, 0);
+    Velocity = (0, -36033, 0);
+    Radius = 0.00005;
+    Name = Galactica;
+    Model = res/ss2.3ds;
+    DockingPort = (0, 1.3, 0);
+    PortAngle = 0;
+    PlayerControlled = True;
+  }
+}

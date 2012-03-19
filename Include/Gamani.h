@@ -34,6 +34,8 @@ public:
   void toggleTracers() {tracers_ = !tracers_;}
   void toggleNames() {names_ = !names_;}
   void toggleGUI() {interface_ = !interface_;}
+  GLenum getDrawingMode() {return drawingMode_;}
+  void switchDrawingMode();
 private:
   void testInit();
   void layoutTest();
@@ -72,5 +74,7 @@ private:
   bool relativeOrbits_;
 
   bool rotateCameraWithObject_;
+
+  GLenum drawingMode_;
 };
 

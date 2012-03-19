@@ -46,7 +46,7 @@ void LayoutManager::render()
   }
 }
 
-bool LayoutManager::handleMouseClick(WPARAM wParam, LPARAM lParam)
+bool LayoutManager::handleMouseEvent(UINT message, WPARAM wParam, LPARAM lParam)
 {
   if (1 || wParam == MK_LBUTTON) {
     if (focusOn_) {
@@ -63,25 +63,28 @@ bool LayoutManager::handleMouseClick(WPARAM wParam, LPARAM lParam)
     dy = 1 - dy;
     set<WLayout*>::iterator itr = layouts_.begin();
     for (; itr != layouts_.end(); ++itr) {
+      double localDX = dx;
+      double localDY = dy;
       WLayout* layout = *itr;
-      if (layout->isVisible() && layout->isInside(dx, dy)) {
+      if (layout->isVisible() && layout->isInside(localDX, localDY)) {
+        layout->setHovered(true);
         //cout << "Yes!" << endl;
         if (layout->isRightAlign()) {
           double trueWidth = layout->getWidth();
           if (layout->isSquare()) {
             trueWidth *= Renderer::getInstance().getHeight() / (double)Renderer::getInstance().getWidth();
           }
-          dx -= (1 - trueWidth);
+          localDX -= (1 - trueWidth);
         } else {
-          dx -= layout->getLeft();
+          localDX -= layout->getLeft();
         }
-        dy -= layout->getBottom();
-        dx /= layout->getWidth();
-        dy /= layout->getHeight();
+        localDY -= layout->getBottom();
+        localDX /= layout->getWidth();
+        localDY /= layout->getHeight();
         if (layout->isSquare()) {
-          dx *= Renderer::getInstance().getWidth() / (double)Renderer::getInstance().getHeight();
+          localDX *= Renderer::getInstance().getWidth() / (double)Renderer::getInstance().getHeight();
         }
-        Widget* res = layout->handleMouseClick(dx, dy);
+        Widget* res = layout->handleMouseEvent(message, wParam, localDX, localDY);
         if (res) {
           if (res->grabsFocus()) {
             res->getFocus();
@@ -89,6 +92,8 @@ bool LayoutManager::handleMouseClick(WPARAM wParam, LPARAM lParam)
           }
           return true;
         }
+      } else {
+        layout->setHovered(false);
       }
     }
   }
@@ -105,7 +110,9 @@ bool LayoutManager::handleMessage(UINT message,WPARAM wParam,LPARAM lParam)
 {
   switch (message) {
   case WM_LBUTTONUP:
-    return handleMouseClick(wParam, lParam);
+  case WM_LBUTTONDOWN:
+  case WM_MOUSEMOVE:
+    return handleMouseEvent(message, wParam, lParam);
   }
   return false;
 }

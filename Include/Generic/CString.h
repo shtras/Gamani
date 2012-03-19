@@ -21,12 +21,21 @@ public:
   CString append(const CString& other) const;
   int getIndex(char c) const;
   bool contains(CString& other) const;
+  bool contains(char c) const;
   operator const char*() const;
   CString operator+ (const CString& other) const;
   CString& operator= (CString& other);
   CString& operator= (const char* str);
   bool operator== (const CString& other) const;
+  bool operator== (const char* other) const;
+  bool operator!= (const CString& other) const;
   bool operator< (const CString& other) const;
+  bool isEmpty();
+  CString toLower();
+  CString toUpper();
+  CString remove(char c);
+  CString substr(int begin, int end);
+  vector<CString> tokenize(char c);
 private:
   char* cont_;
   int len_;

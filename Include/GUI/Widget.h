@@ -24,6 +24,10 @@ public:
   virtual void getFocus() {}
   virtual void loseFocus() {}
   virtual bool handlePressedKey(int key) {assert(0); return false;}
+  bool isHovered() {return hovered_;}
+  void setHovered(bool val) {hovered_ = val;}
+  void setPressed(bool val) {pressed_ = val;}
+  bool isPressed() {return pressed_;}
 protected:
   double top_;
   double left_;
@@ -31,5 +35,7 @@ protected:
   double height_;
 
   bool visible_;
+  bool hovered_;
+  bool pressed_;
 };
 

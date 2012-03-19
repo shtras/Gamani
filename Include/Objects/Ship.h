@@ -46,6 +46,8 @@ public:
   void checkUndocking();
   bool isUndocking() {return !docked_ && dockedTo_;}
   Autopilot* getAP() {return autopilot_;}
+  void initializeAsPlayerControlled() {initializeAsPlayerControlled_ = true;}
+  bool isInitializedAsPlayerControlled() {return initializeAsPlayerControlled_;}
 public:
   //void testNavCom();
   //void testNavCom1();
@@ -74,5 +76,6 @@ public:
   unsigned int refIdx_;
   Station* dockedTo_;
 
+  bool initializeAsPlayerControlled_;
 };
 

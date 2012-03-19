@@ -41,12 +41,12 @@ CString::CString(int val)
     val /= 10;
     len++;
   }
-  cont_ = new char[len];
+  cont_ = new char[len+1];
   _itoa(origval, cont_, 10);
   len_ = len;
 
-  std::stringstream ss;
-  ss << val;
+  //std::stringstream ss;
+  //ss << val;
   //str_ = ss.str();
 }
 
@@ -123,6 +123,11 @@ CString CString::append(const CString& other) const
 
 int CString::getIndex(char c) const
 {
+  for (int i=0; i<len_; ++i) {
+    if (cont_[i] == c) {
+      return i;
+    }
+  }
   return -1;
 }
 
@@ -130,6 +135,17 @@ bool CString::contains(CString& other) const
 {
   return false;
 }
+
+bool CString::contains(char c) const
+{
+  for (int i=0; i<len_; ++i) {
+    if (cont_[i] == c) {
+      return true;
+    }
+  }
+  return false;
+}
+
 
 CString::operator const char*() const
 {
@@ -167,7 +183,85 @@ bool CString::operator== (const CString& other) const
   return (strcmp(cont_, other.cont_) == 0);
 }
 
+bool CString::operator== (const char* other) const
+{
+  return *this == CString(other);
+}
+
+bool CString::operator!= (const CString& other) const
+{
+  return !(*this == other);
+}
+
+bool CString::isEmpty()
+{
+  return len_ == 0;
+}
+
 bool CString::operator< (const CString& other) const
 {
   return strcmp(cont_, other.cont_) < 0;
+}
+
+CString CString::remove(char c)
+{
+  CString res = "";
+  for (int i=0; i<len_; ++i) {
+    if (cont_[i] != c) {
+      res = res.append(cont_[i]);
+    }
+  }
+  return res;
+}
+
+vector<CString> CString::tokenize(char c)
+{
+  vector<CString> res;
+  CString currString;
+  for (int i=0; i<len_; ++i) {
+    if (cont_[i] != c) {
+      currString = currString.append(cont_[i]);
+    } else {
+      res.push_back(currString);
+      currString = "";
+    }
+  }
+  if (!currString.isEmpty()) {
+    res.push_back(currString);
+  }
+  return res;
+}
+
+CString CString::toLower()
+{
+  CString res = CString(*this);
+  for (int i=0; i<res.len_; ++i) {
+    if (res.cont_[i] >= 'A' && res.cont_[i] <= 'Z') {
+      res.cont_[i] = res.cont_[i] - 'A' + 'a';
+    }
+  }
+  return res;
+}
+
+CString CString::toUpper()
+{
+  CString res = CString(*this);
+  for (int i=0; i<res.len_; ++i) {
+    if (res.cont_[i] >= 'a' && res.cont_[i] <= 'a') {
+      res.cont_[i] = res.cont_[i] - 'a' + 'A';
+    }
+  }
+  return res;
+}
+
+CString CString::substr(int begin, int end)
+{
+  if (begin < 0 || begin >= len_ || end < 0 || end >= len_) {
+    return "";
+  }
+  CString res;
+  for (int i=begin; i<end; ++i) {
+    res = res.append(cont_[i]);
+  }
+  return res;
 }

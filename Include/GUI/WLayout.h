@@ -20,7 +20,7 @@ public:
   double getRight() {return left_ + width_;}
   double getBottom() {return top_ - height_;}
   bool isInside(double x, double y);
-  Widget* handleMouseClick(double x, double y);
+  Widget* handleMouseEvent(UINT message, WPARAM wparam, double x, double y);
   void addWidgetToGC(Widget* widget) {widgetsToGC_.push_back(widget);}
   bool isVisible() {return visible_;}
   bool isSquare() {return square_;}
@@ -28,6 +28,8 @@ public:
   void setVisible(bool value) {visible_ = value;}
   void setRightAlign(bool value) {rightAlign_ = value;}
   void setBottom(bool value) {bottom_ = value;}
+  bool isHovered() {return hovered_;}
+  void setHovered(bool val);
 protected:
   void minimize();
   WButton* minimizeButton_;
@@ -46,6 +48,7 @@ protected:
   bool rightAlign_;
   bool minimized_;
   bool bottom_;
+  bool hovered_;
 private:
 };
 

@@ -36,6 +36,7 @@ Ship::Ship():autopilot_(NULL)
 //   rotateRight_ = false;
 //   rotatePhase1_ = true;
   type_ = ShipType;
+  initializeAsPlayerControlled_ = false;
   autopilot_ = new Autopilot(this);
 }
 
