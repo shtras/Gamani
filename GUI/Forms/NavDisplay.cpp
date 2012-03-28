@@ -549,25 +549,43 @@ void NavDisplay::drawDocking()
 
   Vector3 dir = station->getCoord() - ship_->getCoord();
 
-  double dist = (dir.getLength()+0.5) * 10.0;
-  if (dist > 10) {
-    dist = 10.0;
-  }
+  double dist = dir.getLength();
   double scaleF = dist;
+  scaleF *= 100.0;
+  if (scaleF > 0.8) {
+    scaleF = 0.8;
+  }
+  dir.normalize();
   dir *= scaleF;
   double yaw = ship_->getYaw()*3.14159265/180.0;
-  //glPushMatrix();
+  glPushMatrix();
   glRotatef(ship_->getYaw(), 0, 0, 1);
   glTranslatef(dir[0], -dir[1], 0);
-  glutWireSphere(0.05, 4, 2);
-  //glPopMatrix();
+  glutWireSphere(0.05, 10, 5);
+  
 
   Vector3 stationPort = station->getDockingPort()*0.05;
-  glRotatef(station->getYaw() + station->getPortAngle(), 0, 0, 1);
+  glRotatef(station->getYaw() + station->getPortAngle() + 90.0, 0, 0, 1);
   
   glBegin(GL_LINES);
   glVertex3f(0,0,0);
-  glVertex3f(-0.1,0,0);
+  glVertex3f(-0.15,0,0);
+  glEnd();
+  glPopMatrix();
+
+  Vector3 relSpd = station->getVelocity() - ship_->getVelocity();
+  double speedVal = relSpd.getLength();
+  speedVal *= 0.1;
+  if (speedVal > 0.3) {
+    speedVal = 0.3;
+  }
+  relSpd.normalize();
+  relSpd *= speedVal;
+
+  glBegin(GL_LINES);
+  glColor3f(0.3, 1, 0.2);
+  glVertex3f(0, 0, 0);
+  glVertex3f(-relSpd[1], -relSpd[0], 0);
   glEnd();
 }
 
@@ -576,28 +594,7 @@ void NavDisplay::drawAxes()
   glPushMatrix();
   //Renderer::getInstance().getCamera().applyZoom();
 
-  Vector3 relSpd = ship_->getVelocity() - gravityRef_->getVelocity();
-  double spd = relSpd.getLength();
-  relSpd.normalize();
-  relSpd *= 0.5 * spd / 1000.0;
-  
-  glColor3f(0, 0.2, 0.9);
-  glBegin(GL_LINES);
-  glVertex3f(0,0,ship_->getRadius()*GLOBAL_MULT);
-  glVertex3f(relSpd[0], -relSpd[1], 0);
-  glEnd();
-
-  Vector3 dir = gravityRef_->getCoord() - ship_->getCoord();
-  double dist = dir.getLength();
-  dir.normalize();
-  dir *= /*ship_->getRadius() * */0.5 * sqrt(dist/10);
-  
-  glColor3f(0, 0.9, 0.2);
-  glBegin(GL_LINES);
-  glVertex3f(0,0,ship_->getRadius()*GLOBAL_MULT);
-  glVertex3f(dir[0], -dir[1], 0);
-  glEnd();
-
+  glLineWidth(3.0f);
   Vector3 sDir = Vector3(sin(ship_->getYaw()*3.14159265/180.0)*0.3, -cos(ship_->getYaw()*3.14159265/180.0)*0.3, 0);
   //sDir *= ship_->getRadius()/* * (1/10000.0)*/;
   glColor3f(0.7, 0.9, 0.7);
@@ -605,6 +602,59 @@ void NavDisplay::drawAxes()
   glVertex3f(0,0,ship_->getRadius()*GLOBAL_MULT);
   glVertex3f(sDir[0], -sDir[1], 0);
   glEnd();
+
+  Vector3 relSpd = ship_->getVelocity() - gravityRef_->getVelocity();
+  double spd = relSpd.getLength();
+  double scaleF = spd * 0.01;
+  if (scaleF > 0.8) {
+    scaleF = 0.8;
+  }
+  int width = 5;
+  if (scaleF > 0.001) {
+    while (scaleF < 0.3) {
+      --width;
+      if (width < 1) {
+        width = 1;
+      }
+      scaleF *= 2.0;
+    }
+  }
+  relSpd.normalize();
+  relSpd *= scaleF;
+  glLineWidth(width);
+  glColor4f(0, 0.2, 0.9, 0.5);
+  glBegin(GL_LINES);
+  glVertex3f(0,0,ship_->getRadius()*GLOBAL_MULT);
+  glVertex3f(relSpd[0], -relSpd[1], 0);
+  glEnd();
+
+
+  Vector3 dir = gravityRef_->getCoord() - ship_->getCoord();
+  double dist = dir.getLength();
+  scaleF = dist * 1.0;
+  if (scaleF > 0.8) {
+    scaleF = 0.8;
+  }
+  width = 5;
+  if (scaleF > 0.001) {
+    while (scaleF < 0.4) {
+      --width;
+      if (width < 1) {
+        width = 1;
+      }
+      scaleF *= 2.0;
+    }
+  }
+  dir.normalize();
+  dir *= scaleF;
+  glLineWidth(width);
+  glColor4f(0, 0.9, 0.2, 0.5);
+  glBegin(GL_LINES);
+  glVertex3f(0,0,ship_->getRadius()*GLOBAL_MULT);
+  glVertex3f(dir[0], -dir[1], 0);
+  glEnd();
+
+  glLineWidth(1.0f);
 
   glPopMatrix();
 

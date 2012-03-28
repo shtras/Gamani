@@ -14,6 +14,7 @@ public:
 
   signal1<WLayout*> AddLayout;
   signal1<WLayout*> RemoveLayout;
+  void setVisible(bool value);
 private:
   list<Display*> displays_;
   Ship* ship_;

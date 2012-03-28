@@ -80,7 +80,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <OpenMPSupport>true</OpenMPSupport>
+      <OpenMPSupport>false</OpenMPSupport>
       <AdditionalIncludeDirectories>Include/Objects;Include;Include/Math;Include/GUI;Include/GUI/Forms;Include/Generic;Include/Models;Include/pngLib;Include/Autopilot;Include/Missions</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -131,7 +131,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <OpenMPSupport>true</OpenMPSupport>
+      <OpenMPSupport>false</OpenMPSupport>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <AdditionalIncludeDirectories>Include/Objects;Include;Include/Math;Include/GUI;Include/GUI/Forms;Include/Generic;Include/Models;Include/pngLib;Include/Autopilot;Include/Missions</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -152,6 +152,7 @@
       <AdditionalLibraryDirectories>pngLib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <TargetMachine>MachineX86</TargetMachine>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <PreBuildEvent>
       <Command>build_num.exe</Command>
@@ -214,6 +215,7 @@
     <ClCompile Include="GUI\WLayout.cpp" />
     <ClCompile Include="GUI\WMenu.cpp" />
     <ClCompile Include="GUI\WText.cpp" />
+    <ClCompile Include="GUI\WTextBox.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Math\Matrix.cpp" />
@@ -267,6 +269,7 @@
     <ClInclude Include="Include\GUI\WLayout.h" />
     <ClInclude Include="Include\GUI\WMenu.h" />
     <ClInclude Include="Include\GUI\WText.h" />
+    <ClInclude Include="Include\GUI\WTextBox.h" />
     <ClInclude Include="Include\HUD.h" />
     <ClInclude Include="Include\Math\Matrix.h" />
     <ClInclude Include="Include\Math\Vector.h" />

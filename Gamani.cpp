@@ -21,8 +21,36 @@
 #include "MissionManager.h"
 #include "SystemParser.h"
 
+//#define MULTITHREAD_RUN
+
 typedef BOOL (APIENTRY *PFNWGLSWAPINTERVALFARPROC)( int );
 PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT = 0;
+
+#ifdef MULTITHREAD_RUN
+int IterationsToProcess = 0;
+bool StopThread = false;
+HANDLE ghWriteEvent;
+
+DWORD WINAPI WorldCalcThread(LPVOID lpParam)
+{
+  World* world = (World*)lpParam;
+  while(!StopThread) {
+    WaitForSingleObject(ghWriteEvent, INFINITE);
+    cout << IterationsToProcess << " ";
+    int currentIters = IterationsToProcess;
+    for (int i=0; i<currentIters; ++i) {
+      world->interactionStep();
+      Gamani::getInstance().handlePressedKeys();
+    }
+    IterationsToProcess -= currentIters;
+    if (IterationsToProcess <= 0) {
+      IterationsToProcess = 0;
+      ResetEvent(ghWriteEvent);
+    }
+  }
+  return 0;
+}
+#endif
 
 void setVSync(int interval=1)
 {
@@ -46,7 +74,7 @@ void toggleVSync()
 
 Gamani::Gamani():world_(new World()), paused_(true), speed_(1), calcStepLength_(0.05), dtModifier_(50),auxAxes_(false),lmDown_(false),rmDown_(false),
   lmDrag_(false), rmDrag_(false), tracers_(false), auxPrint_(true), interface_(true), names_(false),skybox1_(false),relativeOrbits_(false),
-  rotateCameraWithObject_(true),shiptPressed_(false),drawingMode_(GL_TRIANGLES)
+  rotateCameraWithObject_(false),shiftPressed_(false),drawingMode_(GL_TRIANGLES)
 {
   nonContKeys_.insert('M');
   nonContKeys_.insert('V');
@@ -138,6 +166,9 @@ bool Gamani::mainLoop()
   missionDisplay->init();
   missionDisplay->setDimensions(0, 0.9, 0.2, 0.4);
   layoutManager_.addLayout(missionDisplay);
+  AstralBody* station = world_->getObject("shipyard");
+  assert (station && station->getType() == Renderable::StationType);
+  MissionManager::getInstance().testInit((Station*)station);
   MissionManager::getInstance().setDisplay(missionDisplay);
 
   int snapshotTimer = 0;
@@ -146,6 +177,12 @@ bool Gamani::mainLoop()
   double lastDelta = 0;
   double delta = 0;
   int cntToPause = 0;
+#ifdef MULTITHREAD_RUN
+  DWORD result;
+  LPVOID param = (LPVOID)world_;
+  ghWriteEvent = CreateEvent(NULL, TRUE, FALSE, TEXT("WriteEvent")); 
+  CreateThread(NULL, 0, WorldCalcThread, param, 0, &result);
+#endif
   while(WM_QUIT!=msg.message) {
     if (PeekMessage(&msg,NULL,0,0,PM_REMOVE)) {
       TranslateMessage(&msg);
@@ -189,10 +226,16 @@ bool Gamani::mainLoop()
 //       }
       while(accumulator >= dt) {
         if (!paused_) {
+#ifdef MULTITHREAD_RUN
+          IterationsToProcess += speed_;
+          SetEvent(ghWriteEvent);
+#endif
           for (int i=0; i<speed_; ++i) {
             seconds_ += calcStepLength_*dt * (100/dtModifier_);
+#ifndef MULTITHREAD_RUN
             world_->interactionStep();
             handlePressedKeys();
+#endif
             if (++snapshotTimer > 10000) {
               world_->snapshot();
               snapshotTimer = 0;
@@ -214,7 +257,7 @@ bool Gamani::mainLoop()
         timebase = time;
         frame = 0;
         char cfps[200];
-        sprintf(cfps, "0.3.1.%d %s FPS: %.lf", BUILD_NUM, BUILDSTR, fps);
+        sprintf(cfps, "0.3.2.%d %s FPS: %.lf %s %lf", BUILD_NUM, BUILDSTR, fps, (paused_)?"Paused":"Running", speed_);
         SetWindowTextA(Renderer::getInstance().getHwnd(), (LPCSTR)(cfps));
         if (fps < 5) {
           //paused_ = true;
@@ -229,7 +272,10 @@ bool Gamani::mainLoop()
       checkReleaseError("Main cycle OpenGL error");
     }
   }
-
+#ifdef MULTITHREAD_RUN
+  StopThread = true;
+  CloseHandle(ghWriteEvent);
+#endif
   return true;
 
 }
@@ -301,7 +347,7 @@ void Gamani::handlePressedKey(int key)
     //speed_ /= 2;
     break;
   case 'X':
-    if (shiptPressed_) {
+    if (shiftPressed_) {
       calcStepLength_ += 2;
     } else {
       calcStepLength_ += 0.05;
@@ -311,7 +357,7 @@ void Gamani::handlePressedKey(int key)
     }
     break;
   case 'C':
-    if (shiptPressed_) {
+    if (shiftPressed_) {
       calcStepLength_ -= 2;
     } else {
       calcStepLength_ -= 0.05;
@@ -368,6 +414,11 @@ void Gamani::handlePressedKey(int key)
   }
 }
 
+bool Gamani::isPressed(int key)
+{
+  return pressedKeys_.count(key) > 0;
+}
+
 void Gamani::handlePressedKeys()
 {
   set<int>::iterator itr = pressedKeys_.begin();
@@ -389,6 +440,8 @@ void Gamani::handleMessage(UINT message, WPARAM wParam, LPARAM lParam)
   switch (message) {
   case WM_LBUTTONDOWN:
     layoutManager_.handleMessage(message, wParam, lParam);
+    break;
+  case WM_RBUTTONDOWN:
     lmDown_ = true;
     lmCoord_[0] = GET_X_LPARAM(lParam);
     lmCoord_[1] = GET_Y_LPARAM(lParam);
@@ -423,22 +476,24 @@ void Gamani::handleMessage(UINT message, WPARAM wParam, LPARAM lParam)
     break;
   case WM_LBUTTONUP:
     layoutManager_.handleMessage(message, wParam, lParam);
+    break;
+  case WM_RBUTTONUP:
     lmDown_ = false;
-    if (!lmDrag_ && interface_) {
+    if (0 && !lmDrag_ && interface_) {
       layoutManager_.handleMessage(message, wParam, lParam);
     }
     lmDrag_ = false;
     break;
   case WM_KEYDOWN:
     if (wParam == 0x10) {
-      shiptPressed_ = true;
+      shiftPressed_ = true;
       break;
     }
     pressedKeys_.insert(wParam);
     break;
   case WM_KEYUP:
     if (wParam == 0x10) {
-      shiptPressed_ = false;
+      shiftPressed_ = false;
       break;
     }
     assert(pressedKeys_.count(wParam) == 1);
@@ -490,7 +545,7 @@ void Gamani::switchDrawingMode()
 
 void Gamani::speedUp()
 {
-  if (shiptPressed_) {
+  if (shiftPressed_) {
     speed_ = 3000;
   } else {
     speed_ *= 2;
@@ -499,7 +554,7 @@ void Gamani::speedUp()
 
 void Gamani::speedDown()
 {
-  if (shiptPressed_) {
+  if (shiftPressed_) {
     speed_ = 1;
   } else {
     speed_ /= 2;
@@ -571,7 +626,10 @@ void Gamani::testInit()
   }
   world_->setStarSystem(parsedSystem);
   Ship* playerShip = parser.getPlayerShip();
-  world_->addFreeObject(playerShip);
+  const vector<AstralBody*>& freeObjects = parser.getFreeObjects();
+  for (uint32_t i=0; i<freeObjects.size(); ++i) {
+    world_->addFreeObject(freeObjects[i]);
+  }
   world_->switchControlledShip(playerShip);
   return;
   //Renderer::getInstance().formatDistance(1002342354.234234);

@@ -146,6 +146,7 @@ void WLayout::renderEnd()
 void WLayout::addWidget(Widget* widget)
 {
   widgets_.push_back(widget);
+  widget->setLayout(this);
 }
 
 void WLayout::removeWidget(Widget* widget)

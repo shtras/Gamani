@@ -74,6 +74,11 @@ void World::snapshot()
 void World::handlePressedKey(int key)
 {
   bool pause = Gamani::getInstance().isPaused();
+  bool shiftPressed = Gamani::getInstance().shiftPressed();
+  double controlFraction = 1.0;
+  if (shiftPressed) {
+    controlFraction = 0.1;
+  }
   switch (key) {
   case 'A':
     if (controlledShip_ && !pause) {
@@ -87,23 +92,23 @@ void World::handlePressedKey(int key)
     break;
   case 'W':
     if (controlledShip_ && !pause) {
-      controlledShip_->accelerate();
+      controlledShip_->accelerate(controlFraction);
     }
     break;
   case 'S':
     if (controlledShip_ && !pause) {
-      controlledShip_->back();
+      controlledShip_->back(controlFraction);
     }
     break;
   case 'Q':
     if (controlledShip_ && !pause) {
-      controlledShip_->steerLeft();
+      controlledShip_->steerLeft(controlFraction);
     }
     //controlledShip_->scrollGravityRef();
     break;
   case 'E':
     if (controlledShip_ && !pause) {
-      controlledShip_->steerRight();
+      controlledShip_->steerRight(controlFraction);
     }
     //controlledShip_->toggleAutoRef();
     break;
@@ -164,6 +169,17 @@ void World::selectShip()
   if (controlledShip_) {
     Renderer::getInstance().getCamera().position(followedObject_);
   }
+}
+
+AstralBody* World::getObject(CString name)
+{
+  for (uint32_t i=0; i<objects_->size(); ++i) {
+    AstralBody* bodyItr = (*objects_)[i];
+    if (bodyItr->getName() == name) {
+      return bodyItr;
+    }
+  }
+  return NULL;
 }
 
 void World::updatePosition(Renderable* obj)
@@ -340,6 +356,9 @@ bool World::checkCollision(AstralBody* body1, AstralBody* body2)
   if (body1->isLanded() || body2->isLanded()) {
     return false;
   }
+  if (body1->getType() == Renderable::ShipType && body2->getType() == Renderable::ShipType) {
+    return false;
+  }
   Vector3 coord1 = body1->getCoord();
   Vector3 coord2 = body2->getCoord();
   double dist = (coord1 - coord2).getLength();
@@ -431,6 +450,10 @@ void World::interactionStep()
       }
       interactCollision(itr, innerItr);
     }
+    if (itr->getType() == Renderable::ShipType) {
+      Ship* ship = (Ship*)itr;
+      ship->updateEngines();
+    }
   }
 
   //for (uint32_t i=0; i<freeObjects_.size(); ++i) {
@@ -448,10 +471,8 @@ void World::interactionStep()
 
 void World::gravityWithinLevelInteraction(AstralBody* head, vector<AstralBody*>& level)
 {
-  if (level.size() == 0) {
-    assert(0);
-  }
   unsigned int SZ = level.size();
+  assert (SZ != 0);
   for (uint32_t i=0; i<SZ; ++i) {
     AstralBody* itr = level[i];
     if (itr != head) {
@@ -462,10 +483,10 @@ void World::gravityWithinLevelInteraction(AstralBody* head, vector<AstralBody*>&
 
 void World::gravitySubLevelsInteraction(AstralBody* head, vector<AstralBody*>& level, bool mutual)
 {
-  if (level.size() == 0) {
+  unsigned int SZ = level.size();
+  if (SZ == 0) {
     return;
   }
-  unsigned int SZ = level.size();
   for (uint32_t i=0; i<SZ; ++i) {
     AstralBody* itr = level[i];
     gravityWithinLevelInteraction(itr, level);

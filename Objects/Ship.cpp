@@ -38,12 +38,86 @@ Ship::Ship():autopilot_(NULL)
   type_ = ShipType;
   initializeAsPlayerControlled_ = false;
   autopilot_ = new Autopilot(this);
+  for (int i=0; i<6; ++i) {
+    engineStates_[i] = 0;
+  }
 }
 
 Ship::~Ship()
 {
   delete hud_;
   delete autopilot_;
+}
+
+void Ship::engageEngine(Engine engine, float power/* = 10*/)
+{
+  engineStates_[engine] = power;
+}
+
+void Ship::updateEngines()
+{
+  for (int i=0; i<6; ++i) {
+    engineStates_[i] -= 0.1f;
+    if (engineStates_[i] < 0) {
+      engineStates_[i] = 0;
+    }
+  }
+}
+
+void Ship::drawEngines()
+{
+  glDisable(GL_LIGHTING);
+  double radius = getRadius() * GLOBAL_MULT;
+  glColor3f(0.5, 0.9, 0.3);
+
+  if (engineStates_[March] > 0) {
+    glPushMatrix();
+    glRotatef(180, 1, 0, 0);
+    glTranslatef(0, 0, radius*0.6);
+    glutSolidCone(radius * 0.1 * engineStates_[March], radius * engineStates_[March], 10, 10);
+    glPopMatrix();
+  }
+
+  if (engineStates_[Reverse] > 0) {
+    glPushMatrix();
+    glTranslatef(0, 0, radius*0.6);
+    glutSolidCone(radius * 0.05 * engineStates_[Reverse], radius * engineStates_[Reverse] * 0.5, 10, 10);
+    glPopMatrix();
+  }
+
+  if (engineStates_[FrontLeft] > 0) {
+    glPushMatrix();
+    glTranslatef(radius*0.2, 0, radius*0.5);
+    glRotatef(90, 0, 1, 0);
+    glutSolidCone(radius * 0.02 * engineStates_[FrontLeft], radius * engineStates_[FrontLeft] * 0.2, 10, 10);
+    glPopMatrix();
+  }
+
+  if (engineStates_[RearLeft] > 0) {
+    glPushMatrix();
+    glTranslatef(radius*0.5, 0, -radius*0.5);
+    glRotatef(90, 0, 1, 0);
+    glutSolidCone(radius * 0.02 * engineStates_[RearLeft], radius * engineStates_[RearLeft] * 0.2, 10, 10);
+    glPopMatrix();
+  }
+
+  if (engineStates_[FrontRight] > 0) {
+    glPushMatrix();
+    glTranslatef(-radius*0.2, 0, radius*0.5);
+    glRotatef(-90, 0, 1, 0);
+    glutSolidCone(radius * 0.02 * engineStates_[FrontRight], radius * engineStates_[FrontRight] * 0.2, 10, 10);
+    glPopMatrix();
+  }
+
+  if (engineStates_[RearRight] > 0) {
+    glPushMatrix();
+    glTranslatef(-radius*0.5, 0, -radius*0.5);
+    glRotatef(-90, 0, 1, 0);
+    glutSolidCone(radius * 0.02 * engineStates_[RearRight], radius * engineStates_[RearRight] * 0.2, 10, 10);
+    glPopMatrix();
+  }
+
+  glEnable(GL_LIGHTING);
 }
 
 void Ship::render()
@@ -66,8 +140,10 @@ void Ship::render()
 
   const Model* model = getModel();
   if (model) {
+    glPushMatrix();
     glScalef(radius_*GLOBAL_MULT, radius_*GLOBAL_MULT, radius_*GLOBAL_MULT);
     model->draw();
+    glPopMatrix();
   } else {
     glutSolidCone(radius_*GLOBAL_MULT/4.0f, radius_*GLOBAL_MULT, 10, 5);
   }
@@ -77,8 +153,9 @@ void Ship::render()
 
   drawName();
 
-  glPopMatrix();
+  drawEngines();
 
+  glPopMatrix();
 
   //if (Gamani::getInstance().getAuxAxes()) {
   //  glPushMatrix();
@@ -501,6 +578,8 @@ vector<Vector3> Ship::calcOrbit(AstralBody* from, AstralBody* to, double& minDis
 void Ship::yawLeft()
 {
   yawLeft(yawPower_);
+  engageEngine(RearLeft);
+  engageEngine(FrontRight);
 }
 
 void Ship::yawLeft(double val)
@@ -520,6 +599,8 @@ void Ship::yawLeft(double val)
 void Ship::yawRight()
 {
   yawRight(yawPower_);
+  engageEngine(RearRight);
+  engageEngine(FrontLeft);
 }
 
 void Ship::yawRight(double val)
@@ -536,52 +617,58 @@ void Ship::yawRight(double val)
   }
 }
 
-void Ship::accelerate()
+void Ship::accelerate(double fraction/* = 1.0*/)
 {
   if (docked_) {
     return;
   }
+  engageEngine(March, fraction);
   landed_ = false;
   double yawAngleRad = yaw_ * 3.14159265f / 180.0f;
   double dx = sin(yawAngleRad);
   double dy = -cos(yawAngleRad);
-  velocity_ = Vector3(velocity_[0] + dx*marchPower_, velocity_[1] + dy*marchPower_, velocity_[2]);
+  velocity_ = Vector3(velocity_[0] + dx*marchPower_ * fraction, velocity_[1] + dy*marchPower_ * fraction, velocity_[2]);
 }
 
-void Ship::back()
+void Ship::back(double fraction/* = 1.0*/)
 {
   if (docked_) {
     return;
   }
+  engageEngine(Reverse, fraction);
   landed_ = false;
   double yawAngleRad = yaw_ * 3.14159265f / 180.0f;
   double dx = sin(yawAngleRad);
   double dy = -cos(yawAngleRad);
-  velocity_ = Vector3(velocity_[0] - dx*marchPower_*0.1, velocity_[1] - dy*marchPower_*0.1, velocity_[2]);
+  velocity_ = Vector3(velocity_[0] - dx*marchPower_*0.5 * fraction, velocity_[1] - dy*marchPower_*0.5 * fraction, velocity_[2]);
 }
 
-void Ship::steerLeft()
+void Ship::steerLeft(double fraction/* = 1.0*/)
 {
   if (docked_) {
     return;
   }
+  engageEngine(RearRight, fraction);
+  engageEngine(FrontRight, fraction);
   landed_ = false;
   double yawAngleRad = (yaw_ + 90.0) * 3.14159265f / 180.0f;
   double dx = sin(yawAngleRad);
   double dy = -cos(yawAngleRad);
-  velocity_ = Vector3(velocity_[0] - dx*marchPower_*0.1, velocity_[1] - dy*marchPower_*0.1, velocity_[2]);
+  velocity_ = Vector3(velocity_[0] - dx*marchPower_*0.1 * fraction, velocity_[1] - dy*marchPower_*0.1 * fraction, velocity_[2]);
 }
 
-void Ship::steerRight()
+void Ship::steerRight(double fraction/* = 1.0*/)
 {
   if (docked_) {
     return;
   }
+  engageEngine(RearLeft, fraction);
+  engageEngine(FrontLeft, fraction);
   landed_ = false;
   double yawAngleRad = (yaw_ - 90.0) * 3.14159265f / 180.0f;
   double dx = sin(yawAngleRad);
   double dy = -cos(yawAngleRad);
-  velocity_ = Vector3(velocity_[0] - dx*marchPower_*0.1, velocity_[1] - dy*marchPower_*0.1, velocity_[2]);
+  velocity_ = Vector3(velocity_[0] - dx*marchPower_*0.1 * fraction, velocity_[1] - dy*marchPower_*0.1 * fraction, velocity_[2]);
 }
 
 void Ship::setAutopilotTo(Autopilot::ProgID prog)

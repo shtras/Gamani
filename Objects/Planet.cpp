@@ -10,6 +10,7 @@ Planet::Planet()
   type_ = PlanetType;
   atmRadius_ = 0;
   atmColor_ = Vector3(0,0,0);
+  texture1_ = (GLuint)-1;
 }
 
 Planet::~Planet()
@@ -34,7 +35,6 @@ void Planet::setName(CString name)
 void Planet::render()
 {
   DynamicBody::render();
-
   //if (!strcmp(name_.c_str(), "Earth")) {
 
   Camera& camera = Renderer::getInstance().getCamera();
@@ -89,8 +89,8 @@ void Planet::render()
     int slices = 32;
     int stacks = 64;
     if (camDist < 10) {
-      slices = 200;
-      stacks = 200;
+      slices = 80;
+      stacks = 80;
     } else if (camDist > 1e3) {
       slices = 10;
       stacks = 10;
@@ -108,6 +108,21 @@ void Planet::render()
     glBindTexture ( GL_TEXTURE_2D, texture_);
     gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, slices, stacks);
     glDisable ( GL_TEXTURE_2D );
+
+
+    if (name_ == "earth") {
+      if (texture1_ == (GLuint)-1) {
+        quadric1_ = gluNewQuadric();
+        gluQuadricTexture( quadric1_, GL_TRUE);
+        CString texName = CString("Textures/Clouds.bmp");
+        texture1_ = LoadBitmap22(texName);
+      }
+      glRotatef(yaw_/2, 0, 0, 1);
+      glEnable ( GL_TEXTURE_2D );
+      glBindTexture ( GL_TEXTURE_2D, texture1_);
+      gluSphere( quadric1_, /*2000*/(radius_*1.01)*GLOBAL_MULT, slices, stacks);
+      glDisable ( GL_TEXTURE_2D );
+    }
   } else {
     Vector3 dir = coord_ - camPos;
     dir.normalize();

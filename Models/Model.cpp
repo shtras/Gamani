@@ -102,8 +102,8 @@ void ModelObject::draw() const
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glTranslatef(coord_[0], coord_[1], coord_[2]);
-
-  for (unsigned int i=0; i<objects_.size(); ++i) {
+  uint32_t SZ = objects_.size();
+  for (unsigned int i=0; i<SZ; ++i) {
     objects_[i]->draw();
   }
 

@@ -194,6 +194,9 @@
     <ClCompile Include="SystemParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\WTextBox.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Math\Matrix.h">
@@ -342,6 +345,9 @@
     </ClInclude>
     <ClInclude Include="Include\SystemParser.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\GUI\WTextBox.h">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

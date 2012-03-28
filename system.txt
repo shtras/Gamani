@@ -180,10 +180,20 @@ Star {
     Coord = (149590, 0, 0);
     Velocity = (0, -36033, 0);
     Radius = 0.00005;
-    Name = Galactica;
+    Name = Ranger;
     Model = res/ss2.3ds;
     DockingPort = (0, 1.3, 0);
     PortAngle = 0;
     PlayerControlled = True;
+  }
+  
+    Ship {
+    Coord = (149590, 0.002, 0);
+    Velocity = (0, -36033, 0);
+    Radius = 0.00025;
+    Name = Galactica;
+    Model = res/new.3ds;
+    DockingPort = (0, 1.3, 0);
+    PortAngle = 0;
   }
 }

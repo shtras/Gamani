@@ -14,6 +14,7 @@ public:
   ~SystemParser();
   StarSystem* parseSystem(CString fileName, LayoutManager* layoutManager);
   Ship* getPlayerShip() {return controlledShip_;}
+  const vector<AstralBody*>& getFreeObjects() const {return freeObjects_;}
 private:
   bool isComment(CString str);
   CString stripSpaces(CString str);
@@ -35,6 +36,8 @@ private:
   bool lineReturned_;
   Section* infoSection_;
   Section* starSection_;
+
+  vector<AstralBody*> freeObjects_;
 
   Ship* controlledShip_;
   LayoutManager* layoutManager_;

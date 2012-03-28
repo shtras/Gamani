@@ -7,10 +7,22 @@
 
 class HUD;
 
+/*
+Engines:
+      5
+    /---\
+   2|   |4
+    |   |
+   1|   |3
+    /---\
+      0
+*/
+
 class Ship: public DynamicBody, public ModelRenderable, public Dockable
 {
   friend class Gamani;
 public:
+  enum Engine {March = 0, RearLeft, FrontLeft, RearRight, FrontRight, Reverse};
   Ship();
   ~Ship();
   void render();
@@ -18,10 +30,10 @@ public:
   void yawLeft(double val);
   void yawRight();
   void yawRight(double val);
-  void accelerate();
-  void back();
-  void steerLeft();
-  void steerRight();
+  void accelerate(double fraction = 1.0);
+  void back(double fraction = 1.0);
+  void steerLeft(double fraction = 1.0);
+  void steerRight(double fraction = 1.0);
   void autopilotStep();
   void setAutopilotTo(Autopilot::ProgID program);
   void collideWith(AstralBody* body);
@@ -48,6 +60,9 @@ public:
   Autopilot* getAP() {return autopilot_;}
   void initializeAsPlayerControlled() {initializeAsPlayerControlled_ = true;}
   bool isInitializedAsPlayerControlled() {return initializeAsPlayerControlled_;}
+  void engageEngine(Engine engine, float power = 1.0);
+  void updateEngines();
+  void drawEngines();
 public:
   //void testNavCom();
   //void testNavCom1();
@@ -75,6 +90,7 @@ public:
   //bool manualRef_;
   unsigned int refIdx_;
   Station* dockedTo_;
+  float engineStates_[6];
 
   bool initializeAsPlayerControlled_;
 };

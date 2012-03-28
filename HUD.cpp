@@ -64,3 +64,12 @@ void HUD::init(Ship* ship)
   ship->setHUD(this);
   apDisp->setAP(ship->getAP());
 }
+
+void HUD::setVisible(bool value)
+{
+  auto itr = displays_.begin();
+  for (; itr != displays_.end(); ++itr) {
+    Display* display = *itr;
+    display->setVisible(value);
+  }
+}

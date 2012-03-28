@@ -23,6 +23,7 @@ public:
   StarSystem* getCurrentSystem() {return currentSystem_;}
   void selectShip();
   void clearTracks();
+  AstralBody* getObject(CString name);
 private:
   void interactGravity(Renderable* obj1, Renderable* obj2);
   void updatePosition(Renderable* obj);

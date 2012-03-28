@@ -30,17 +30,20 @@ public:
   void setSpeed1x() {speed_ = 1;}
   bool drawRelativeOrbits() {return relativeOrbits_;}
   bool rotateCameraWithObject() {return rotateCameraWithObject_;}
-  bool shiftPressed() {return shiptPressed_;}
+  bool shiftPressed() {return shiftPressed_;}
   void toggleTracers() {tracers_ = !tracers_;}
   void toggleNames() {names_ = !names_;}
   void toggleGUI() {interface_ = !interface_;}
   GLenum getDrawingMode() {return drawingMode_;}
   void switchDrawingMode();
+  bool isPressed(int key);
 private:
   void testInit();
   void layoutTest();
   void handlePressedKey(int key);
+public:
   void handlePressedKeys();
+private:
   Gamani();
   ~Gamani();
   bool mainLoop();
@@ -52,7 +55,7 @@ private:
   double long seconds_;
   double calcStepLength_;
   double dtModifier_;
-  bool shiptPressed_;
+  bool shiftPressed_;
 
   bool tracers_;
   bool auxPrint_;

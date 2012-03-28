@@ -1,5 +1,7 @@
 #pragma once
 
+class WLayout;
+
 class Widget
 {
 public:
@@ -7,7 +9,7 @@ public:
   virtual ~Widget();
 
   virtual void render(double left, double top, double width, double height) = 0;
-  void setDimensions(double left, double top, double width, double height);
+  virtual void setDimensions(double left, double top, double width, double height);
   double getTop() {return top_;}
   double getLeft() {return left_;}
   double getWidth() {return width_;}
@@ -28,7 +30,10 @@ public:
   void setHovered(bool val) {hovered_ = val;}
   void setPressed(bool val) {pressed_ = val;}
   bool isPressed() {return pressed_;}
+  void setLayout(WLayout* layout) {container_ = layout;}
 protected:
+  double getActualHeight();
+  WLayout* container_;
   double top_;
   double left_;
   double width_;

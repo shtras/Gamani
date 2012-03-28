@@ -8,6 +8,7 @@
 using namespace std;
 
 int LoadBitmap11(const char *filename);
+int LoadBitmap22(const char *filename);
 
 class Renderer
 {

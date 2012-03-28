@@ -315,7 +315,11 @@ bool SystemParser::parseSectionInfo(StarSystem* system, Section* section, Astral
     shipHud->init((Ship*)currBody);
     if (((Ship*)currBody)->isInitializedAsPlayerControlled()) {
       controlledShip_ = (Ship*)currBody;
+      shipHud->setVisible(true);
+    } else {
+      shipHud->setVisible(false);
     }
+    freeObjects_.push_back(currBody);
   } else {
     Logger::getInstance().log(ERROR_LOG_NAME, CString("Error parsing starsystem file. Unknown section type: ") + name);
     return false;
