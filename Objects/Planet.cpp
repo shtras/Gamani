@@ -2,6 +2,178 @@
 #include "Renderer.h"
 #include "Planet.h"
 
+int LoadBitmap33(const char *filename)
+{
+  FILE * file;
+  char temp;
+  long i;
+
+  unsigned char* infoheader_data;
+
+  BITMAPINFOHEADER infoheader;
+
+  GLuint num_texture;
+
+  if( (file = fopen(filename, "rb"))==NULL) return (-1); // Open the file for reading
+
+  fseek(file, 18, SEEK_CUR);  /* start reading width & height */
+  fread(&infoheader.biWidth, sizeof(int), 1, file);
+
+  fread(&infoheader.biHeight, sizeof(int), 1, file);
+
+  fread(&infoheader.biPlanes, sizeof(short int), 1, file);
+  if (infoheader.biPlanes != 1) {
+    printf("Planes from %s is not 1: %u\n", filename, infoheader.biPlanes);
+    return 0;
+  }
+
+  // read the bpp
+  fread(&infoheader.biBitCount, sizeof(unsigned short int), 1, file);
+  if (infoheader.biBitCount != 24) {
+    printf("Bpp from %s is not 24: %d\n", filename, infoheader.biBitCount);
+    return 0;
+  }
+
+  fseek(file, 24, SEEK_CUR);
+
+  // read the data
+  if(infoheader.biWidth<0){
+    infoheader.biWidth = -infoheader.biWidth;
+  }
+  if(infoheader.biHeight<0){
+    infoheader.biHeight = -infoheader.biHeight;
+  }
+  infoheader_data = (unsigned char *) malloc(infoheader.biWidth * infoheader.biHeight * 3);
+  if (infoheader_data == NULL) {
+    printf("Error allocating memory for color-corrected image data\n");
+    return 0;
+  }
+
+  if ((i = fread(infoheader_data, infoheader.biWidth * infoheader.biHeight * 3, 1, file)) != 1) {
+    printf("Error reading image data from %s.\n", filename);
+    return 0;
+  }
+
+  for (i=0; i<(infoheader.biWidth * infoheader.biHeight * 3); i+=3) { // reverse all of the colors. (bgr -> rgb)
+    temp = infoheader_data[i];
+    infoheader_data[i] = infoheader_data[i+2];
+    infoheader_data[i+2] = temp;
+  }
+
+
+  fclose(file); // Closes the file stream
+
+  glGenTextures(1, &num_texture);
+  glBindTexture(GL_TEXTURE_2D, num_texture); // Bind the ID texture specified by the 2nd parameter
+
+  // The next commands sets the texture parameters
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // If the u,v coordinates overflow the range 0,1 the image is repeated
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // The magnification function ("linear" produces better results)
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //The minifying function
+
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  // Finally we define the 2d texture
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, infoheader.biWidth, infoheader.biHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, infoheader_data);
+
+  // And create 2d mipmaps for the minifying function
+  //gluBuild2DMipmaps(GL_TEXTURE_2D, 3, infoheader.biWidth, infoheader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, infoheader_data);
+
+  free(infoheader_data); // Free the memory we used to load the texture
+
+  return (num_texture); // Returns the current texture OpenGL ID
+}
+
+int LoadBitmap44(const char *filename)
+{
+  FILE * file;
+  char temp;
+  long i;
+
+  unsigned char* infoheader_data;
+
+  BITMAPINFOHEADER infoheader;
+
+  GLuint num_texture;
+
+  if( (file = fopen(filename, "rb"))==NULL) return (-1); // Open the file for reading
+
+  fseek(file, 18, SEEK_CUR);  /* start reading width & height */
+  fread(&infoheader.biWidth, sizeof(int), 1, file);
+
+  fread(&infoheader.biHeight, sizeof(int), 1, file);
+
+  fread(&infoheader.biPlanes, sizeof(short int), 1, file);
+  if (infoheader.biPlanes != 1) {
+    printf("Planes from %s is not 1: %u\n", filename, infoheader.biPlanes);
+    return 0;
+  }
+
+  // read the bpp
+  fread(&infoheader.biBitCount, sizeof(unsigned short int), 1, file);
+  if (infoheader.biBitCount != 24) {
+    printf("Bpp from %s is not 24: %d\n", filename, infoheader.biBitCount);
+    return 0;
+  }
+
+  fseek(file, 24, SEEK_CUR);
+
+  // read the data
+  if(infoheader.biWidth<0){
+    infoheader.biWidth = -infoheader.biWidth;
+  }
+  if(infoheader.biHeight<0){
+    infoheader.biHeight = -infoheader.biHeight;
+  }
+  infoheader_data = (unsigned char *) malloc(infoheader.biWidth * infoheader.biHeight * 3);
+  if (infoheader_data == NULL) {
+    printf("Error allocating memory for color-corrected image data\n");
+    return 0;
+  }
+
+  if ((i = fread(infoheader_data, infoheader.biWidth * infoheader.biHeight * 3, 1, file)) != 1) {
+    printf("Error reading image data from %s.\n", filename);
+    return 0;
+  }
+
+  for (i=0; i<(infoheader.biWidth * infoheader.biHeight * 3); i+=3) { // reverse all of the colors. (bgr -> rgb)
+    temp = infoheader_data[i];
+    infoheader_data[i] = infoheader_data[i+2];
+    infoheader_data[i+2] = temp;
+  }
+
+
+  fclose(file); // Closes the file stream
+  glGenTextures(1, &num_texture);
+  glBindTexture(GL_TEXTURE_2D, num_texture); // Bind the ID texture specified by the 2nd parameter
+
+  // The next commands sets the texture parameters
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // If the u,v coordinates overflow the range 0,1 the image is repeated
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // The magnification function ("linear" produces better results)
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST); //The minifying function
+
+  glActiveTexture(GL_TEXTURE1);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
+  //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT);
+  //glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT,  GL_PREVIOUS_EXT);
+  //glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR);
+  //glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT,  GL_TEXTURE);
+  //glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR);
+  //glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE2_RGB_EXT,  GL_PRIMARY_COLOR_EXT);
+  //glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND2_RGB_EXT, GL_SRC_COLOR);
+  //glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT,  GL_INTERPOLATE_EXT);
+  glActiveTexture(GL_TEXTURE0);
+
+  // Finally we define the 2d texture
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, infoheader.biWidth, infoheader.biHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, infoheader_data);
+
+  // And create 2d mipmaps for the minifying function
+  gluBuild2DMipmaps(GL_TEXTURE_2D, 3, infoheader.biWidth, infoheader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, infoheader_data);
+  free(infoheader_data); // Free the memory we used to load the texture
+  return (num_texture); // Returns the current texture OpenGL ID
+}
+
 Planet::Planet()
 {
   color_ = Vector3(0, 0, 1);
@@ -89,8 +261,8 @@ void Planet::render()
     int slices = 32;
     int stacks = 64;
     if (camDist < 10) {
-      slices = 80;
-      stacks = 80;
+      slices = 200;
+      stacks = 200;
     } else if (camDist > 1e3) {
       slices = 10;
       stacks = 10;
@@ -98,29 +270,58 @@ void Planet::render()
     //glColor4f(1,1,1,0.2);
     //yaw_ = 360 - rotation_;
     glRotatef(yaw_, 0, 0, -1);
-    if (texture_ == (GLuint)-1) {
-      quadric_ = gluNewQuadric();
-      gluQuadricTexture( quadric_, GL_TRUE);
-      CString texName = CString("Textures/") + name_ + CString(".bmp");
-      texture_ = LoadBitmap11(texName);
-    }
-    glEnable ( GL_TEXTURE_2D );
-    glBindTexture ( GL_TEXTURE_2D, texture_);
-    gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, slices, stacks);
-    glDisable ( GL_TEXTURE_2D );
-
 
     if (name_ == "earth") {
+      //glDisable(GL_LIGHTING);
+      static GLuint nightTex = -1;
+
+      if (texture_ == (GLuint)-1) {
+        quadric_ = gluNewQuadric();
+        gluQuadricTexture( quadric_, GL_TRUE);
+        CString texName = CString("Textures/") + name_ + CString(".bmp");
+        texture_ = LoadBitmap11(texName);
+      }
+      
+      if (nightTex == -1) {
+        nightTex = LoadBitmap44("Textures/earthnight.bmp");
+      }
+
+      glActiveTexture(GL_TEXTURE0);
+      glEnable ( GL_TEXTURE_2D );
+      glBindTexture ( GL_TEXTURE_2D, texture_);
+
+      glActiveTexture(GL_TEXTURE1);
+      glEnable ( GL_TEXTURE_2D );
+      glBindTexture ( GL_TEXTURE_2D, nightTex);
+
+      gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, slices, stacks);
+
+      glDisable ( GL_TEXTURE_2D );
+      glActiveTexture(GL_TEXTURE0);
+      glDisable ( GL_TEXTURE_2D );
+
       if (texture1_ == (GLuint)-1) {
         quadric1_ = gluNewQuadric();
         gluQuadricTexture( quadric1_, GL_TRUE);
         CString texName = CString("Textures/Clouds.bmp");
         texture1_ = LoadBitmap22(texName);
       }
-      glRotatef(yaw_/2, 0, 0, 1);
+      //glRotatef(yaw_/2, 0, 0, 1);
+      //glEnable ( GL_TEXTURE_2D );
+      //glBindTexture ( GL_TEXTURE_2D, texture1_);
+      //gluSphere( quadric1_, /*2000*/(radius_*1.01)*GLOBAL_MULT, slices, stacks);
+      //glDisable ( GL_TEXTURE_2D );
+      //glEnable(GL_LIGHTING);
+    } else {
+      if (texture_ == (GLuint)-1) {
+        quadric_ = gluNewQuadric();
+        gluQuadricTexture( quadric_, GL_TRUE);
+        CString texName = CString("Textures/") + name_ + CString(".bmp");
+        texture_ = LoadBitmap11(texName);
+      }
       glEnable ( GL_TEXTURE_2D );
-      glBindTexture ( GL_TEXTURE_2D, texture1_);
-      gluSphere( quadric1_, /*2000*/(radius_*1.01)*GLOBAL_MULT, slices, stacks);
+      glBindTexture ( GL_TEXTURE_2D, texture_);
+      gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, slices, stacks);
       glDisable ( GL_TEXTURE_2D );
     }
   } else {
