@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "Include\SystemParser.h"
+#include "SystemParser.h"
 #include <math.h>
 #include "Planet.h"
 #include "ModelRenderable.h"

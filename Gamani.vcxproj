@@ -81,7 +81,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <OpenMPSupport>false</OpenMPSupport>
-      <AdditionalIncludeDirectories>Include/Objects;Include;Include/Math;Include/GUI;Include/GUI/Forms;Include/Generic;Include/Models;Include/pngLib;Include/Autopilot;Include/Missions</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;Objects;Math;GUI;GUI/Forms;Generic;Models;pngLib;Autopilot;Missions</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -135,7 +135,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <OpenMPSupport>false</OpenMPSupport>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>Include/Objects;Include;Include/Math;Include/GUI;Include/GUI/Forms;Include/Generic;Include/Models;Include/pngLib;Include/Autopilot;Include/Missions</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;Objects;Math;GUI;GUI/Forms;Generic;Models;pngLib;Autopilot;Missions</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <StructMemberAlignment>Default</StructMemberAlignment>
@@ -252,56 +252,56 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Autopilot\APProgram.h" />
-    <ClInclude Include="Include\Autopilot\Autopilot.h" />
-    <ClInclude Include="Include\auxFuncs.h" />
-    <ClInclude Include="Include\Camera.h" />
-    <ClInclude Include="Include\Gamani.h" />
-    <ClInclude Include="Include\Generic\CString.h" />
-    <ClInclude Include="Include\GUI\Display.h" />
-    <ClInclude Include="Include\GUI\Forms\APDisplay.h" />
-    <ClInclude Include="Include\GUI\Forms\MissionDisplay.h" />
-    <ClInclude Include="Include\GUI\Forms\NavDisplay.h" />
-    <ClInclude Include="Include\GUI\Forms\StationDisplay.h" />
-    <ClInclude Include="Include\GUI\Forms\UpperPanel.h" />
-    <ClInclude Include="Include\GUI\GUIRenderer.h" />
-    <ClInclude Include="Include\GUI\LayoutManager.h" />
-    <ClInclude Include="Include\GUI\WButton.h" />
-    <ClInclude Include="Include\GUI\Widget.h" />
-    <ClInclude Include="Include\GUI\Widgets.h" />
-    <ClInclude Include="Include\GUI\WInput.h" />
-    <ClInclude Include="Include\GUI\WLayout.h" />
-    <ClInclude Include="Include\GUI\WMenu.h" />
-    <ClInclude Include="Include\GUI\WText.h" />
-    <ClInclude Include="Include\GUI\WTextBox.h" />
-    <ClInclude Include="Include\HUD.h" />
-    <ClInclude Include="Include\Math\Matrix.h" />
-    <ClInclude Include="Include\Math\Vector.h" />
-    <ClInclude Include="Include\Missions\Mission.h" />
-    <ClInclude Include="Include\Missions\MissionManager.h" />
-    <ClInclude Include="Include\Models\GLTexture.h" />
-    <ClInclude Include="Include\Models\Model.h" />
-    <ClInclude Include="Include\Models\Wrapper3DS.h" />
-    <ClInclude Include="Include\Objects\AstralBody.h" />
-    <ClInclude Include="Include\Objects\Dockable.h" />
-    <ClInclude Include="Include\Objects\DynamicBody.h" />
-    <ClInclude Include="Include\Objects\ModelRenderable.h" />
-    <ClInclude Include="Include\Objects\Planet.h" />
-    <ClInclude Include="Include\Objects\Renderable.h" />
-    <ClInclude Include="Include\Objects\Ship.h" />
-    <ClInclude Include="Include\Objects\Star.h" />
-    <ClInclude Include="Include\Objects\StarSystem.h" />
-    <ClInclude Include="Include\Objects\Station.h" />
-    <ClInclude Include="Include\pngLib\PngWrapper.h" />
-    <ClInclude Include="Include\Renderer.h" />
-    <ClInclude Include="Include\sigslot.h" />
-    <ClInclude Include="Include\SkyBox.h" />
-    <ClInclude Include="Include\StdAfx.h" />
-    <ClInclude Include="Include\SystemParser.h" />
-    <ClInclude Include="Include\VersionInfo.h" />
-    <ClInclude Include="Include\World.h" />
+    <ClInclude Include="Autopilot\APProgram.h" />
+    <ClInclude Include="Autopilot\Autopilot.h" />
+    <ClInclude Include="auxFuncs.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Gamani.h" />
+    <ClInclude Include="Generic\CString.h" />
+    <ClInclude Include="GUI\Display.h" />
+    <ClInclude Include="GUI\Forms\APDisplay.h" />
+    <ClInclude Include="GUI\Forms\MissionDisplay.h" />
+    <ClInclude Include="GUI\Forms\NavDisplay.h" />
+    <ClInclude Include="GUI\Forms\StationDisplay.h" />
+    <ClInclude Include="GUI\Forms\UpperPanel.h" />
+    <ClInclude Include="GUI\GUIRenderer.h" />
+    <ClInclude Include="GUI\LayoutManager.h" />
+    <ClInclude Include="GUI\WButton.h" />
+    <ClInclude Include="GUI\Widget.h" />
+    <ClInclude Include="GUI\Widgets.h" />
+    <ClInclude Include="GUI\WInput.h" />
+    <ClInclude Include="GUI\WLayout.h" />
+    <ClInclude Include="GUI\WMenu.h" />
+    <ClInclude Include="GUI\WText.h" />
+    <ClInclude Include="GUI\WTextBox.h" />
+    <ClInclude Include="HUD.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="Math\Matrix.h" />
+    <ClInclude Include="Math\Vector.h" />
+    <ClInclude Include="Missions\Mission.h" />
+    <ClInclude Include="Missions\MissionManager.h" />
+    <ClInclude Include="Models\GLTexture.h" />
+    <ClInclude Include="Models\Model.h" />
+    <ClInclude Include="Models\Wrapper3DS.h" />
+    <ClInclude Include="Objects\AstralBody.h" />
+    <ClInclude Include="Objects\Dockable.h" />
+    <ClInclude Include="Objects\DynamicBody.h" />
+    <ClInclude Include="Objects\ModelRenderable.h" />
+    <ClInclude Include="Objects\Planet.h" />
+    <ClInclude Include="Objects\Renderable.h" />
+    <ClInclude Include="Objects\Ship.h" />
+    <ClInclude Include="Objects\Star.h" />
+    <ClInclude Include="Objects\StarSystem.h" />
+    <ClInclude Include="Objects\Station.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="sigslot - Copy.h" />
+    <ClInclude Include="sigslot.h" />
+    <ClInclude Include="SkyBox.h" />
+    <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="SystemParser.h" />
+    <ClInclude Include="VersionInfo.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
