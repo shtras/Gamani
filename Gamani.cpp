@@ -74,7 +74,7 @@ void toggleVSync()
 
 Gamani::Gamani():world_(new World()), paused_(true), speed_(1), calcStepLength_(0.05), dtModifier_(50),auxAxes_(false),lmDown_(false),rmDown_(false),
   lmDrag_(false), rmDrag_(false), tracers_(false), auxPrint_(true), interface_(true), names_(false),skybox1_(false),relativeOrbits_(false),
-  rotateCameraWithObject_(false),shiftPressed_(false),drawingMode_(GL_TRIANGLES)
+  rotateCameraWithObject_(false),shiftPressed_(false),drawingMode_(GL_TRIANGLES),shader_(-1)
 {
   nonContKeys_.insert('M');
   nonContKeys_.insert('V');
@@ -170,6 +170,9 @@ bool Gamani::mainLoop()
   assert (station && station->getType() == Renderable::StationType);
   MissionManager::getInstance().testInit((Station*)station);
   MissionManager::getInstance().setDisplay(missionDisplay);
+
+  setShaders("Shaders/TexItems.vert", "Shaders/TexItems.frag", &shader_);
+
 
   int snapshotTimer = 0;
   MSG msg={0};
@@ -406,8 +409,20 @@ void Gamani::handlePressedKey(int key)
     }
     break;
   case 0xdd:
-    switchDrawingMode();
+    //switchDrawingMode();
+    {
+
+    static bool aaa = false;
+    if (aaa) {
+      setShaders("Shaders/TexItems.vert", "Shaders/TexItems.frag", &shader_);
+      aaa = false;
+    } else {
+      deleteShaders(shader_);
+      shader_ = 0;
+      aaa = true;
+    }
     break;
+    }
   default:
     world_->handlePressedKey(key);
     break;
@@ -496,7 +511,9 @@ void Gamani::handleMessage(UINT message, WPARAM wParam, LPARAM lParam)
       shiftPressed_ = false;
       break;
     }
-    assert(pressedKeys_.count(wParam) == 1);
+    if (pressedKeys_.count(wParam) != 1) {
+      break;
+    }
     if (nonContKeys_.count(wParam) > 0 || layoutManager_.focusGrabbed()) {
       handlePressedKey(wParam);
     }

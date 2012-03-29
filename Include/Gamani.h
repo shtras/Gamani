@@ -37,6 +37,7 @@ public:
   GLenum getDrawingMode() {return drawingMode_;}
   void switchDrawingMode();
   bool isPressed(int key);
+  GLuint getShader() {return shader_;}
 private:
   void testInit();
   void layoutTest();
@@ -79,5 +80,6 @@ private:
   bool rotateCameraWithObject_;
 
   GLenum drawingMode_;
+  GLuint shader_;
 };
 

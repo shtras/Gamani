@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Renderer.h"
 #include "Planet.h"
+#include "Gamani.h"
 
 int LoadBitmap33(const char *filename)
 {
@@ -142,9 +143,10 @@ int LoadBitmap44(const char *filename)
     infoheader_data[i+2] = temp;
   }
 
-
   fclose(file); // Closes the file stream
+
   glGenTextures(1, &num_texture);
+
   glBindTexture(GL_TEXTURE_2D, num_texture); // Bind the ID texture specified by the 2nd parameter
 
   // The next commands sets the texture parameters
@@ -153,23 +155,23 @@ int LoadBitmap44(const char *filename)
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // The magnification function ("linear" produces better results)
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST); //The minifying function
 
-  glActiveTexture(GL_TEXTURE1);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
-  //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT);
-  //glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT,  GL_PREVIOUS_EXT);
-  //glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR);
-  //glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT,  GL_TEXTURE);
-  //glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR);
-  //glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE2_RGB_EXT,  GL_PRIMARY_COLOR_EXT);
-  //glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND2_RGB_EXT, GL_SRC_COLOR);
-  //glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT,  GL_INTERPOLATE_EXT);
-  glActiveTexture(GL_TEXTURE0);
+  //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT,  GL_PREVIOUS_EXT);
+  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT,  GL_TEXTURE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE2_RGB_EXT,  GL_PRIMARY_COLOR_EXT);
+  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND2_RGB_EXT, GL_SRC_COLOR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT,  GL_INTERPOLATE_EXT);
 
   // Finally we define the 2d texture
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, infoheader.biWidth, infoheader.biHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, infoheader_data);
 
   // And create 2d mipmaps for the minifying function
   gluBuild2DMipmaps(GL_TEXTURE_2D, 3, infoheader.biWidth, infoheader.biHeight, GL_RGB, GL_UNSIGNED_BYTE, infoheader_data);
+
+
   free(infoheader_data); // Free the memory we used to load the texture
   return (num_texture); // Returns the current texture OpenGL ID
 }
@@ -283,20 +285,33 @@ void Planet::render()
       }
       
       if (nightTex == -1) {
+        glActiveTexture(GL_TEXTURE1);
         nightTex = LoadBitmap44("Textures/earthnight.bmp");
       }
-
       glActiveTexture(GL_TEXTURE0);
       glEnable ( GL_TEXTURE_2D );
       glBindTexture ( GL_TEXTURE_2D, texture_);
+      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
       glActiveTexture(GL_TEXTURE1);
       glEnable ( GL_TEXTURE_2D );
-      glBindTexture ( GL_TEXTURE_2D, nightTex);
 
+      glBindTexture ( GL_TEXTURE_2D, nightTex);
+      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT);
+      glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT,  GL_PREVIOUS_EXT);
+      glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR);
+      glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT,  GL_TEXTURE);
+      glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR);
+      glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE2_RGB_EXT,  GL_PRIMARY_COLOR_EXT);
+      glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND2_RGB_EXT, GL_SRC_COLOR);
+      glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT,  GL_INTERPOLATE_EXT);
+
+      glUseProgram(Gamani::getInstance().getShader());
       gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, slices, stacks);
+      glUseProgram(0);
 
       glDisable ( GL_TEXTURE_2D );
+
       glActiveTexture(GL_TEXTURE0);
       glDisable ( GL_TEXTURE_2D );
 
@@ -321,7 +336,11 @@ void Planet::render()
       }
       glEnable ( GL_TEXTURE_2D );
       glBindTexture ( GL_TEXTURE_2D, texture_);
+      glUseProgram(Gamani::getInstance().getShader());
+      //glColor3f(0.5,0.2,0.7);
       gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, slices, stacks);
+      glUseProgram(0);
+
       glDisable ( GL_TEXTURE_2D );
     }
   } else {
