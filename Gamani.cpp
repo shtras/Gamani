@@ -20,6 +20,7 @@
 #include "MissionDisplay.h"
 #include "MissionManager.h"
 #include "SystemParser.h"
+#include "SphereVBO.h"
 
 //#define MULTITHREAD_RUN
 
@@ -173,7 +174,7 @@ bool Gamani::mainLoop()
 
   setShaders("Shaders/TexItems.vert", "Shaders/TexItems.frag", &shader_);
 
-
+  SphereVBO::getInstance().initVBO();
   int snapshotTimer = 0;
   MSG msg={0};
   world_->snapshot();

@@ -2,7 +2,6 @@
 #include "Model.h"
 #include "Gamani.h"
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
 //////////////////////////////////////////////////////////////////////////
 //Model
 Model::Model()

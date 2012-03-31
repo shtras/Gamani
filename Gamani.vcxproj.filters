@@ -197,6 +197,9 @@
     <ClCompile Include="GUI\WTextBox.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="Models\SphereVBO.cpp">
+      <Filter>Source Files\Models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Autopilot\APProgram.h">
@@ -328,9 +331,6 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sigslot - Copy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="sigslot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -348,6 +348,9 @@
     </ClInclude>
     <ClInclude Include="World.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\SphereVBO.h">
+      <Filter>Header Files\Models</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -228,6 +228,7 @@
     <ClCompile Include="Missions\MissionManager.cpp" />
     <ClCompile Include="Models\GLTexture.cpp" />
     <ClCompile Include="Models\Model.cpp" />
+    <ClCompile Include="Models\SphereVBO.cpp" />
     <ClCompile Include="Models\Wrapper3DS.cpp" />
     <ClCompile Include="Objects\AstralBody.cpp" />
     <ClCompile Include="Objects\Dockable.cpp" />
@@ -282,6 +283,7 @@
     <ClInclude Include="Missions\MissionManager.h" />
     <ClInclude Include="Models\GLTexture.h" />
     <ClInclude Include="Models\Model.h" />
+    <ClInclude Include="Models\SphereVBO.h" />
     <ClInclude Include="Models\Wrapper3DS.h" />
     <ClInclude Include="Objects\AstralBody.h" />
     <ClInclude Include="Objects\Dockable.h" />
@@ -295,7 +297,6 @@
     <ClInclude Include="Objects\Station.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="sigslot - Copy.h" />
     <ClInclude Include="sigslot.h" />
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="StdAfx.h" />

@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "Planet.h"
 #include "Gamani.h"
+#include "SphereVBO.h"
 
 int LoadBitmap33(const char *filename)
 {
@@ -274,25 +275,29 @@ void Planet::render()
     glRotatef(yaw_, 0, 0, -1);
 
     if (name_ == "earth") {
+      //////////////////////////////////////////////////////////////////////////
       //glDisable(GL_LIGHTING);
+
       static GLuint nightTex = -1;
 
       if (texture_ == (GLuint)-1) {
         quadric_ = gluNewQuadric();
-        gluQuadricTexture( quadric_, GL_TRUE);
         CString texName = CString("Textures/") + name_ + CString(".bmp");
         texture_ = LoadBitmap11(texName);
       }
       
       if (nightTex == -1) {
+        glClientActiveTexture(GL_TEXTURE1);
         glActiveTexture(GL_TEXTURE1);
         nightTex = LoadBitmap44("Textures/earthnight.bmp");
       }
+      glClientActiveTexture(GL_TEXTURE0);
       glActiveTexture(GL_TEXTURE0);
       glEnable ( GL_TEXTURE_2D );
       glBindTexture ( GL_TEXTURE_2D, texture_);
       glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
+      glClientActiveTexture(GL_TEXTURE1);
       glActiveTexture(GL_TEXTURE1);
       glEnable ( GL_TEXTURE_2D );
 
@@ -306,12 +311,16 @@ void Planet::render()
       glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND2_RGB_EXT, GL_SRC_COLOR);
       glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT,  GL_INTERPOLATE_EXT);
 
-      glUseProgram(Gamani::getInstance().getShader());
-      gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, slices, stacks);
-      glUseProgram(0);
-
+      //glUseProgram(Gamani::getInstance().getShader());
+      glMatrixMode(GL_MODELVIEW);
+      glPushMatrix();
+      glScalef(radius_*GLOBAL_MULT, radius_*GLOBAL_MULT, radius_*GLOBAL_MULT);
+      SphereVBO::getInstance().draw();
+      glPopMatrix();
+      //gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, slices, stacks);
+      //glUseProgram(0);
       glDisable ( GL_TEXTURE_2D );
-
+      glClientActiveTexture(GL_TEXTURE0);
       glActiveTexture(GL_TEXTURE0);
       glDisable ( GL_TEXTURE_2D );
 
@@ -321,12 +330,12 @@ void Planet::render()
         CString texName = CString("Textures/Clouds.bmp");
         texture1_ = LoadBitmap22(texName);
       }
-      //glRotatef(yaw_/2, 0, 0, 1);
-      //glEnable ( GL_TEXTURE_2D );
-      //glBindTexture ( GL_TEXTURE_2D, texture1_);
-      //gluSphere( quadric1_, /*2000*/(radius_*1.01)*GLOBAL_MULT, slices, stacks);
-      //glDisable ( GL_TEXTURE_2D );
-      //glEnable(GL_LIGHTING);
+      glRotatef(yaw_/2, 0, 0, 1);
+      glEnable ( GL_TEXTURE_2D );
+      glBindTexture ( GL_TEXTURE_2D, texture1_);
+      gluSphere( quadric1_, /*2000*/(radius_*1.01)*GLOBAL_MULT, slices, stacks);
+      glDisable ( GL_TEXTURE_2D );
+      glEnable(GL_LIGHTING);
     } else {
       if (texture_ == (GLuint)-1) {
         quadric_ = gluNewQuadric();
@@ -338,7 +347,8 @@ void Planet::render()
       glBindTexture ( GL_TEXTURE_2D, texture_);
       glUseProgram(Gamani::getInstance().getShader());
       //glColor3f(0.5,0.2,0.7);
-      gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, slices, stacks);
+      //glutWireSphere(radius_*GLOBAL_MULT, slices, stacks);
+      gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, 4, 4);
       glUseProgram(0);
 
       glDisable ( GL_TEXTURE_2D );

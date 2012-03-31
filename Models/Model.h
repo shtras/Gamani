@@ -4,6 +4,8 @@ class ModelObject;
 class MaterialObject;
 class Face;
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
 struct Box
 {
   Vector3 min;
