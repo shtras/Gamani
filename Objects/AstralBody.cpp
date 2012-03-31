@@ -53,7 +53,7 @@ void AstralBody::rotationStep()
     yaw_ += 360;
   }
 
-  cloudYaw_ += 0.005;
+  cloudYaw_ += rotationSpeed_ / 2.0 * Gamani::getInstance().getSpeedReduce();
   if (cloudYaw_ > 360) {
     cloudYaw_ = 0;
   }
