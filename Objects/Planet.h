@@ -16,9 +16,6 @@ public:
   Vector3 getAtmColor() {return atmColor_;}
   bool hasAtmosphere() {return atmRadius_ > 0.01;}
 private:
-  GLUquadric* quadric_;
-  GLUquadric* quadric1_;
-
   Vector3 atmColor_;
   double atmRadius_;
 };

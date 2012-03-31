@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Star.h"
 #include "Renderer.h"
+#include "SphereVBO.h"
 
 Star::Star()
 {
@@ -61,28 +62,25 @@ void Star::render()
   glEnable(GL_LIGHT0);
   glPopMatrix();
 
-  GLUquadric* earth = gluNewQuadric();
-
-  gluQuadricTexture( earth, GL_TRUE);
   if (texture_ == (GLuint)-1) {
     CString texName = CString("Textures/") + name_ + CString(".bmp");
     texture_ = LoadBitmap11(texName);
   }
   glEnable ( GL_TEXTURE_2D );
   glBindTexture ( GL_TEXTURE_2D, texture_);
-  //glTranslatef(coord_[0]*GLOBAL_MULT, coord_[1]*GLOBAL_MULT, coord_[2]*GLOBAL_MULT);
-  //Vector3 coord = getRealCoordinates(coord_);
   glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0/*coord[2]*GLOBAL_MULT*/);
-  //glRotatef(90, 0, 1, 0);
   glRotatef(190, 1, 0, 0);
 
   glRotatef(yaw_, 0, 0, -1);
-  gluSphere( earth, /*2000*/radius_*GLOBAL_MULT, 36, 72);
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  glScalef(radius_*GLOBAL_MULT, radius_*GLOBAL_MULT, radius_*GLOBAL_MULT);
+  SphereVBO::getInstance().draw(1, 2);
+  glPopMatrix();
   glDisable ( GL_TEXTURE_2D );
 
   drawName();
 
   glDisable(GL_LIGHT0);
-  gluDeleteQuadric(earth);
   glPopMatrix();
 }

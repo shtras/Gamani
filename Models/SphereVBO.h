@@ -11,15 +11,16 @@ public:
   }
 
   void initVBO();
-  void draw();
+  void draw(int textures, int mode);
 private:
   SphereVBO();
   ~SphereVBO();
 
-  VBOVertex* verts_;
-  GLuint* indexes_;
-  GLuint indexVBOID;
-  GLuint modelVBO;
+  void initVBOParams(int textures, int slices, int stacks, GLuint& indexVBOID, GLuint& modelVBO, int& numFaces);
+
+  GLuint indexVBOID_[3];
+  GLuint modelVBO_[3];
+  int numFaces_[3];
+
   bool initialized_;
-  int numFaces_;
 };

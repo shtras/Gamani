@@ -190,7 +190,6 @@ Planet::Planet()
 
 Planet::~Planet()
 {
-  gluDeleteQuadric(quadric_);
   glDeleteTextures(1, &texture_);
 
 }
@@ -227,7 +226,6 @@ void Planet::render()
 
   camPos -= camDir;
 
-  //dist *= 1/Renderer::getInstance().getCamera().getZoom();
   camPos *= 1/GLOBAL_MULT;
   double camDist = (camPos - coord_).getLength() - getRadius();
 
@@ -251,37 +249,27 @@ void Planet::render()
 
   glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0/*coord[2]*GLOBAL_MULT*/);
 
-  //glEnable(GL_COLOR_SUM_EXT); 
-  //glColor4f(0, 0.3, 0.50,1);
-  //glSecondaryColor3fEXT(1, 1, 0.8);
-  //glMaterialfv(GL_FRONT, GL_SPECULAR, mcolor);
-  //glMateriali(GL_FRONT, GL_SHININESS, 96);
-  //float specReflection[] = { 0.8f, 0.8f, 0.8f, 1.0f };
-  //glMaterialfv(GL_FRONT, GL_SPECULAR, specReflection);
   glRotatef(180, 1, 0, 0);
    
   if (1 || camDist > 5) {
     int slices = 32;
     int stacks = 64;
+    int mode = 2;
     if (camDist < 10) {
       slices = 200;
       stacks = 200;
+      mode = 0;
     } else if (camDist > 1e3) {
       slices = 10;
       stacks = 10;
+      mode = 1;
     }
-    //glColor4f(1,1,1,0.2);
-    //yaw_ = 360 - rotation_;
     glRotatef(yaw_, 0, 0, -1);
 
     if (name_ == "earth") {
-      //////////////////////////////////////////////////////////////////////////
-      //glDisable(GL_LIGHTING);
-
       static GLuint nightTex = -1;
 
       if (texture_ == (GLuint)-1) {
-        quadric_ = gluNewQuadric();
         CString texName = CString("Textures/") + name_ + CString(".bmp");
         texture_ = LoadBitmap11(texName);
       }
@@ -295,61 +283,49 @@ void Planet::render()
       glActiveTexture(GL_TEXTURE0);
       glEnable ( GL_TEXTURE_2D );
       glBindTexture ( GL_TEXTURE_2D, texture_);
-      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
       glClientActiveTexture(GL_TEXTURE1);
       glActiveTexture(GL_TEXTURE1);
       glEnable ( GL_TEXTURE_2D );
 
       glBindTexture ( GL_TEXTURE_2D, nightTex);
-      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_EXT);
-      glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_EXT,  GL_PREVIOUS_EXT);
-      glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB_EXT, GL_SRC_COLOR);
-      glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_EXT,  GL_TEXTURE);
-      glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_EXT, GL_SRC_COLOR);
-      glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE2_RGB_EXT,  GL_PRIMARY_COLOR_EXT);
-      glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND2_RGB_EXT, GL_SRC_COLOR);
-      glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_EXT,  GL_INTERPOLATE_EXT);
 
-      //glUseProgram(Gamani::getInstance().getShader());
       glMatrixMode(GL_MODELVIEW);
       glPushMatrix();
       glScalef(radius_*GLOBAL_MULT, radius_*GLOBAL_MULT, radius_*GLOBAL_MULT);
-      SphereVBO::getInstance().draw();
+      SphereVBO::getInstance().draw(2, 0);
       glPopMatrix();
-      //gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, slices, stacks);
-      //glUseProgram(0);
       glDisable ( GL_TEXTURE_2D );
       glClientActiveTexture(GL_TEXTURE0);
       glActiveTexture(GL_TEXTURE0);
       glDisable ( GL_TEXTURE_2D );
 
       if (texture1_ == (GLuint)-1) {
-        quadric1_ = gluNewQuadric();
-        gluQuadricTexture( quadric1_, GL_TRUE);
         CString texName = CString("Textures/Clouds.bmp");
         texture1_ = LoadBitmap22(texName);
       }
       glRotatef(cloudYaw_, 0, 0, 1);
       glEnable ( GL_TEXTURE_2D );
       glBindTexture ( GL_TEXTURE_2D, texture1_);
-      gluSphere( quadric1_, /*2000*/(radius_*1.01)*GLOBAL_MULT, slices, stacks);
+      glMatrixMode(GL_MODELVIEW);
+      glPushMatrix();
+      glScalef(radius_*GLOBAL_MULT*1.01, radius_*GLOBAL_MULT*1.01, radius_*GLOBAL_MULT*1.01);
+      SphereVBO::getInstance().draw(1, 0);
+      glPopMatrix();
       glDisable ( GL_TEXTURE_2D );
       glEnable(GL_LIGHTING);
     } else {
       if (texture_ == (GLuint)-1) {
-        quadric_ = gluNewQuadric();
-        gluQuadricTexture( quadric_, GL_TRUE);
         CString texName = CString("Textures/") + name_ + CString(".bmp");
         texture_ = LoadBitmap11(texName);
       }
       glEnable ( GL_TEXTURE_2D );
       glBindTexture ( GL_TEXTURE_2D, texture_);
-      //glUseProgram(Gamani::getInstance().getShader());
-      //glColor3f(0.5,0.2,0.7);
-      //glutWireSphere(radius_*GLOBAL_MULT, slices, stacks);
-      gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, slices, stacks);
-      //glUseProgram(0);
+      glMatrixMode(GL_MODELVIEW);
+      glPushMatrix();
+      glScalef(radius_*GLOBAL_MULT, radius_*GLOBAL_MULT, radius_*GLOBAL_MULT);
+      SphereVBO::getInstance().draw(1, mode);
+      glPopMatrix();
 
       glDisable ( GL_TEXTURE_2D );
     }
@@ -357,7 +333,6 @@ void Planet::render()
     Vector3 dir = coord_ - camPos;
     dir.normalize();
     glRotatef(asin(dir[1])*180.0/3.14159265, 0, 1, 0);
-   // glRotatef(acos(dir[0])*180.0/3.14159265, 0, 0, 1);
     glColor3f(0,1,0);
     glBegin(GL_POLYGON);
     glVertex3f(0,-GLOBAL_MULT,-GLOBAL_MULT);
@@ -366,7 +341,6 @@ void Planet::render()
     glVertex3f(0,GLOBAL_MULT,GLOBAL_MULT);
     glEnd();
   }
-  //glDisable(GL_COLOR_SUM_EXT); 
 
   drawName();
 
