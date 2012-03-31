@@ -17,6 +17,7 @@ AstralBody::AstralBody()
   yaw_ = -20;
   rotationSpeed_ = 0;
   type_ = AstralType;
+  cloudYaw_ = 0;
 }
 
 AstralBody::~AstralBody()
@@ -50,6 +51,11 @@ void AstralBody::rotationStep()
   }
   while(yaw_ < 0) {
     yaw_ += 360;
+  }
+
+  cloudYaw_ += 0.005;
+  if (cloudYaw_ > 360) {
+    cloudYaw_ = 0;
   }
 }
 

@@ -41,6 +41,7 @@ protected:
   Vector3 color_;
   CString name_;
   double yaw_;
+  double cloudYaw_;
 
   //double rotation_;
   double rotationSpeed_;

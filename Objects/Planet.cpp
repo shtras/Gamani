@@ -330,7 +330,7 @@ void Planet::render()
         CString texName = CString("Textures/Clouds.bmp");
         texture1_ = LoadBitmap22(texName);
       }
-      glRotatef(yaw_/2, 0, 0, 1);
+      glRotatef(cloudYaw_, 0, 0, 1);
       glEnable ( GL_TEXTURE_2D );
       glBindTexture ( GL_TEXTURE_2D, texture1_);
       gluSphere( quadric1_, /*2000*/(radius_*1.01)*GLOBAL_MULT, slices, stacks);
@@ -345,11 +345,11 @@ void Planet::render()
       }
       glEnable ( GL_TEXTURE_2D );
       glBindTexture ( GL_TEXTURE_2D, texture_);
-      glUseProgram(Gamani::getInstance().getShader());
+      //glUseProgram(Gamani::getInstance().getShader());
       //glColor3f(0.5,0.2,0.7);
       //glutWireSphere(radius_*GLOBAL_MULT, slices, stacks);
-      gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, 4, 4);
-      glUseProgram(0);
+      gluSphere( quadric_, /*2000*/radius_*GLOBAL_MULT, slices, stacks);
+      //glUseProgram(0);
 
       glDisable ( GL_TEXTURE_2D );
     }
