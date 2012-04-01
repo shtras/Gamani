@@ -55,6 +55,10 @@ void NavDisplay::init()
   periText_->setDimensions(0.05, 0.65, 1, 1);
   addWidget(periText_);
 
+  tText_ = new WText();
+  tText_->setDimensions(0.05, 0.6, 1, 1);
+  addWidget(tText_);
+
   modeButton_ = new WButton();
   modeButton_->setDimensions(0.41, 0.01, 0.19, 0.07);
   modeButton_->sigClick.connect(this, &NavDisplay::modeButtonClick);
@@ -286,6 +290,9 @@ void NavDisplay::updateData()
 
   sprintf(sprStr, "Dp: %s", Renderer::getInstance().formatDistance(dp_, 2));
   periText_->setText(sprStr);
+
+  sprintf(sprStr, "T: %d", (int)t_);
+  tText_->setText(sprStr);
 }
 
 void NavDisplay::drawSyncOrbit(Ship* ship, DynamicBody* ref)
@@ -450,6 +457,7 @@ void NavDisplay::drawOrbit(Ship* ship)
   }
 
   double T = 2*PI*sqrt(a*a*a/myu); //period in seconds
+  t_ = T;
 
   double maxDiameter = 2*a*1e-6;
   double translateDist = eps*a*1e-6;

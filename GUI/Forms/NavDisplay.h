@@ -46,6 +46,7 @@ protected:
   WText* modeName_;
   WText* apoText_;
   WText* periText_;
+  WText* tText_;
   WButton* modeButton_;
   WButton* refButton_;
   WButton* autoRefButton_;
@@ -59,6 +60,7 @@ protected:
 
   double dp_;
   double da_;
+  double t_;
 
   AstralBody* syncOrbitRef_;
   AstralBody* gravityRef_;
