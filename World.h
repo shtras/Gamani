@@ -24,6 +24,7 @@ public:
   void selectShip();
   void clearTracks();
   AstralBody* getObject(CString name);
+  Ship* getControlledShip() {return controlledShip_;}
 private:
   void interactGravity(Renderable* obj1, Renderable* obj2);
   void updatePosition(Renderable* obj);

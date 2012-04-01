@@ -5,6 +5,7 @@
 #include "Renderer.h"
 #include "Gamani.h"
 #include "Autopilot.h"
+#include "MissionManager.h"
 
 #define OMP_NUM_THREADS 2
 
@@ -41,6 +42,7 @@ void World::switchControlledShip(Ship* ship)
   }
   ship->setRank(1);
   controlledShip_ = ship;
+  MissionManager::getInstance().setShip(controlledShip_);
 }
 
 void World::addObject(Renderable* object)

@@ -63,6 +63,7 @@ public:
   void engageEngine(Engine engine, float power = 1.0);
   void updateEngines();
   void drawEngines();
+  Station* getDockedTo() {return dockedTo_;}
 public:
   //void testNavCom();
   //void testNavCom1();

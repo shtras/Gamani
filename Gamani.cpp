@@ -165,12 +165,12 @@ bool Gamani::mainLoop()
 
   MissionDisplay* missionDisplay = new MissionDisplay();
   missionDisplay->init();
-  missionDisplay->setDimensions(0, 0.9, 0.2, 0.4);
+  missionDisplay->setDimensions(0, 0.9, 0.3, 0.4);
   layoutManager_.addLayout(missionDisplay);
   AstralBody* station = world_->getObject("shipyard");
   assert (station && station->getType() == Renderable::StationType);
-  MissionManager::getInstance().testInit((Station*)station);
   MissionManager::getInstance().setDisplay(missionDisplay);
+  MissionManager::getInstance().testInit((Station*)station);
 
   setShaders("Shaders/TexItems.vert", "Shaders/TexItems.frag", &shader_);
 
@@ -244,6 +244,7 @@ bool Gamani::mainLoop()
               world_->snapshot();
               snapshotTimer = 0;
             }
+            MissionManager::getInstance().checkCompleted();
           }
         }
         accumulator -= dt;

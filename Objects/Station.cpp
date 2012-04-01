@@ -7,7 +7,7 @@ Station::Station()
   mass_ = 1;
   type_ = StationType;
   yaw_ = 0;
-  rotationSpeed_ = 360 / 9580.0;
+  //rotationSpeed_ = 360 / 9580.0;
 }
 
 Station::~Station()

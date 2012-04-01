@@ -11,9 +11,12 @@ public:
   bool isInteractive() {return true;}
   void setLabel(CString label) {label_ = label;}
   CString getLabel() {return  label_;}
-
+  void setParam(void* param);
   signal0<> sigClick;
+  signal1<void*> sigClickParam;
 private:
   CString label_;
+  void* param_;
+  bool hasParam_;
 };
 

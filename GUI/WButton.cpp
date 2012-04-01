@@ -2,7 +2,7 @@
 #include "WButton.h"
 #include "Renderer.h"
 
-WButton::WButton()
+WButton::WButton():param_(NULL),hasParam_(false)
 {
 }
 
@@ -12,7 +12,17 @@ WButton::~WButton()
 
 void WButton::click()
 {
-  sigClick.emit();
+  if (hasParam_) {
+    sigClickParam.emit(param_);
+  } else {
+    sigClick.emit();
+  }
+}
+
+void WButton::setParam(void* param)
+{
+  param_ = param;
+  hasParam_ = true;
 }
 
 void WButton::render(double left, double top, double width, double height)
