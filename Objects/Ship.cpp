@@ -552,7 +552,7 @@ void Ship::collideWith(AstralBody* body)
     return;
   }
   if (body->getType() == Renderable::StationType) {
-    attemptDocking((Station*)body);
+    attemptDocking(static_cast<Station*>(body));
     return;
   }
   landed_ = true;

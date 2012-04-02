@@ -72,7 +72,7 @@ void DynamicBody::renderRelativeOrbits()
   } else if (name_ == CString("Callisto")) {
     color = Vector3(0.8,0,0.8);
   }
-  DynamicBody* orbitsAround = (DynamicBody*)Gamani::getInstance().getWorld()->getFollowedObject();
+  DynamicBody* orbitsAround = static_cast<DynamicBody*>(Gamani::getInstance().getWorld()->getFollowedObject());
   assert(orbitsAround);
   const list<Vector3>& pointsAround = orbitsAround->getPoints();
   assert (pointsAround.size() == points_.size());

@@ -157,7 +157,8 @@
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <PreBuildEvent>
-      <Command>build_num.exe</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

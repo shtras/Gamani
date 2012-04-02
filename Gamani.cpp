@@ -170,7 +170,7 @@ bool Gamani::mainLoop()
   AstralBody* station = world_->getObject("Shipyard");
   assert (station && station->getType() == Renderable::StationType);
   MissionManager::getInstance().setDisplay(missionDisplay);
-  MissionManager::getInstance().testInit((Station*)station);
+  MissionManager::getInstance().testInit(static_cast<Station*>(station));
 
   setShaders("Shaders/TexItems.vert", "Shaders/TexItems.frag", &shader_);
 
@@ -344,11 +344,19 @@ void Gamani::handlePressedKey(int key)
     //paused_ = !paused_;
     break;
   case 'Y':
-    speedUp();
+    if (shiftPressed_) {
+      speed_ += 100;
+    } else {
+      speedUp();
+    }
     //speed_ *= 2;
     break;
   case 'U':
-    speedDown();
+    if (shiftPressed_) {
+      speed_ -= 100;
+    } else {
+      speedDown();
+    }
     //speed_ /= 2;
     break;
   case 'X':

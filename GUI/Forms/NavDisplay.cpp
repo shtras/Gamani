@@ -155,7 +155,7 @@ void NavDisplay::selectTargetStartingFrom(void* bodyRef)
     body = *Gamani::getInstance().getWorld()->getCurrentSystem()->getStars().begin();
     displayFree = true;
   } else {
-    body = (AstralBody*)bodyRef;
+    body = static_cast<AstralBody*>(bodyRef);
   }
   tgtSelectMenu_->initialClear(this);
 
@@ -549,7 +549,7 @@ void NavDisplay::drawDocking()
   if (!ship_ || !gravityRef_ || !(gravityRef_->getType() == Renderable::StationType)) {
     return;
   }
-  Station* station = (Station*)gravityRef_;
+  Station* station = static_cast<Station*>(gravityRef_);
   glPushMatrix();
   glRotatef(270, 1, 0, 0);
   glutWireCone(0.02, 0.1, 10, 10);
@@ -703,7 +703,7 @@ void NavDisplay::render()
     drawOrbit(ship_);
   } else if (mode_ == SyncOrbit) {
     if (syncOrbitRef_) {
-      DynamicBody* dyn = (DynamicBody*)syncOrbitRef_;
+      DynamicBody* dyn = static_cast<DynamicBody*>(syncOrbitRef_);
       drawSyncOrbit(ship_, dyn);
     }
   } else if (mode_ == Docking) {

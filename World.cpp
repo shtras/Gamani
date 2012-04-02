@@ -165,7 +165,7 @@ void World::clearTracks()
 {
   int SZ = objects_->size();
   for (int i=0; i<SZ; ++i) {
-    DynamicBody* body = (DynamicBody*)(*objects_)[i];
+    DynamicBody* body = static_cast<DynamicBody*>((*objects_)[i]);
     body->cleatTrack();
   }
 }
@@ -196,10 +196,10 @@ void World::updatePosition(Renderable* obj)
   }
 
   assert(!obj->isStatic());
-  DynamicBody* dynObj = (DynamicBody*)obj;
+  DynamicBody* dynObj = static_cast<DynamicBody*>(obj);
   
   if (dynObj->getType() == Renderable::ShipType) {
-    Ship* ship = (Ship*)dynObj;
+    Ship* ship = static_cast<Ship*>(dynObj);
     if (ship->isUndocking()) {
       ship->checkUndocking();
     } else if (ship->isDocked()) {
@@ -214,7 +214,7 @@ void World::updatePosition(Renderable* obj)
 
   if (dynObj->isLanded()) {
     assert(dynObj->getType() == Renderable::ShipType);
-    Ship* ship = (Ship*)dynObj;
+    Ship* ship = static_cast<Ship*>(dynObj);
     if (!ship->isLaunching()) {
       double planetRotSpeed = ship->getLandedOn()->getRotationAngleSpeed() * Gamani::getInstance().getSpeedReduce();
       dynObj->setYaw(dynObj->getYaw()-planetRotSpeed);
@@ -252,38 +252,29 @@ void World::interactGravity(Renderable* from, Renderable* to)
   if (to->isStatic()) {
     return;
   }
-  //if (!obj1->isStatic() && !obj2->isStatic()) {
-  //  return;
-  //}
 
-  AstralBody* bodyFrom = static_cast<AstralBody*>(from); //dynamic_cast<AstralBody*>(from);
-  AstralBody* bodyTo = static_cast<AstralBody*>(to); //dynamic_cast<AstralBody*>(to);
+  AstralBody* bodyFrom = static_cast<AstralBody*>(from);
+  AstralBody* bodyTo = static_cast<AstralBody*>(to);
   assert(bodyFrom && bodyTo);
 
-  //if (bodyFrom->getName() == CString("Earth")) {
-  //  AstralBody* moon = bodyFrom->getSatellites()[0];
-  //  Vector3 dir = moon->getCoord() - bodyFrom->getCoord();
-  //  double dist = dir.getLength();
-  //  int a = 0;
-  //}
-
-  Vector3 coordFrom = bodyFrom->getCoord();
-  Vector3 coordTo = bodyTo->getCoord();
-  double massFrom = bodyFrom->getMass() * 1e6; //kg
-  double massTo = bodyTo->getMass() * 1e6; //kg
+  Vector3& coordFrom = bodyFrom->getCoord();
+  Vector3& coordTo = bodyTo->getCoord();
+  double massFrom = bodyFrom->getMass()/* * 1e6*/; //kg
+  double massTo = bodyTo->getMass()/* * 1e6*/; //kg
   //G*m*m/r^2
-  static double G = 6.6725e-11;
-  double distSquare = (coordFrom[0]-coordTo[0])*(coordFrom[0]-coordTo[0])+(coordFrom[1]-coordTo[1])*(coordFrom[1]-coordTo[1])+(coordFrom[2]-coordTo[2])*(coordFrom[2]-coordTo[2]);
-  distSquare *= 1e6*1e6; //meters^2
+  double G = 6.6725e-11;
+  double distSquare = (coordFrom[0]-coordTo[0])*(coordFrom[0]-coordTo[0])+(coordFrom[1]-coordTo[1])*(coordFrom[1]-coordTo[1]);
+  //distSquare *= 1e12; //meters^2
   double speedReduce = Gamani::getInstance().getSpeedReduce();
-  double force = G*massFrom*massTo/distSquare * speedReduce * speedReduce; //kg^2/m^2*M*m^2/kg^2 = N
+  double force = G*massFrom*massTo * speedReduce * speedReduce; //kg^2/m^2*M*m^2/kg^2 = N
+  force *= (1/distSquare);
   //if (!body2->isStatic()) {
   Vector3 velocity = bodyTo->getVelocity() * (speedReduce);
   //velocity *= 1000.0; //m/s
   Vector3 dir = coordFrom - coordTo;
   dir.normalize();
   //f = m*a; a=f/m; a=dv
-  double dVelocity = force/massTo;
+  double dVelocity = force/(massTo*1e6);
   //velocity += Vector3(dir[0]*dVelocity, dir[1]*dVelocity, dir[2]*dVelocity);
   velocity += dir*dVelocity;
   bodyTo->setVelocity(velocity * (1/speedReduce)/**(1.0/1000.0f)*/);
@@ -343,8 +334,8 @@ void World::interactCollision(Renderable* obj1, Renderable* obj2)
   if (obj1->isStatic() && obj2->isStatic()) {
     return;
   }
-  AstralBody* body1 = (AstralBody*)obj1;
-  AstralBody* body2 = (AstralBody*)obj2;
+  AstralBody* body1 = static_cast<AstralBody*>(obj1);
+  AstralBody* body2 = static_cast<AstralBody*>(obj2);
   if (!checkCollision(body1, body2)) {
     return;
   }
@@ -432,25 +423,29 @@ void World::interactionStep()
   }
   Star* mainStar = *stars.begin();
   gravitySubLevelsInteraction(mainStar, mainStar->getSatellites(), true);
-  for (uint32_t i=0; i<objects_->size(); ++i) {
+  uint32_t SZ = objects_->size();
+  uint32_t fSZ = freeObjects_.size();
+  for (uint32_t i=0; i<SZ; ++i) {
     AstralBody* itr = (*objects_)[i];
 
     if (itr->getType() == Renderable::ShipType) {
-      Ship* ship = (Ship*)itr;
+      Ship* ship = static_cast<Ship*>(itr);
       ship->autopilotStep();
     }
 
     itr->rotationStep();
     updatePosition(itr);
-    for (uint32_t j=0; j<freeObjects_.size(); ++j) {
-      AstralBody* freeItr = freeObjects_[j];
-      interactGravity(itr, freeItr);
+    if (itr->getType() != Renderable::ShipType && itr->getType() != Renderable::StationType) {
+      for (uint32_t j=0; j<fSZ; ++j) {
+        AstralBody* freeItr = freeObjects_[j];
+        interactGravity(itr, freeItr);
+      }
     }
   }
 
-  for (uint32_t i=0; i<freeObjects_.size(); ++i) {
+  for (uint32_t i=0; i<fSZ; ++i) {
     AstralBody* itr = freeObjects_[i];
-    for (uint32_t j=0; j<objects_->size(); ++j) {
+    for (uint32_t j=0; j<SZ; ++j) {
       AstralBody* innerItr = (*objects_)[j];
       if (innerItr == itr) {
         continue;
@@ -458,7 +453,7 @@ void World::interactionStep()
       interactCollision(itr, innerItr);
     }
     if (itr->getType() == Renderable::ShipType) {
-      Ship* ship = (Ship*)itr;
+      Ship* ship = static_cast<Ship*>(itr);
       ship->updateEngines();
     }
   }

@@ -628,7 +628,7 @@ void Renderer::checkAndDrawAtmosphere()
     if (!(body->getType() == Renderable::PlanetType)) {
       continue;
     }
-    Planet* planet = (Planet*)body;
+    Planet* planet = static_cast<Planet*>(body);
     Vector3 planetCoord = planet->getCoord();
     Vector3 dist = camPos - planetCoord;
     double distance = dist.getLength();

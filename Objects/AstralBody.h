@@ -12,7 +12,7 @@ public:
   void setMass(double mass) {mass_ = mass;}
   void setRadius(double radius) {radius_ = radius;}
   bool isStatic() {return true;}
-  Vector3 getCoord() {return coord_;}
+  Vector3& getCoord() {return coord_;}
   void setCoord(Vector3 coord) {coord_ = coord;}
   void setColor(Vector3 color) {color_ = color;}
   virtual Vector3 getVelocity() {return Vector3(0,0,0);}

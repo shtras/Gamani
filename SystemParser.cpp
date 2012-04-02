@@ -232,14 +232,14 @@ bool SystemParser::fillAstralInfo(AstralBody* bodyToFill, Section* section)
         Logger::getInstance().log(ERROR_LOG_NAME, "Wrong parameter in starsystem file: only planets can have atmosphere");
         return false;
       }
-      Planet* p = (Planet*)bodyToFill;
+      Planet* p = static_cast<Planet*>(bodyToFill);
       p->setAtmRadius(getDouble(value));
     } else if (field == "atmcolor") {
       if (bodyToFill->getType() != AstralBody::PlanetType) {
         Logger::getInstance().log(ERROR_LOG_NAME, "Wrong parameter in starsystem file: only planets can have atmosphere");
         return false;
       }
-      Planet* p = (Planet*)bodyToFill;
+      Planet* p = static_cast<Planet*>(bodyToFill);
       p->setAtmColor(parseVector(value));
     } else if (field == "model") {
       ModelRenderable* modelRen = dynamic_cast<ModelRenderable*>(bodyToFill);
@@ -267,7 +267,7 @@ bool SystemParser::fillAstralInfo(AstralBody* bodyToFill, Section* section)
         Logger::getInstance().log(ERROR_LOG_NAME, "Error parsing starsystem file. Only ships can have playercontrolled attribute");
         return false;
       }
-      Ship* ship = (Ship*)bodyToFill;
+      Ship* ship = static_cast<Ship*>(bodyToFill);
       if (value.toLower() == "true") {
         ship->initializeAsPlayerControlled();
       }
@@ -290,7 +290,7 @@ bool SystemParser::parseSectionInfo(StarSystem* system, Section* section, Astral
     if (!fillAstralInfo(currBody, section)) {
       return false;
     }
-    system->addStar((Star*)currBody);
+    system->addStar(static_cast<Star*>(currBody));
   } else if (name == "planet") {
     currBody = new Planet();
     if (!fillAstralInfo(currBody, section)) {
@@ -307,7 +307,7 @@ bool SystemParser::parseSectionInfo(StarSystem* system, Section* section, Astral
     stationDisplay->setVisible(false);
     layoutManager_->addLayout(stationDisplay);
     upperLayer->addSatellite(currBody);
-    ((Station*)currBody)->setDisplay(stationDisplay);
+    (static_cast<Station*>(currBody))->setDisplay(stationDisplay);
   } else if (name == "ship") {
     currBody = new Ship();
     if (!fillAstralInfo(currBody, section)) {
@@ -316,9 +316,9 @@ bool SystemParser::parseSectionInfo(StarSystem* system, Section* section, Astral
     HUD* shipHud = new HUD();
     shipHud->AddLayout.connect(layoutManager_, &LayoutManager::addLayout);
     shipHud->RemoveLayout.connect(layoutManager_, &LayoutManager::removeLayout);
-    shipHud->init((Ship*)currBody);
-    if (((Ship*)currBody)->isInitializedAsPlayerControlled()) {
-      controlledShip_ = (Ship*)currBody;
+    shipHud->init(static_cast<Ship*>(currBody));
+    if ((static_cast<Ship*>(currBody))->isInitializedAsPlayerControlled()) {
+      controlledShip_ = static_cast<Ship*>(currBody);
       shipHud->setVisible(true);
     } else {
       shipHud->setVisible(false);
