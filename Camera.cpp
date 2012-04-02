@@ -111,7 +111,7 @@ void Camera::position()
   bool printData = Gamani::getInstance().getAuxPrints();
   glColor3f(1,1,1);
   if (printData) {
-    Renderer::getInstance().textOut(0 ,0.95,0, "Zoom: %0.2f Pitch: %0.2f Heading: %0.2f, Speed: %.3f StepLength: %.3f", zoom_,
+    Renderer::getInstance().textOut(0 ,0.95,0, "Pitch: %0.2f Heading: %0.2f, Speed: %.3f StepLength: %.3f",
       pitch_, testHeading, Gamani::getInstance().getSpeed(), Gamani::getInstance().getSpeedReduce());
 
     //Renderer::getInstance().textOut(0 ,0.75,0, "%0.3f %0.3f", Gamani::getInstance().getFollowedObject()->getVelocity()[0],Gamani::getInstance().getFollowedObject()->getVelocity()[1]);

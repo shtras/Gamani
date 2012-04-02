@@ -45,7 +45,7 @@ void MissionManager::addTask(int missionID, Task* task)
 
 void MissionManager::testInit(Station* station)
 {
-  AstralBody* earth = Gamani::getInstance().getWorld()->getObject("earth");
+  AstralBody* earth = Gamani::getInstance().getWorld()->getObject("Earth");
   Mission* newMission = new Mission();
   newMission->setDescription("Test mission");
   addMission(newMission);

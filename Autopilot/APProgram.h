@@ -96,13 +96,17 @@ private:
 class EqSpeedProg: public APProgram
 {
 public:
-  EqSpeedProg(Autopilot* autopilot, Vector3 spdToReach);
+  EqSpeedProg(Autopilot* autopilot);
+  EqSpeedProg(Autopilot* autopilot, int maxIterations);
   virtual ~EqSpeedProg(){}
   virtual void step();
   virtual void init();
 private:
+  int maxIterations_;
   Vector3 spdToReach_;
   double lastDelta_;
+  AstralBody* target_;
+  bool accelStarted_;
 };
 
 class ProGradeProg: public APProgram

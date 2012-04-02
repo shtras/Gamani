@@ -83,8 +83,15 @@ void APDisplay::init()
   retroGradeButton_->sigClick.connect(this, &APDisplay::retroGradeClick);
   addWidget(retroGradeButton_);
 
+  matchSpeedButton_ = new WButton();
+  matchSpeedButton_->setDimensions(0.1, 0.25, 0.2, 0.1);
+  matchSpeedButton_->setLabel("Match speed");
+  matchSpeedButton_->sigClick.connect(this, &APDisplay::matchSpeed);
+  addWidget(matchSpeedButton_);
+
   testInput_ = new WInput();
   testInput_->setDimensions(0.25,0.25,0.5,0.1);
+  testInput_->setVisible(false);
   addWidget(testInput_);
 
   visible_ = true;
@@ -134,6 +141,11 @@ void APDisplay::proGradeClick()
 void APDisplay::retroGradeClick()
 {
   myAP_->getShip()->setAutopilotTo(Autopilot::RetroGrade);
+}
+
+void APDisplay::matchSpeed()
+{
+  myAP_->getShip()->setAutopilotTo(Autopilot::EqSpeed);
 }
 
 void APDisplay::render()

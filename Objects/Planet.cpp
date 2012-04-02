@@ -266,7 +266,7 @@ void Planet::render()
     }
     glRotatef(yaw_, 0, 0, -1);
 
-    if (name_ == "earth") {
+    if (name_ == "Earth" && camDist < 10) {
       static GLuint nightTex = -1;
 
       if (texture_ == (GLuint)-1) {

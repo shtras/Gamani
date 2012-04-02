@@ -74,7 +74,7 @@ void DynamicBody::renderRelativeOrbits()
   }
   DynamicBody* orbitsAround = (DynamicBody*)Gamani::getInstance().getWorld()->getFollowedObject();
   assert(orbitsAround);
-  const list<Vector3> pointsAround = orbitsAround->getPoints();
+  const list<Vector3>& pointsAround = orbitsAround->getPoints();
   assert (pointsAround.size() == points_.size());
 
   glBegin(GL_LINE_STRIP);

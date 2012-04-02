@@ -24,6 +24,7 @@ private:
   void approachClick();
   void proGradeClick();
   void retroGradeClick();
+  void matchSpeed();
   Autopilot* myAP_;
 
   NavDisplay* left_;
@@ -42,6 +43,7 @@ private:
   WButton* approachProgButton_;
   WButton* proGradeButton_;
   WButton* retroGradeButton_;
+  WButton* matchSpeedButton_;
 
   WInput* testInput_;
 };

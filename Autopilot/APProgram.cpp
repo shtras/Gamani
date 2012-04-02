@@ -69,6 +69,7 @@ RotateProg::RotateProg(Autopilot* autopilot, double tgtYaw):APProgram(autopilot)
 
 void RotateProg::step()
 {
+  init();
   double currDelta = getShip()->getYaw() - tgtYaw_;
   while (currDelta > 180.0) {
     currDelta -= 180.0;
@@ -161,8 +162,8 @@ ApproachProg::ApproachProg(Autopilot* autopilot):APProgram(autopilot)
 
   //cout << "tgt " << targetAngle << " spd " << relSpdAngle << endl;
 
-  autopilot_->addProgram(new RotateProg(autopilot_, relSpdAngle - 180.0));
-  autopilot_->addProgram(new EqSpeedProg(autopilot_, target_->getVelocity()));
+  //autopilot_->addProgram(new RotateProg(autopilot_, relSpdAngle - 180.0));
+  autopilot_->addProgram(new EqSpeedProg(autopilot_, 3));
   
   autopilot_->addProgram(new RotateProg(autopilot_, targetAngle));
   autopilot_->addProgram(new RotateProg(autopilot_, targetAngle));
@@ -216,7 +217,7 @@ void ApproachProgStep2::init()
   Vector3 tgtCoord = target_->getCoord();
   Vector3 shipCoord = getShip()->getCoord();
   double dist = (tgtCoord - shipCoord).getLength();
-  double timeToDist = sqrt(dist/2.0*1e6 / getShip()->gatMarchPower()) * 2;
+  double timeToDist = sqrt(dist * 1e6 / (getShip()->gatMarchPower()/0.05)) * 2.0;
   //timeToDist *= 0.1;
   Vector3 tgtNewCord = (target_->getCoord()*1e6 + target_->getVelocity()*timeToDist) * 1e-6;
 
@@ -228,10 +229,14 @@ void ApproachProgStep2::init()
   Vector3 relSpd = getShip()->getVelocity() - target_->getVelocity();
   double relSpdAngle = relSpd.getAngle();
 
+  Vector3 halfDist = (shipCoord + tgtCoord)*0.5;
+  halfDist += (target_->getVelocity() * (timeToDist/2.0))*1e-6;
+
   //cout << "tgt " << targetAngle << " spd " << relSpdAngle << endl;
-  autopilot_->addProgram(new AccelProg(autopilot_, (shipCoord + tgtCoord)*0.5));
+  autopilot_->addProgram(new AccelProg(autopilot_, halfDist));
   autopilot_->addProgram(new RotateProg(autopilot_, targetAngle + 180.0));
-  autopilot_->addProgram(new AccelProg(autopilot_, tgtCoord));
+  autopilot_->addProgram(new AccelProg(autopilot_, tgtNewCord));
+  autopilot_->addProgram(new EqSpeedProg(autopilot_));
 
 }
 
@@ -311,18 +316,33 @@ void AccelProg::init()
 
 //////////////////////////////////////////////////////////////////////////
 
-EqSpeedProg::EqSpeedProg(Autopilot* autopilot, Vector3 spdToReach):APProgram(autopilot), spdToReach_(spdToReach)
+EqSpeedProg::EqSpeedProg(Autopilot* autopilot):APProgram(autopilot),accelStarted_(false),maxIterations_(1)
+{
+  id_ = Autopilot::EqSpeed;
+}
+
+EqSpeedProg::EqSpeedProg(Autopilot* autopilot, int maxIterations):APProgram(autopilot),accelStarted_(false),maxIterations_(maxIterations)
 {
   id_ = Autopilot::EqSpeed;
 }
 
 void EqSpeedProg::step()
 {
+  if (!accelStarted_) {
+    accelStarted_ = true;
+    spdToReach_ = target_->getVelocity();
+    Vector3 vel = getShip()->getVelocity();
+    lastDelta_ = (vel - spdToReach_).getLength();
+  }
   getShip()->accelerate();
+  spdToReach_ = target_->getVelocity();
   Vector3 vel = getShip()->getVelocity();
   double delta = (vel - spdToReach_).getLength();
   if (delta > lastDelta_) {
     endProgram();
+    if ((vel - spdToReach_).getLength() > 1) {
+      autopilot_->addImmediateProgram(new EqSpeedProg(autopilot_, maxIterations_ - 1));
+    }
   }
   lastDelta_ = delta;
 }
@@ -333,6 +353,27 @@ void EqSpeedProg::init()
     return;
   }
   init_ = true;
+  if (maxIterations_ < 1) {
+    endProgram();
+  }
+  target_ = autopilot_->getGravityRef();
+  if (!target_) {
+    autopilot_->setError("No ref defined");
+    return;
+  }
+
+  spdToReach_ = target_->getVelocity();
+  Vector3 tgtCoord = target_->getCoord();
+  Vector3 shipCoord = getShip()->getCoord();
+  double dist = (tgtCoord - shipCoord).getLength();
+  double timeToDist = sqrt(dist/2.0*1e6 / getShip()->gatMarchPower()) * 2;
+  Vector3 tgtNewCord = (target_->getCoord()*1e6 + target_->getVelocity()*timeToDist) * 1e-6;
+  Vector3 dir = tgtCoord - shipCoord;
+  double targetAngle = dir.getAngle();
+  Vector3 relSpd = getShip()->getVelocity() - target_->getVelocity();
+  double relSpdAngle = relSpd.getAngle();
+  autopilot_->addImmediateProgram(new RotateProg(autopilot_, relSpdAngle - 180.0));
+
   Vector3 vel = getShip()->getVelocity();
   lastDelta_ = (vel - spdToReach_).getLength();
 }

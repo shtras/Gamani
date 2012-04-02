@@ -6,6 +6,7 @@
 #include "Gamani.h"
 #include "Autopilot.h"
 #include "MissionManager.h"
+#include "HUD.h"
 
 #define OMP_NUM_THREADS 2
 
@@ -39,10 +40,14 @@ void World::switchControlledShip(Ship* ship)
 {
   if (controlledShip_) {
     controlledShip_->setRank(2);
+    controlledShip_->getHUD()->setVisible(false);
   }
   ship->setRank(1);
   controlledShip_ = ship;
   MissionManager::getInstance().setShip(controlledShip_);
+  followedObject_ = ship;
+  Renderer::getInstance().getCamera().position(followedObject_);
+  ship->getHUD()->setVisible(true);
 }
 
 void World::addObject(Renderable* object)

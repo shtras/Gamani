@@ -64,6 +64,7 @@ public:
   void updateEngines();
   void drawEngines();
   Station* getDockedTo() {return dockedTo_;}
+  HUD* getHUD() {return hud_;}
 public:
   //void testNavCom();
   //void testNavCom1();

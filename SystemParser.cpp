@@ -20,7 +20,8 @@ SystemParser::~SystemParser(void)
 
 CString SystemParser::stripSpaces(CString str)
 {
-  return str.remove(' ');
+  str = str.remove(' ');
+  return str.remove('\t');
 }
 
 bool SystemParser::isComment(CString str)
@@ -175,6 +176,9 @@ double SystemParser::getDouble(CString str)
   }
   exp /= 10;
   res *= pow(10.0, exp);
+  if (neg) {
+    res = -res;
+  }
   return res;
 }
 
@@ -207,7 +211,7 @@ bool SystemParser::fillAstralInfo(AstralBody* bodyToFill, Section* section)
       return false;
     }
     CString field = parts[0].toLower();
-    CString value = parts[1].toLower();
+    CString value = parts[1]/*.toLower()*/;
     if (field == "coord") {
       Vector3 valueVec = parseVector(value);
       bodyToFill->setCoord(valueVec);

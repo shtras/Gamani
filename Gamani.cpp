@@ -167,7 +167,7 @@ bool Gamani::mainLoop()
   missionDisplay->init();
   missionDisplay->setDimensions(0, 0.9, 0.3, 0.4);
   layoutManager_.addLayout(missionDisplay);
-  AstralBody* station = world_->getObject("shipyard");
+  AstralBody* station = world_->getObject("Shipyard");
   assert (station && station->getType() == Renderable::StationType);
   MissionManager::getInstance().setDisplay(missionDisplay);
   MissionManager::getInstance().testInit((Station*)station);
@@ -387,7 +387,11 @@ void Gamani::handlePressedKey(int key)
   case 0x34:
     //Renderer::getInstance().getCamera().setPitch(0);
     //Renderer::getInstance().getCamera().setHeading(90);
-    world_->getCurrentSystem()->skipTime(1e4);
+    if (shiftPressed_) {
+      world_->getCurrentSystem()->skipTime(1e8);
+    } else {
+      world_->getCurrentSystem()->skipTime(1e6);
+    }
     break;
   case 0x35:
     toggleNames();
@@ -413,16 +417,25 @@ void Gamani::handlePressedKey(int key)
   case 0xdd:
     //switchDrawingMode();
     {
-
-    static bool aaa = false;
-    if (aaa) {
-      setShaders("Shaders/TexItems.vert", "Shaders/TexItems.frag", &shader_);
-      aaa = false;
-    } else {
-      deleteShaders(shader_);
-      shader_ = 0;
-      aaa = true;
-    }
+      Ship* ship[6];
+      ship[0] = static_cast<Ship*>(world_->getObject("Galactica"));
+      ship[1] = static_cast<Ship*>(world_->getObject("Hawkeye"));
+      ship[2] = static_cast<Ship*>(world_->getObject("Ranger"));
+      ship[3] = static_cast<Ship*>(world_->getObject("Avenger"));
+      ship[4] = static_cast<Ship*>(world_->getObject("Lightning"));
+      ship[5] = static_cast<Ship*>(world_->getObject("Thunderbolt"));
+      static int shipNum = 0;
+      world_->switchControlledShip(ship[shipNum++]);
+      if (shipNum > 5) {
+        shipNum = 0;
+      }
+    //  setShaders("Shaders/TexItems.vert", "Shaders/TexItems.frag", &shader_);
+    //  aaa = false;
+    //} else {
+    //  deleteShaders(shader_);
+    //  shader_ = 0;
+    //  aaa = true;
+    //}
     break;
     }
   default:
