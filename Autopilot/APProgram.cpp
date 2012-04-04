@@ -360,6 +360,7 @@ void EqSpeedProg::init()
   target_ = autopilot_->getGravityRef();
   if (!target_) {
     autopilot_->setError("No ref defined");
+    endProgram();
     return;
   }
 
@@ -473,6 +474,11 @@ void OrbitProg::init()
     return;
   }
   init_ = true;
+  if (!autopilot_->getGravityRef()) {
+    autopilot_->setError("No ref defined");
+    endProgram();
+    return;
+  }
   autopilot_->addImmediateProgram(new ProGradeProg(autopilot_));
 }
 
@@ -568,6 +574,11 @@ void RotateToProg::init()
     return;
   }
   init_ = true;
+  if (!autopilot_->getGravityRef()) {
+    autopilot_->setError("No ref defined");
+    endProgram();
+    return;
+  }
 }
 
 void RotateToProg::step()
@@ -595,6 +606,11 @@ void RotateFromProg::init()
     return;
   }
   init_ = true;
+  if (!autopilot_->getGravityRef()) {
+    autopilot_->setError("No ref defined");
+    endProgram();
+    return;
+  }
 }
 
 void RotateFromProg::step()
@@ -622,6 +638,11 @@ void PrependicularizeSpeedProg::init()
     return;
   }
   init_ = true;
+  if (!autopilot_->getGravityRef()) {
+    autopilot_->setError("No ref defined");
+    endProgram();
+    return;
+  }
   AstralBody* gravityRef = autopilot_->getGravityRef();
   Vector3 dir = gravityRef->getCoord() - getShip()->getCoord();
   Vector3 vel = getShip()->getVelocity() - gravityRef->getVelocity();

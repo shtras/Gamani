@@ -55,7 +55,9 @@ void Autopilot::step()
     //cout << endl;
   }
   programs_.front()->init();
-  programs_.front()->step();
+  if (programs_.size() > 0) { //Active program may have been cancelled due to error
+    programs_.front()->step();
+  }
   GC();
 }
 
