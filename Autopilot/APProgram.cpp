@@ -200,8 +200,13 @@ void ApproachProgStep2::step()
 
   Vector3 tgtCoord = target_->getCoord();
   Vector3 shipCoord = getShip()->getCoord();
-  double dist = (tgtCoord - shipCoord).getLength();
+  double dist = (tgtCoord - shipCoord).getLength() - target_->getRadius()*1.1;
   double timeToDist = sqrt(dist * 1e6 / (getShip()->gatMarchPower()/0.05)) * 2.0;
+  double timeToRotate = 6.0; //TODO: Calculate from yawPower
+  timeToDist -= timeToRotate;
+  if (timeToDist < 0) {
+    timeToDist = 0;
+  }
   //timeToDist *= 0.1;
   Vector3 tgtNewCord = (target_->getCoord()*1e6 + target_->getVelocity()*timeToDist) * 1e-6;
 
@@ -334,10 +339,15 @@ void EqSpeedProg::step()
     Vector3 vel = getShip()->getVelocity();
     lastDelta_ = (vel - spdToReach_).getLength();
   }
-  getShip()->accelerate();
   spdToReach_ = target_->getVelocity();
   Vector3 vel = getShip()->getVelocity();
   double delta = (vel - spdToReach_).getLength();
+  if (delta > 2) {
+    getShip()->accelerate();
+  } else {
+    getShip()->accelerate(0.1);
+  }
+
   if (delta > lastDelta_) {
     endProgram();
     if ((vel - spdToReach_).getLength() > 1 && maxIterations_ > 1) {
