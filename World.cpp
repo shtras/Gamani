@@ -260,24 +260,27 @@ void World::interactGravity(Renderable* from, Renderable* to)
   Vector3& coordFrom = bodyFrom->getCoord();
   Vector3& coordTo = bodyTo->getCoord();
   double massFrom = bodyFrom->getMass()/* * 1e6*/; //kg
-  double massTo = bodyTo->getMass()/* * 1e6*/; //kg
+  //double massTo = bodyTo->getMass()/* * 1e6*/; //kg
   //G*m*m/r^2
   double G = 6.6725e-11;
   double distSquare = (coordFrom[0]-coordTo[0])*(coordFrom[0]-coordTo[0])+(coordFrom[1]-coordTo[1])*(coordFrom[1]-coordTo[1]);
   //distSquare *= 1e12; //meters^2
   double speedReduce = Gamani::getInstance().getSpeedReduce();
-  double force = G*massFrom*massTo * speedReduce * speedReduce; //kg^2/m^2*M*m^2/kg^2 = N
-  force *= (1/distSquare);
+  //double force = G*massFrom*massTo * speedReduce * speedReduce; //kg^2/m^2*M*m^2/kg^2 = N
+  //force *= (1/distSquare);
   //if (!body2->isStatic()) {
-  Vector3 velocity = bodyTo->getVelocity() * (speedReduce);
+  //Vector3 velocity = bodyTo->getVelocity() * (speedReduce);
   //velocity *= 1000.0; //m/s
   Vector3 dir = coordFrom - coordTo;
-  dir.normalize();
+  //dir.normalize();
   //f = m*a; a=f/m; a=dv
-  double dVelocity = force/(massTo*1e6);
+  //double dVelocity = force/(massTo*1e6);
   //velocity += Vector3(dir[0]*dVelocity, dir[1]*dVelocity, dir[2]*dVelocity);
-  velocity += dir*dVelocity;
-  bodyTo->setVelocity(velocity * (1/speedReduce)/**(1.0/1000.0f)*/);
+  //velocity += dir*(dVelocity / dir.getLength());
+  //bodyTo->setVelocity(velocity * (1/speedReduce)/**(1.0/1000.0f)*/);
+
+  Vector3 newVel = bodyTo->getVelocity() + dir*(G*massFrom*speedReduce/(1e6*dir.getLength()*distSquare));
+  bodyTo->setVelocity(newVel);
   //} 
   //if (!body1->isStatic()) {
   //  Vector3 velocity = body1->getVelocity();
