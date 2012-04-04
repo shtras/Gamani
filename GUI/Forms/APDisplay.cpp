@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "APDisplay.h"
+#include "Renderer.h"
 
 APDisplay::APDisplay(NavDisplay* left, NavDisplay* right):
   refText_(NULL),fromLeftRefButton_(NULL),fromRightRefButton_(NULL),progNameText_(NULL),statusText_(NULL),landedDockedText_(NULL),
@@ -16,11 +17,11 @@ APDisplay::~APDisplay()
 void APDisplay::init()
 {
   refText_ = new WText("NULL");
-  refText_->setDimensions(0.3,0.9,0.1,0.5);
+  refText_->setDimensions(0.44,0.9,0.1,0.5);
   addWidget(refText_);
 
   progNameText_ = new WText("Program");
-  progNameText_->setDimensions(0.4,0.8,0.1,0.6);
+  progNameText_->setDimensions(0.3,0.8,0.1,0.6);
   addWidget(progNameText_);
 
   statusText_ = new WText("Program");
@@ -36,65 +37,109 @@ void APDisplay::init()
   addWidget(errorText_);
 
   fromLeftRefButton_ = new WButton();
-  fromLeftRefButton_->setDimensions(0.1,0.85,0.1,0.1);
+  fromLeftRefButton_->setDimensions(0.04,0.85,0.1,0.1);
   fromLeftRefButton_->setLabel("<");
   fromLeftRefButton_->sigClick.connect(this, &APDisplay::leftRefClick);
   addWidget(fromLeftRefButton_);
 
+  clearButton_ = new WButton();
+  clearButton_->setDimensions(0.14,0.85,0.1,0.1);
+  clearButton_->setLabel("Clear");
+  clearButton_->sigClick.connect(this, &APDisplay::clearClick);
+  addWidget(clearButton_);
+
+  stopButton_ = new WButton();
+  stopButton_->setDimensions(0.24,0.85,0.1,0.1);
+  stopButton_->setLabel("Stop");
+  stopButton_->sigClick.connect(this, &APDisplay::stopClick);
+  addWidget(stopButton_);
+
   fromRightRefButton_ = new WButton();
-  fromRightRefButton_->setDimensions(0.8,0.85,0.1,0.1);
+  fromRightRefButton_->setDimensions(0.34,0.85,0.1,0.1);
   fromRightRefButton_->setLabel(">");
   fromRightRefButton_->sigClick.connect(this, &APDisplay::rightRefClick);
   addWidget(fromRightRefButton_);
 
   killRotProgButton_ = new WButton();
-  killRotProgButton_->setDimensions(0.1,0.55,0.2,0.1);
+  killRotProgButton_->setDimensions(0.04,0.55,0.2,0.1);
   killRotProgButton_->setLabel("KillRot");
   killRotProgButton_->sigClick.connect(this, &APDisplay::killRotClick);
   addWidget(killRotProgButton_);
 
   rotateProgButton_ = new WButton();
-  rotateProgButton_->setDimensions(0.4,0.55,0.2,0.1);
+  rotateProgButton_->setDimensions(0.28,0.55,0.2,0.1);
   rotateProgButton_->setLabel("Rotate");
   rotateProgButton_->sigClick.connect(this, &APDisplay::rotateClick);
   addWidget(rotateProgButton_);
 
   launchProgButton_ = new WButton();
-  launchProgButton_->setDimensions(0.7,0.55,0.2,0.1);
+  launchProgButton_->setDimensions(0.52,0.55,0.2,0.1);
   launchProgButton_->setLabel("Launch");
   launchProgButton_->sigClick.connect(this, &APDisplay::launchClick);
   addWidget(launchProgButton_);
 
   approachProgButton_ = new WButton();
-  approachProgButton_->setDimensions(0.1,0.4,0.2,0.1);
+  approachProgButton_->setDimensions(0.76,0.55,0.2,0.1);
   approachProgButton_->setLabel("Approach");
   approachProgButton_->sigClick.connect(this, &APDisplay::approachClick);
   addWidget(approachProgButton_);
 
   proGradeButton_ = new WButton();
-  proGradeButton_->setDimensions(0.4,0.4,0.2,0.1);
+  proGradeButton_->setDimensions(0.04,0.4,0.2,0.1);
   proGradeButton_->setLabel("Pro Grade");
   proGradeButton_->sigClick.connect(this, &APDisplay::proGradeClick);
   addWidget(proGradeButton_);
 
   retroGradeButton_ = new WButton();
-  retroGradeButton_->setDimensions(0.7,0.4,0.2,0.1);
+  retroGradeButton_->setDimensions(0.28,0.4,0.2,0.1);
   retroGradeButton_->setLabel("Retro Grade");
   retroGradeButton_->sigClick.connect(this, &APDisplay::retroGradeClick);
   addWidget(retroGradeButton_);
 
   matchSpeedButton_ = new WButton();
-  matchSpeedButton_->setDimensions(0.1, 0.25, 0.2, 0.1);
+  matchSpeedButton_->setDimensions(0.52, 0.4, 0.2, 0.1);
   matchSpeedButton_->setLabel("Match speed");
-  matchSpeedButton_->sigClick.connect(this, &APDisplay::matchSpeed);
+  matchSpeedButton_->sigClick.connect(this, &APDisplay::matchSpeedClick);
   addWidget(matchSpeedButton_);
+
+  orbitButton_ = new WButton();
+  orbitButton_->setDimensions(0.76,0.4,0.2,0.1);
+  orbitButton_->setLabel("Orbit");
+  orbitButton_->sigClick.connect(this, &APDisplay::orbitClick);
+  addWidget(orbitButton_);
+
+  rotateToButton_ = new WButton();
+  rotateToButton_->setDimensions(0.04,0.25,0.2,0.1);
+  rotateToButton_->setLabel("Rotate To");
+  rotateToButton_->sigClick.connect(this, &APDisplay::rotateToClick);
+  addWidget(rotateToButton_);
+
+  rotateFromButton_ = new WButton();
+  rotateFromButton_->setDimensions(0.28,0.25,0.2,0.1);
+  rotateFromButton_->setLabel("Rotate From");
+  rotateFromButton_->sigClick.connect(this, &APDisplay::rotateFromClick);
+  addWidget(rotateFromButton_);
 
   testInput_ = new WInput();
   testInput_->setDimensions(0.25,0.25,0.5,0.1);
   testInput_->setVisible(false);
   addWidget(testInput_);
 
+  programsList_ = new WTextBox();
+  programsList_->setDimensions(0.7, 0.5, 0.3, 0.4);
+  addWidget(programsList_);
+
   visible_ = true;
+}
+
+void APDisplay::clearClick()
+{
+  myAP_->clearQueue();
+}
+
+void APDisplay::stopClick()
+{
+  myAP_->stopProg();
 }
 
 void APDisplay::leftRefClick()
@@ -143,9 +188,24 @@ void APDisplay::retroGradeClick()
   myAP_->getShip()->setAutopilotTo(Autopilot::RetroGrade);
 }
 
-void APDisplay::matchSpeed()
+void APDisplay::matchSpeedClick()
 {
   myAP_->getShip()->setAutopilotTo(Autopilot::EqSpeed);
+}
+
+void APDisplay::orbitClick()
+{
+  myAP_->getShip()->setAutopilotTo(Autopilot::Orbit);
+}
+
+void APDisplay::rotateToClick()
+{
+  myAP_->getShip()->setAutopilotTo(Autopilot::RotateTo);
+}
+
+void APDisplay::rotateFromClick()
+{
+  myAP_->getShip()->setAutopilotTo(Autopilot::RotateFrom);
 }
 
 void APDisplay::render()
@@ -162,7 +222,7 @@ void APDisplay::updateData()
     refText_->setText(myRef->getName());
   }
 
-  progNameText_->setText(myAP_->getShip()->getCurrProgName());
+  progNameText_->setText(myAP_->getProgName(myAP_->getCurrProg()));
 
   statusText_->setText(myAP_->getProgInfo());
 
@@ -180,5 +240,12 @@ void APDisplay::updateData()
   }
   if (myAP_->getShip()->isUndocking()) {
     landedDockedText_->setText("Undocking...");
+  }
+
+  programsList_->reset();
+  vector<CString> progs = myAP_->getPrograms();
+  for (auto itr = progs.begin(); itr != progs.end(); ++itr) {
+    CString progName = *itr;
+    programsList_->addLine(progName);
   }
 }

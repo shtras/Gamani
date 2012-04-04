@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Station.h"
 #include "Renderer.h"
+#include "Gamani.h"
 
 Station::Station()
 {
@@ -33,6 +34,11 @@ void Station::render()
   const Model* model = getModel();
   if (model) {
     glScalef(radius_*GLOBAL_MULT, radius_*GLOBAL_MULT, radius_*GLOBAL_MULT);
+    if (Gamani::getInstance().drawBoundBoxes()) {
+      glDisable(GL_LIGHTING);
+      glutWireSphere(1, 10, 10);
+      glEnable(GL_LIGHTING);
+    }
     model->draw();
   } else {
     glutSolidCone(radius_*GLOBAL_MULT/4.0f, radius_*GLOBAL_MULT, 10, 5);

@@ -11,10 +11,10 @@ Autopilot::Autopilot(Ship* ship):ship_(ship),ref_(NULL),lastError_("No errors")
 
 Autopilot::~Autopilot()
 {
-  clearQueue();
+  stopProg();
 }
 
-void Autopilot::clearQueue()
+void Autopilot::stopProg()
 {
   GC();
   while (programs_.size() > 0) {
@@ -26,10 +26,25 @@ void Autopilot::clearQueue()
   assert (garbage_.size() == 0);
 }
 
+void Autopilot::clearQueue()
+{
+  while (queue_.size() > 0) {
+    APProgram* prog = queue_.back();
+    delete prog;
+    queue_.pop_back();
+  }
+  assert (queue_.size() == 0);
+}
+
 void Autopilot::step()
 {
   if (programs_.size() == 0) {
-    return;
+    if (queue_.size() == 0) {
+      return;
+    }
+    APProgram* nextProg = queue_.front();
+    queue_.pop_front();
+    programs_.push_back(nextProg);
   }
   {
     //list<APProgram*>::iterator itr = programs_.begin();
@@ -65,6 +80,7 @@ void Autopilot::addProgram(APProgram* prog)
 void Autopilot::addImmediateProgram(APProgram* prog)
 {
   programs_.push_front(prog);
+  prog->setImmediate();
 }
 
 void Autopilot::endCurrProg()
@@ -91,4 +107,58 @@ CString Autopilot::getProgInfo()
     return "Idle";
   }
   return programs_.front()->getInfo();
+}
+
+CString Autopilot::getProgName(ProgID id)
+{
+  //  enum ProgID {NoProgram, KillRot, Rotate, Launch, Approach, Accelerate, Stop, EqSpeed, ProGrade, RetroGrade, Orbit, RotateTo, RotateFrom, PerprndOrbit, UnKnown};
+
+  switch (id) {
+  case NoProgram:
+    return "No Program";
+  case KillRot:
+    return "Kill rotation";
+  case Rotate:
+    return "Rotation";
+  case Launch:
+    return "Launch";
+  case Approach:
+    return "Approach";
+  case Accelerate:
+    return "Accelerate";
+  case Stop:
+    return "Stop";
+  case EqSpeed:
+    return "Match speed";
+  case ProGrade:
+    return "Pro Grade";
+  case RetroGrade:
+    return "Retro Grade";
+  case Orbit:
+    return "Stab orbit";
+  case RotateTo:
+    return "Rotate to";
+  case RotateFrom:
+    return "Rotate from";
+  case PerpendOrbit:
+    return "Perp orbit";
+  default:
+    return "UnKnown";
+  }
+}
+
+void Autopilot::enqueue(APProgram* prog)
+{
+  queue_.push_back(prog);
+}
+
+vector<CString> Autopilot::getPrograms()
+{
+  vector<CString> res;
+  auto itr = queue_.begin();
+  for (; itr != queue_.end(); ++itr) {
+    APProgram* progItr = *itr;
+    res.push_back(getProgName(progItr->getID()));
+  }
+  return res;
 }

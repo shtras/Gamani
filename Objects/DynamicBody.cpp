@@ -108,6 +108,7 @@ void DynamicBody::renderRelativeOrbits()
 void DynamicBody::render()
 {
   AstralBody::render();
+
   if (!Gamani::getInstance().getTracers()) {
     return;
   }

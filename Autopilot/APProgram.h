@@ -13,12 +13,14 @@ public:
   Autopilot::ProgID getID() {return id_;}
   virtual CString getInfo() {return "Executing";}
   virtual void init() = 0;
+  void setImmediate() {immediate_ = true;}
 protected:
   void endProgram();
   Ship* getShip();
   Autopilot* autopilot_;
   Autopilot::ProgID id_;
   bool init_;
+  bool immediate_;
 };
 
 class KillRotProg: public APProgram
@@ -127,4 +129,50 @@ public:
   virtual void step();
   virtual void init();
 private:
+};
+
+class OrbitProg: public APProgram
+{
+public:
+  OrbitProg(Autopilot* autopilot);
+  virtual ~OrbitProg() {}
+  virtual void step();
+  virtual void init();
+  virtual CString getInfo();
+private:
+  double dp_;
+  double da_;
+  double targetDa_;
+  bool targetDAFound_;
+};
+
+class RotateToProg: public APProgram
+{
+public:
+  RotateToProg(Autopilot* autopilot);
+  virtual ~RotateToProg() {}
+  virtual void step();
+  virtual void init();
+private:
+};
+
+class RotateFromProg: public APProgram
+{
+public:
+  RotateFromProg(Autopilot* autopilot);
+  virtual ~RotateFromProg() {}
+  virtual void step();
+  virtual void init();
+private:
+};
+
+class PrependicularizeSpeedProg: public APProgram
+{
+public:
+  PrependicularizeSpeedProg::PrependicularizeSpeedProg(Autopilot* autopilot);
+  PrependicularizeSpeedProg::~PrependicularizeSpeedProg() {}
+  virtual void step();
+  virtual void init();
+private:
+  double dot_;
 };

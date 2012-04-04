@@ -142,6 +142,11 @@ void Ship::render()
   if (model) {
     glPushMatrix();
     glScalef(radius_*GLOBAL_MULT, radius_*GLOBAL_MULT, radius_*GLOBAL_MULT);
+    if (Gamani::getInstance().drawBoundBoxes()) {
+      glDisable(GL_LIGHTING);
+      glutWireSphere(1, 10, 10);
+      glEnable(GL_LIGHTING);
+    }
     model->draw();
     glPopMatrix();
   } else {
@@ -343,28 +348,40 @@ void Ship::steerRight(double fraction/* = 1.0*/)
 
 void Ship::setAutopilotTo(Autopilot::ProgID prog)
 {
-  autopilot_->clearQueue();
+  //autopilot_->clearQueue();
   switch (prog) {
   case Autopilot::KillRot:
-    autopilot_->addProgram(new KillRotProg(autopilot_));
+    autopilot_->enqueue(new KillRotProg(autopilot_));
     break;
   case Autopilot::Launch:
-    autopilot_->addProgram(new LaunchProg(autopilot_));
+    autopilot_->enqueue(new LaunchProg(autopilot_));
     break;
   case Autopilot::Rotate:
-    autopilot_->addProgram(new RotateProg(autopilot_, yaw_ + 180.0));
+    autopilot_->enqueue(new RotateProg(autopilot_, yaw_ + 180.0));
     break;
   case Autopilot::Approach:
-    autopilot_->addProgram(new ApproachProg(autopilot_));
+    autopilot_->enqueue(new ApproachProg(autopilot_));
     break;
   case Autopilot::ProGrade:
-    autopilot_->addProgram(new ProGradeProg(autopilot_));
+    autopilot_->enqueue(new ProGradeProg(autopilot_));
     break;
   case Autopilot::RetroGrade:
-    autopilot_->addProgram(new RetroGradeProg(autopilot_));
+    autopilot_->enqueue(new RetroGradeProg(autopilot_));
     break;
   case Autopilot::EqSpeed:
-    autopilot_->addProgram(new EqSpeedProg(autopilot_));
+    autopilot_->enqueue(new EqSpeedProg(autopilot_));
+    break;
+  case Autopilot::Orbit:
+    autopilot_->enqueue(new OrbitProg(autopilot_));
+    break;
+  case Autopilot::RotateTo:
+    autopilot_->enqueue(new RotateToProg(autopilot_));
+    break;
+  case Autopilot::RotateFrom:
+    autopilot_->enqueue(new RotateFromProg(autopilot_));
+    break;
+  case Autopilot::PerpendOrbit:
+    autopilot_->enqueue(new PrependicularizeSpeedProg(autopilot_));
     break;
   default:
     assert(0);
@@ -606,31 +623,6 @@ void Ship::setHUD(HUD* hud)
   delete hud_;
   hud_ = hud;
   hud->assignTo(this);
-}
-
-CString Ship::getCurrProgName()
-{
-  Autopilot::ProgID id = autopilot_->getCurrProg();
-  switch (id) {
-  case Autopilot::NoProgram:
-    return "No Program";
-  case Autopilot::KillRot:
-    return "Kill rotation";
-  case Autopilot::Rotate:
-    return "Rotation";
-  case Autopilot::Launch:
-    return "Launch";
-  case Autopilot::Approach:
-    return "Approach";
-  case Autopilot::Accelerate:
-    return "Accelerate";
-  case Autopilot::Stop:
-    return "Stop";
-  case Autopilot::EqSpeed:
-    return "Match speed";
-  default:
-    return "UnKnown";
-  }
 }
 
 bool Ship::isLaunching()

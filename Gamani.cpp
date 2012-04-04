@@ -75,7 +75,7 @@ void toggleVSync()
 
 Gamani::Gamani():world_(new World()), paused_(true), speed_(1), calcStepLength_(0.05), dtModifier_(50),auxAxes_(false),lmDown_(false),rmDown_(false),
   lmDrag_(false), rmDrag_(false), tracers_(false), auxPrint_(true), interface_(true), names_(false),skybox1_(false),relativeOrbits_(false),
-  rotateCameraWithObject_(false),shiftPressed_(false),drawingMode_(GL_TRIANGLES),shader_(-1)
+  rotateCameraWithObject_(false),shiftPressed_(false),drawingMode_(GL_TRIANGLES),shader_(-1),drawBoundBoxes_(false)
 {
   nonContKeys_.insert('M');
   nonContKeys_.insert('V');
@@ -337,7 +337,11 @@ void Gamani::handlePressedKey(int key)
   case 'M':
     //Renderer::getInstance().getCamera().toggleGlobalView();
     //void Ship::scrollGravityRef()
-    relativeOrbits_ = !relativeOrbits_;
+    if (shiftPressed_) {
+      drawBoundBoxes_ = !drawBoundBoxes_;
+    } else {
+      relativeOrbits_ = !relativeOrbits_;
+    }
     break;
   case 'P':
     pause();

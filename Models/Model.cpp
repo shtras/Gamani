@@ -40,6 +40,30 @@ void Model::draw() const
   }
   glPopMatrix();
   glDisable(GL_TEXTURE_2D);
+
+  if (Gamani::getInstance().drawBoundBoxes()) {
+    glPushMatrix();
+    //glTranslatef(coord_[0], coord_[1], coord_[2]);
+
+    glDisable(GL_LIGHTING);
+    glColor3f(0.5,0.95,0.4);
+    glBegin(GL_LINE_LOOP);
+    glVertex3f(-1, -1, -1);
+    glVertex3f( 1, -1, -1);
+    glVertex3f( 1,  1, -1);
+    glVertex3f(-1,  1, -1);
+    glEnd();
+
+    glBegin(GL_LINE_LOOP);
+    glVertex3f(-1, -1, 1);
+    glVertex3f( 1, -1, 1);
+    glVertex3f( 1,  1, 1);
+    glVertex3f(-1,  1, 1);
+    glEnd();
+    glEnable(GL_LIGHTING);
+    glPopMatrix();
+
+  }
   //glEnable(GL_LIGHTING);
 }
 

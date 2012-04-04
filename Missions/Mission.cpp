@@ -113,7 +113,7 @@ bool Task::checkApproachCompleted()
 {
   Ship* ship = MissionManager::getInstance().getShip();
   Vector3 dir = ship->getCoord() - target_->getCoord();
-  double dist = dir.getLength();
+  double dist = dir.getLength() - target_->getRadius();
   if (dist <= targetDist_) {
     return true;
   }

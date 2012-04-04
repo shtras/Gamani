@@ -38,11 +38,12 @@ public:
   void switchDrawingMode();
   bool isPressed(int key);
   GLuint getShader() {return shader_;}
+  bool drawBoundBoxes() {return drawBoundBoxes_;}
 private:
   void testInit();
   void layoutTest();
   void handlePressedKey(int key);
-public:
+//public:
   void handlePressedKeys();
 private:
   Gamani();
@@ -81,5 +82,6 @@ private:
 
   GLenum drawingMode_;
   GLuint shader_;
+  bool drawBoundBoxes_;
 };
 
