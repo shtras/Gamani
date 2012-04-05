@@ -436,6 +436,7 @@ void World::interactionStep()
 
     if (itr->getType() == Renderable::ShipType) {
       Ship* ship = static_cast<Ship*>(itr);
+      ship->updateEngines();
       ship->autopilotStep();
     }
 
@@ -460,7 +461,7 @@ void World::interactionStep()
     }
     if (itr->getType() == Renderable::ShipType) {
       Ship* ship = static_cast<Ship*>(itr);
-      ship->updateEngines();
+      //ship->updateEngines();
     }
   }
 

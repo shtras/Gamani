@@ -142,6 +142,16 @@ Star {
       Color = (1,1,1);
       Name = Ganymede;
       RotationPeriod = 618153.375744;
+	  
+	  Station {
+        Coord = (760003.75, 1070.4, 0);
+        Velocity = (10880, -14700, 0);
+        Radius = 0.001;
+        Name = GanymedeExplorer;
+        Model = res/station.3ds;
+        DockingPort = (0.65, 0.03, 0.1);
+        PortAngle = 270;
+      }
     }
 
     //Callisto

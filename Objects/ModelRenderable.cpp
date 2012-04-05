@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "ModelRenderable.h"
 #include "Wrapper3DS.h"
+#include "ModelDB.h"
 
 ModelRenderable::ModelRenderable():model_(NULL)
 {
@@ -9,18 +10,17 @@ ModelRenderable::ModelRenderable():model_(NULL)
 
 ModelRenderable::~ModelRenderable()
 {
-  delete model_;
+  //delete model_;
 }
 
 void ModelRenderable::loadModelFromFile(CString fileName)
 {
-  model_ = Wrapper3DS::getInstance().Load(fileName);
+  model_ = ModelDB::getInstance().getModel(fileName);
   if (!model_) {
     Logger::getInstance().log(ERROR_LOG_NAME, CString("Model not loaded: ") + fileName);
     return;
   }
   //model_->normalize();
-  model_->initVBOs();
 }
 
 void ModelRenderable::initModel(CString fileName)

@@ -230,6 +230,7 @@
     <ClCompile Include="Missions\MissionManager.cpp" />
     <ClCompile Include="Models\GLTexture.cpp" />
     <ClCompile Include="Models\Model.cpp" />
+    <ClCompile Include="Models\ModelDB.cpp" />
     <ClCompile Include="Models\SphereVBO.cpp" />
     <ClCompile Include="Models\Wrapper3DS.cpp" />
     <ClCompile Include="Objects\AstralBody.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="Missions\MissionManager.h" />
     <ClInclude Include="Models\GLTexture.h" />
     <ClInclude Include="Models\Model.h" />
+    <ClInclude Include="Models\ModelDB.h" />
     <ClInclude Include="Models\SphereVBO.h" />
     <ClInclude Include="Models\Wrapper3DS.h" />
     <ClInclude Include="Objects\AstralBody.h" />

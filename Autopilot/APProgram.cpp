@@ -345,7 +345,7 @@ void EqSpeedProg::step()
   if (delta > 2) {
     getShip()->accelerate();
   } else {
-    getShip()->accelerate(0.1);
+    getShip()->accelerate(0.2);
   }
 
   if (delta > lastDelta_) {

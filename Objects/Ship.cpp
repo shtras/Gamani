@@ -49,7 +49,7 @@ Ship::~Ship()
   delete autopilot_;
 }
 
-void Ship::engageEngine(Engine engine, float power/* = 10*/)
+void Ship::engageEngine(Engine engine, float power/* = 1.0*/)
 {
   engineStates_[engine] = power;
 }

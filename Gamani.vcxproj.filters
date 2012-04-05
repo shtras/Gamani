@@ -200,6 +200,9 @@
     <ClCompile Include="Models\SphereVBO.cpp">
       <Filter>Source Files\Models</Filter>
     </ClCompile>
+    <ClCompile Include="Models\ModelDB.cpp">
+      <Filter>Source Files\Models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Autopilot\APProgram.h">
@@ -350,6 +353,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\SphereVBO.h">
+      <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\ModelDB.h">
       <Filter>Header Files\Models</Filter>
     </ClInclude>
   </ItemGroup>
