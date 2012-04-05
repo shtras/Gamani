@@ -281,6 +281,9 @@ void World::interactGravity(Renderable* from, Renderable* to)
 
   Vector3 newVel = bodyTo->getVelocity() + dir*(G*massFrom*speedReduce/(1e6*dir.getLength()*distSquare));
   bodyTo->setVelocity(newVel);
+  //if (1 || (bodyFrom->getName() == "Moon" && bodyTo->getName() == "Shipyard")) {
+  //  cout << bodyFrom->getName() << " --> " << bodyTo->getName() << endl;
+  //}
   //} 
   //if (!body1->isStatic()) {
   //  Vector3 velocity = body1->getVelocity();
@@ -472,6 +475,7 @@ void World::interactionStep()
   //    interactGravity(itr, innerItr);
   //  }
   //}
+  //cout << "#######################" << endl;
 }
 
 void World::gravityWithinLevelInteraction(AstralBody* head, vector<AstralBody*>& level)
@@ -494,12 +498,17 @@ void World::gravitySubLevelsInteraction(AstralBody* head, vector<AstralBody*>& l
   }
   for (uint32_t i=0; i<SZ; ++i) {
     AstralBody* itr = level[i];
-    gravityWithinLevelInteraction(itr, level);
+    if (mutual) {
+      gravityWithinLevelInteraction(itr, level);
+    }
     interactGravity(head, itr);
     if (mutual) {
       interactGravity(itr, head);
     }
     gravitySubLevelsInteraction(head, itr->getSatellites(), false);
-    gravitySubLevelsInteraction(itr, itr->getSatellites(), true);
+    if (mutual) {
+      gravitySubLevelsInteraction(itr, itr->getSatellites(), true);
+    }
+    int a = 0;
   }
 }

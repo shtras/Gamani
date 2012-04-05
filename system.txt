@@ -57,6 +57,16 @@ Star {
       Color = (1,1,1);
       Name = Moon;
       RotationPeriod = 2360584.6848;
+	  
+	  Station {
+        Coord = (149596.9, -374.399, 0);
+        Velocity = (-1022, -28533, 0);
+        Radius = 0.001;
+        Name = MoonOrbiter;
+        Model = res/station.3ds;
+        DockingPort = (0.65, 0.03, 0.1);
+        PortAngle = 270;
+	  }
 	}
   }
 
@@ -177,8 +187,8 @@ Star {
   }
   
   Ship {
-    Coord = (149590, 0.0002, 0);
-    Velocity = (0, -36033, 0);
+    Coord = (149596.89, -374.399, 0);
+    Velocity = (-1022, -28533, 0);
     Radius = 0.00005;
     Name = Hawkeye;
     Model = res/ss2.3ds;

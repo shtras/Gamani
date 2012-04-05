@@ -599,8 +599,8 @@ Vector3 Ship::getLandedCoords()
 {
   assert(landedOn_ && landed_);
   Vector3 res = landedOn_->getCoord();
-  double dx = landedOn_->getRadius() * sin(yaw_*3.14159265/180.0);
-  double dy = -landedOn_->getRadius() * cos(yaw_*3.14159265/180.0);
+  double dx = (landedOn_->getRadius() + radius_) * sin(yaw_*3.14159265/180.0);
+  double dy = -(landedOn_->getRadius() + radius_) * cos(yaw_*3.14159265/180.0);
   res[0] += dx;
   res[1] += dy;
   return res;

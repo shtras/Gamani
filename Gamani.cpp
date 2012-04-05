@@ -663,6 +663,7 @@ void Gamani::layoutTest()
 
 void Gamani::testInit()
 {
+  Logger::getInstance().log(INFO_LOG_NAME, "DDNS version");
   SystemParser parser;
   StarSystem* parsedSystem = parser.parseSystem("system.txt", &layoutManager_);
   if (!parsedSystem) {

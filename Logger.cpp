@@ -27,6 +27,7 @@ void Logger::log(CString logName, CString message)
 {
   time_t seconds = time(NULL);
   char* timeStr = ctime(&seconds);
+  timeStr[strlen(timeStr)-1] = 0;
   ofstream* myStream = NULL;
   if (logs_.count(logName) == 0) {
     myStream = new ofstream();

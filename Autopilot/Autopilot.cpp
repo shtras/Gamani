@@ -90,7 +90,7 @@ void Autopilot::endCurrProg()
   APProgram* prog = programs_.front();
   programs_.pop_front();
   garbage_.push_front(prog);
-  if (programs_.size() == 0) {
+  if (programs_.size() == 0 && queue_.size() == 0) {
     Gamani::getInstance().setSpeed1x();
   }
 }
