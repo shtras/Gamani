@@ -2,12 +2,12 @@
 
 #define GLOBAL_MULT (0.0001)
 
-Vector3 getRealCoordinates(Vector3 coord);
+Vector3 getRealCoordinates(const Vector3& coord);
 
 class Renderable
 {
 public:
-  enum RenderableType {UnKnownType, AstralType, DynamicType, PlanetType, StarType, ShipType, StationType};
+  enum RenderableType {UnKnownType, AstralType, DynamicType, PlanetType, StarType, ShipType, StationType, ParticleType};
 
   Renderable();
   virtual ~Renderable();

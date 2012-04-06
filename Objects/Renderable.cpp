@@ -3,7 +3,7 @@
 #include "Renderer.h"
 
 
-Vector3 getRealCoordinates(Vector3 coord)
+Vector3 getRealCoordinates(const Vector3& coord)
 {
   const double* cameraPos = Renderer::getInstance().getCamera().getPosition();
   const double zoom = Renderer::getInstance().getCamera().getZoom();

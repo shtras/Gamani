@@ -30,9 +30,11 @@ private:
   void updatePosition(Renderable* obj);
   bool checkCollision(AstralBody* body1, AstralBody* body2);
   void interactCollision(Renderable* obj1, Renderable* obj2);
+  void checkInAtmosphere(Ship* ship, Planet* planet);
   void scrollFollowedObject(int delta = 1);
   void gravityWithinLevelInteraction(AstralBody* head, vector<AstralBody*>& level);
   void gravitySubLevelsInteraction(AstralBody* head, vector<AstralBody*>& level, bool mutual);
+  void atmosphereInterraction(Ship* ship);
   vector<AstralBody*>* objects_;
   vector<AstralBody*> freeObjects_;
   Ship* controlledShip_;

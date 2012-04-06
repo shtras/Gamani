@@ -176,13 +176,14 @@ int LoadBitmap22(const char *filename)
 }
 
 
-Renderer::Renderer():init_(false),hInstance_(NULL),camera_(new Camera()), renderList_(NULL),customViewPort_(false)
+Renderer::Renderer():init_(false),hInstance_(NULL),camera_(new Camera()), renderList_(NULL),customViewPort_(false),particleManager_(new ParticleManager())
 {
 }
 
 Renderer::~Renderer()
 {
   delete camera_;
+  delete particleManager_;
   delete skyBox_;
 }
 
@@ -490,9 +491,13 @@ bool Renderer::rankEnoughToRender(Renderable* object)
   double camDirAlpha = camera.getHeading();
   double camDirPhi = camera.getPitch();
   double camZoom = camera.getZoom();
-  double ralpha = camDirAlpha * 3.14159265 / 180.0;
-  double rphi = camDirPhi * 3.14159265 / 180.0;
-  Vector3 camDir(sin(ralpha), cos(ralpha), sin(rphi));
+  double ralpha = DegToRad(camDirAlpha);
+  double rphi = DegToRad(camDirPhi);
+  double cx = sin(ralpha)*cos(rphi);
+  double cy = cos(ralpha)*cos(rphi);
+  double cz = sin(rphi);
+
+  Vector3 camDir(cx, cy, cz);
   camDir *= 10/camZoom;
   camPos -= camDir;
   camPos *= 1/GLOBAL_MULT;
@@ -545,8 +550,13 @@ void Renderer::render()
       }
     }
   }
+  particleManager_->draw();
   camera_->test();
+}
 
+void Renderer::updateParticles()
+{
+  particleManager_->updateLifetime();
 }
 
 void Renderer::renderEnd()
@@ -606,10 +616,13 @@ void Renderer::checkAndDrawAtmosphere()
   double camDirPhi = camera.getPitch();
   double zoom = camera.getZoom();
 
-  double ralpha = camDirAlpha * 3.14159265 / 180.0;
-  double rphi = camDirPhi * 3.14159265 / 180.0;
+  double ralpha = DegToRad(camDirAlpha);
+  double rphi = DegToRad(camDirPhi);
+  double cx = sin(ralpha)*cos(rphi);
+  double cy = cos(ralpha)*cos(rphi);
+  double cz = sin(rphi);
 
-  Vector3 camDir(sin(ralpha), cos(ralpha), sin(rphi));
+  Vector3 camDir(cx, cy, cz);
   camDir *= 10/zoom;
 
   camPos -= camDir;

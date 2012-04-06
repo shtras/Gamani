@@ -47,6 +47,7 @@ protected:
   WText* apoText_;
   WText* periText_;
   WText* tText_;
+  WText* atmText_;
   WButton* modeButton_;
   WButton* refButton_;
   WButton* autoRefButton_;

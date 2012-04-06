@@ -59,6 +59,10 @@ void NavDisplay::init()
   tText_->setDimensions(0.05, 0.6, 1, 1);
   addWidget(tText_);
 
+  atmText_ = new WText();
+  atmText_->setDimensions(0.05, 0.55, 1, 1);
+  addWidget(atmText_);
+
   modeButton_ = new WButton();
   modeButton_->setDimensions(0.41, 0.01, 0.19, 0.07);
   modeButton_->sigClick.connect(this, &NavDisplay::modeButtonClick);
@@ -293,6 +297,12 @@ void NavDisplay::updateData()
 
   sprintf(sprStr, "T: %d", (int)t_);
   tText_->setText(sprStr);
+
+  CString atmText = "Not in atmosphere";
+  if (ship_->getInAtmosphere()) {
+    atmText = CString("Atmosphere: ") + ship_->getInAtmosphere()->getName();
+  }
+  atmText_->setText(atmText);
 }
 
 void NavDisplay::drawSyncOrbit(Ship* ship, DynamicBody* ref)

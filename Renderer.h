@@ -4,6 +4,7 @@
 #include "SkyBox.h"
 #include "Planet.h"
 #include "Renderable.h"
+#include "ParticleManager.h"
 
 using namespace std;
 
@@ -30,11 +31,10 @@ public:
   CString formatDistance (double dist, int len = 4);
   CString formatVelocity (double vel, int len = 4);
   void resize (int width, int height);
+  void updateParticles();
+  void addParticle(Vector3& coord, Vector3& vel, uint32_t lifeTime, double size) {particleManager_->addParticle(coord, vel, lifeTime, size);}
+  ParticleManager* getParticleManager() {return particleManager_;}
 private:
-  class TextToWrite
-  {
-
-  };
   Renderer();
   ~Renderer();
 
@@ -48,6 +48,7 @@ private:
   bool rankEnoughToRender(Renderable* object);
 
   Camera* camera_;
+  ParticleManager* particleManager_;
   bool init_;
   HWND hWnd_;
   HINSTANCE* hInstance_;

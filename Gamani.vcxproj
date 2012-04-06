@@ -231,6 +231,7 @@
     <ClCompile Include="Models\GLTexture.cpp" />
     <ClCompile Include="Models\Model.cpp" />
     <ClCompile Include="Models\ModelDB.cpp" />
+    <ClCompile Include="Models\ParticleManager.cpp" />
     <ClCompile Include="Models\SphereVBO.cpp" />
     <ClCompile Include="Models\Wrapper3DS.cpp" />
     <ClCompile Include="Objects\AstralBody.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="Models\GLTexture.h" />
     <ClInclude Include="Models\Model.h" />
     <ClInclude Include="Models\ModelDB.h" />
+    <ClInclude Include="Models\ParticleManager.h" />
     <ClInclude Include="Models\SphereVBO.h" />
     <ClInclude Include="Models\Wrapper3DS.h" />
     <ClInclude Include="Objects\AstralBody.h" />

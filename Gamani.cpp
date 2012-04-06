@@ -430,17 +430,25 @@ void Gamani::handlePressedKey(int key)
     //switchDrawingMode();
     {
       Ship* ship[6];
-      ship[0] = static_cast<Ship*>(world_->getObject("Galactica"));
-      ship[1] = static_cast<Ship*>(world_->getObject("Hawkeye"));
-      ship[2] = static_cast<Ship*>(world_->getObject("Ranger"));
-      ship[3] = static_cast<Ship*>(world_->getObject("Avenger"));
-      ship[4] = static_cast<Ship*>(world_->getObject("Lightning"));
-      ship[5] = static_cast<Ship*>(world_->getObject("Thunderbolt"));
-      static int shipNum = 0;
-      world_->switchControlledShip(ship[shipNum++]);
+      ship[0] = static_cast<Ship*>(world_->getObject("Hawkeye"));
+      ship[1] = static_cast<Ship*>(world_->getObject("Ranger"));
+      ship[2] = static_cast<Ship*>(world_->getObject("Avenger"));
+      ship[3] = static_cast<Ship*>(world_->getObject("Lightning"));
+      ship[4] = static_cast<Ship*>(world_->getObject("Thunderbolt"));
+      ship[5] = static_cast<Ship*>(world_->getObject("Galactica"));
+      static int shipNum = -1;
+      if (shiftPressed_) {
+        --shipNum;
+      } else {
+        ++shipNum;
+      }
       if (shipNum > 5) {
         shipNum = 0;
       }
+      if (shipNum < 0) {
+        shipNum = 5;
+      }
+      world_->switchControlledShip(ship[shipNum]);
     //  setShaders("Shaders/TexItems.vert", "Shaders/TexItems.frag", &shader_);
     //  aaa = false;
     //} else {

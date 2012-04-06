@@ -4,6 +4,7 @@
 #include "Autopilot.h"
 #include "Dockable.h"
 #include "Station.h"
+#include "Planet.h"
 
 class HUD;
 
@@ -65,6 +66,8 @@ public:
   void drawEngines();
   Station* getDockedTo() {return dockedTo_;}
   HUD* getHUD() {return hud_;}
+  void setInAtmosphere(Planet* planet) {inAtmosphereOf_ = planet;}
+  Planet* getInAtmosphere() {return inAtmosphereOf_;}
 public:
   //void testNavCom();
   //void testNavCom1();
@@ -95,5 +98,6 @@ public:
   float engineStates_[6];
 
   bool initializeAsPlayerControlled_;
+  Planet* inAtmosphereOf_;
 };
 

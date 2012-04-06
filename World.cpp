@@ -7,6 +7,7 @@
 #include "Autopilot.h"
 #include "MissionManager.h"
 #include "HUD.h"
+#include <math.h>
 
 #define OMP_NUM_THREADS 2
 
@@ -272,6 +273,7 @@ void World::interactGravity(Renderable* from, Renderable* to)
   //Vector3 velocity = bodyTo->getVelocity() * (speedReduce);
   //velocity *= 1000.0; //m/s
   Vector3 dir = coordFrom - coordTo;
+  //double dist = dir.getLength();
   //dir.normalize();
   //f = m*a; a=f/m; a=dv
   //double dVelocity = force/(massTo*1e6);
@@ -279,7 +281,7 @@ void World::interactGravity(Renderable* from, Renderable* to)
   //velocity += dir*(dVelocity / dir.getLength());
   //bodyTo->setVelocity(velocity * (1/speedReduce)/**(1.0/1000.0f)*/);
 
-  Vector3 newVel = bodyTo->getVelocity() + dir*(G*massFrom*speedReduce/(1e6*dir.getLength()*distSquare));
+  Vector3 newVel = bodyTo->getVelocity() + dir*(G*massFrom*speedReduce/(1e6*sqrt(distSquare)*distSquare));
   bodyTo->setVelocity(newVel);
   //if (1 || (bodyFrom->getName() == "Moon" && bodyTo->getName() == "Shipyard")) {
   //  cout << bodyFrom->getName() << " --> " << bodyTo->getName() << endl;
@@ -335,6 +337,19 @@ void World::scrollFollowedObject(int delta/* = 1*/)
   }
 }
 
+void World::checkInAtmosphere(Ship* ship, Planet* planet)
+{
+  if (!planet->hasAtmosphere()) {
+    return;
+  }
+  double distFrom = (planet->getCoord() - ship->getCoord()).getLength();
+  if (distFrom < planet->getAtmRadius()) {
+    ship->setInAtmosphere(planet);
+  } else if (ship->getInAtmosphere() == planet) {
+    ship->setInAtmosphere(NULL);
+  }
+}
+
 void World::interactCollision(Renderable* obj1, Renderable* obj2)
 {
   if (obj1->isStatic() && obj2->isStatic()) {
@@ -342,6 +357,11 @@ void World::interactCollision(Renderable* obj1, Renderable* obj2)
   }
   AstralBody* body1 = static_cast<AstralBody*>(obj1);
   AstralBody* body2 = static_cast<AstralBody*>(obj2);
+  if (body1->getType() == Renderable::ShipType && body2->getType() == Renderable::PlanetType) {
+    Ship* ship = static_cast<Ship*>(body1);
+    Planet* planet = static_cast<Planet*>(body2);
+    checkInAtmosphere(ship, planet);
+  }
   if (!checkCollision(body1, body2)) {
     return;
   }
@@ -420,6 +440,45 @@ void World::addFreeObject(AstralBody* object)
   objects_->push_back(object);
 }
 
+void World::atmosphereInterraction(Ship* ship)
+{
+  if (ship->isLanded()) {
+    return;
+  }
+  Planet* planet = ship->getInAtmosphere();
+  double dist = (planet->getCoord() - ship->getCoord()).getLength();
+  double depth = planet->getAtmRadius() - dist;
+  double density = depth / (planet->getAtmRadius() - planet->getRadius());
+
+  double atmSpeed = planet->getRotationAngleSpeed(); //degrees per second;
+  //atmSpeed *= Gamani::getInstance().getSpeedReduce(); //Degrees per tick;
+  atmSpeed = DegToRad(atmSpeed);
+  atmSpeed = sin(atmSpeed);
+  atmSpeed *= dist; // km*1e3 / tick
+  atmSpeed = atmSpeed * 1e6;
+  Vector3 rotDir = ship->getCoord() - planet->getCoord();
+  rotDir.normalize();
+  double temp = rotDir[0];
+  rotDir[0] = rotDir[1];
+  rotDir[1] = -temp;
+
+  density *= density;
+  Vector3 vel = ship->getVelocity() - planet->getVelocity() - rotDir*atmSpeed;
+  Vector3 velToAtm = vel;
+  double velVal = velToAtm.getLength();
+  double kmh = velVal / 1000.0 * 3600.0;
+  double velFactor = (kmh > 10000) ? (velVal - 10000.0*1000.0/3600.0)*0.01:0;
+  //cout << kmh << "km/h ";
+  double a = velFactor * density * Gamani::getInstance().getSpeedReduce();
+  if (a > 0) {
+    Renderer::getInstance().addParticle(ship->getCoord(), planet->getVelocity() + rotDir*atmSpeed + velToAtm*0.85, a*5*50, ship->getRadius()*1.1);
+  }
+  //cout << a << " " << Renderer::getInstance().formatVelocity(atmSpeed) << endl;
+  vel -= vel.getNormalized() * a;
+  vel += planet->getVelocity() + rotDir*atmSpeed;
+  ship->setVelocity(vel);
+}
+
 void World::interactionStep()
 {
   const list<Star*>& stars = currentSystem_->getStars();
@@ -438,6 +497,9 @@ void World::interactionStep()
       Ship* ship = static_cast<Ship*>(itr);
       ship->updateEngines();
       ship->autopilotStep();
+      if (ship->getInAtmosphere()) {
+        atmosphereInterraction(ship);
+      }
     }
 
     itr->rotationStep();
@@ -464,6 +526,8 @@ void World::interactionStep()
       //ship->updateEngines();
     }
   }
+
+  Renderer::getInstance().updateParticles();
 
   //for (uint32_t i=0; i<freeObjects_.size(); ++i) {
   //  AstralBody* itr = freeObjects_[i];

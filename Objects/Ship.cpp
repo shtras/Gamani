@@ -41,6 +41,7 @@ Ship::Ship():autopilot_(NULL)
   for (int i=0; i<6; ++i) {
     engineStates_[i] = 0;
   }
+  inAtmosphereOf_ = NULL;
 }
 
 Ship::~Ship()

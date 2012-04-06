@@ -203,6 +203,9 @@
     <ClCompile Include="Models\ModelDB.cpp">
       <Filter>Source Files\Models</Filter>
     </ClCompile>
+    <ClCompile Include="Models\ParticleManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Autopilot\APProgram.h">
@@ -357,6 +360,9 @@
     </ClInclude>
     <ClInclude Include="Models\ModelDB.h">
       <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\ParticleManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

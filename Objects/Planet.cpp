@@ -309,7 +309,7 @@ void Planet::render()
       glBindTexture ( GL_TEXTURE_2D, texture1_);
       glMatrixMode(GL_MODELVIEW);
       glPushMatrix();
-      glScalef(radius_*GLOBAL_MULT*1.01, radius_*GLOBAL_MULT*1.01, radius_*GLOBAL_MULT*1.01);
+      glScalef((radius_ + 0.01)*GLOBAL_MULT, (radius_ + 0.01)*GLOBAL_MULT*1.01, (radius_ + 0.01)*GLOBAL_MULT*1.01);
       SphereVBO::getInstance().draw(1, 0);
       glPopMatrix();
       glDisable ( GL_TEXTURE_2D );
