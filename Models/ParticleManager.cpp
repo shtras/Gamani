@@ -104,7 +104,7 @@ void ParticleManager::sortParticles()
 //////////////////////////////////////////////////////////////////////////
 
 Particle::Particle(Vector3& coord, Vector3& vel, uint32_t lifeTime, double size):
-currLife_(lifeTime), coord_(coord), vel_(vel),size_(size),lifeTime_(lifeTime)
+currLife_(lifeTime), coord_(coord), vel_(vel),size_(size),lifeTime_(lifeTime),rot_(0)
 {
   type_ = Renderable::ParticleType;
 }
@@ -116,6 +116,10 @@ Particle::~Particle()
 
 bool Particle::updateLifeTime()
 {
+  rot_ += 0.5 - rand() / (double)RAND_MAX;
+  if (rot_ > 360) {
+    rot_ = 0;
+  }
   coord_ *= 1.0e6;
   coord_ += vel_ * Gamani::getInstance().getSpeedReduce();
   coord_ *= 1.0/1.0e6;
@@ -130,8 +134,11 @@ void Particle::render()
   Renderer::getInstance().getCamera().applyZoom();
   //glTranslatef(coord_[0]*GLOBAL_MULT, coord_[1]*GLOBAL_MULT, coord_[2]*GLOBAL_MULT);
   Vector3 coord = getRealCoordinates(coord_);
+  glRotatef(rot_, 0, 1, 0);
+
   glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0/*coord[2]*GLOBAL_MULT*/);
   glDisable(GL_LIGHTING);
+
 
   const Vector3& camPos = Renderer::getInstance().getParticleManager()->getCamPos();
   Vector3 realCamPos = getRealCoordinates(camPos);

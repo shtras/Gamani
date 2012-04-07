@@ -471,7 +471,7 @@ void World::atmosphereInterraction(Ship* ship)
   //cout << kmh << "km/h ";
   double a = velFactor * density * Gamani::getInstance().getSpeedReduce();
   if (a > 0) {
-    Renderer::getInstance().addParticle(ship->getCoord(), planet->getVelocity() + rotDir*atmSpeed + velToAtm*0.85, a*5*50, ship->getRadius()*1.1);
+    Renderer::getInstance().addParticle(ship->getCoord(), planet->getVelocity() + rotDir*atmSpeed + velToAtm*0.85, a*5*50, ship->getRadius()*1.1*a*4.0);
   }
   //cout << a << " " << Renderer::getInstance().formatVelocity(atmSpeed) << endl;
   vel -= vel.getNormalized() * a;

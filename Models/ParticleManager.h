@@ -42,4 +42,5 @@ private:
   Vector3 coord_;
   Vector3 vel_;
   double size_;
+  double rot_;
 };

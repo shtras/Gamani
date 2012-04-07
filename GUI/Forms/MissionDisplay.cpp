@@ -84,7 +84,7 @@ void MissionDisplay::addButtons(int missionID)
     WButton* lastButton = missionButtons_.back();
     lastHeight = lastButton->getTop();
   }
-  newButton->setDimensions(0.02, lastHeight - 0.15, 0.48, 0.1);
+  newButton->setDimensions(0.02, lastHeight - 0.15, 0.28, 0.1);
   newButton->setLabel(mission->getDescription());
   newButton->setParam((void*)missionID);
   newButton->sigClickParam.connect(this, &MissionDisplay::expandMission);
@@ -121,14 +121,14 @@ void MissionDisplay::expandMission(void* param)
   for (auto itr = tasks.begin(); itr != tasks.end(); ++itr) {
     Task* task = *itr;
     WText* taskText = new WText();
-    taskText->setDimensions(0.52, height, 0.48, 0.1);
+    taskText->setDimensions(0.32, height, 0.68, 0.1);
     CString descr = task->getDescription();
     if (task->isCompleted()) {
       descr = descr.append(" V");
     }
     taskText->setText(descr);
     addWidget(taskText);
-    height -= 0.15;
+    height -= 0.1;
     tasks_.push_back(taskText);
   }
   displayedMissionID_ = missionID;
