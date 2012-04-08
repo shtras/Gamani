@@ -116,13 +116,16 @@ Particle::~Particle()
 
 bool Particle::updateLifeTime()
 {
-  rot_ += 0.5 - rand() / (double)RAND_MAX;
-  if (rot_ > 360) {
-    rot_ = 0;
-  }
+  double r1 = 0.5 - rand() / (double)RAND_MAX;
+  double r2 = 0.5 - rand() / (double)RAND_MAX;
+  double r3 = 0.5 - rand() / (double)RAND_MAX;
+
   coord_ *= 1.0e6;
   coord_ += vel_ * Gamani::getInstance().getSpeedReduce();
   coord_ *= 1.0/1.0e6;
+
+  coord_ += Vector3(r1, r2, r3)*size_ * 0.3;
+
   --currLife_;
   return currLife_ > 0;
 }
@@ -136,7 +139,7 @@ void Particle::render()
   Vector3 coord = getRealCoordinates(coord_);
   glRotatef(rot_, 0, 1, 0);
 
-  glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0/*coord[2]*GLOBAL_MULT*/);
+  glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, coord[2]*GLOBAL_MULT);
   glDisable(GL_LIGHTING);
 
 
@@ -158,7 +161,7 @@ void Particle::render()
   //glVertex3f(realCamPos[0]*GLOBAL_MULT, realCamPos[1]*GLOBAL_MULT, realCamPos[2]*GLOBAL_MULT);
   //glVertex3f(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, coord[2]*GLOBAL_MULT);
   //glEnd();
-  glColor4f(0.2, 0.2, 0.2, currLife_ / (double)lifeTime_);
+  glColor4f(0.1, 0.1, 0.1, currLife_ / (double)lifeTime_);
   //glEnable(GL_TEXTURE_2D);
   //glBindTexture(GL_TEXTURE_2D, Renderer::getInstance().particleManager_->getSmokeTex());
 

@@ -264,7 +264,7 @@ void World::interactGravity(Renderable* from, Renderable* to)
   //double massTo = bodyTo->getMass()/* * 1e6*/; //kg
   //G*m*m/r^2
   double G = 6.6725e-11;
-  double distSquare = (coordFrom[0]-coordTo[0])*(coordFrom[0]-coordTo[0])+(coordFrom[1]-coordTo[1])*(coordFrom[1]-coordTo[1]);
+  double distSquare = (coordFrom[0]-coordTo[0])*(coordFrom[0]-coordTo[0])+(coordFrom[1]-coordTo[1])*(coordFrom[1]-coordTo[1])+(coordFrom[2]-coordTo[2])*(coordFrom[2]-coordTo[2]);
   //distSquare *= 1e12; //meters^2
   double speedReduce = Gamani::getInstance().getSpeedReduce();
   //double force = G*massFrom*massTo * speedReduce * speedReduce; //kg^2/m^2*M*m^2/kg^2 = N
@@ -504,7 +504,7 @@ void World::interactionStep()
 
     itr->rotationStep();
     updatePosition(itr);
-    if (itr->getType() != Renderable::ShipType && itr->getType() != Renderable::StationType) {
+    if (itr->getType() != Renderable::ShipType && itr->getType() != Renderable::StationType && itr->getType() != Renderable::SatelliteType) {
       for (uint32_t j=0; j<fSZ; ++j) {
         AstralBody* freeItr = freeObjects_[j];
         interactGravity(itr, freeItr);

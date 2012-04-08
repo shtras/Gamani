@@ -7,6 +7,7 @@
 #include "Station.h"
 #include "HUD.h"
 #include "StationDisplay.h"
+#include "Satellite.h"
 
 
 SystemParser::SystemParser(void):lineReturned_(false),controlledShip_(NULL)
@@ -308,6 +309,12 @@ bool SystemParser::parseSectionInfo(StarSystem* system, Section* section, Astral
     layoutManager_->addLayout(stationDisplay);
     upperLayer->addSatellite(currBody);
     (static_cast<Station*>(currBody))->setDisplay(stationDisplay);
+  } else if (name == "satellite") {
+    currBody = new Satellite();
+    if (!fillAstralInfo(currBody, section)) {
+      return false;
+    }
+    upperLayer->addSatellite(currBody);
   } else if (name == "ship") {
     currBody = new Ship();
     if (!fillAstralInfo(currBody, section)) {

@@ -68,6 +68,38 @@ Star {
         PortAngle = 270;
 	  }
 	}
+	
+	Satellite {
+	  Coord = (149607.6, 0, 0);
+	  Velocity = (0, -37003, 0);
+	  Radius = 0.00005;
+	  Name = sat01;
+	  Model = res/Globalstar.3ds;
+    }
+	
+	Satellite {
+	  Coord = (149592.4, 0, 0);
+	  Velocity = (0, -22563, 0);
+	  Radius = 0.00005;
+	  Name = sat02;
+	  Model = res/Globalstar.3ds;
+    }
+	
+	Satellite {
+	  Coord = (149600, 7.6, 0);
+	  Velocity = (0, -29783, -7220);
+	  Radius = 0.00005;
+	  Name = sat03;
+	  Model = res/Globalstar.3ds;
+    }
+	
+	Satellite {
+	  Coord = (149600, -7.6, 0);
+	  Velocity = (0, -29783, 7220);
+	  Radius = 0.00005;
+	  Name = sat04;
+	  Model = res/Globalstar.3ds;
+    }
   }
 
   //Mars

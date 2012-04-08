@@ -7,7 +7,7 @@ Vector3 getRealCoordinates(const Vector3& coord);
 class Renderable
 {
 public:
-  enum RenderableType {UnKnownType, AstralType, DynamicType, PlanetType, StarType, ShipType, StationType, ParticleType};
+  enum RenderableType {UnKnownType, AstralType, DynamicType, PlanetType, StarType, ShipType, StationType, SatelliteType, ParticleType};
 
   Renderable();
   virtual ~Renderable();

@@ -160,7 +160,8 @@ void Camera::position()
   //glTranslatef(0, 0, -0.01);
 
   glRotatef(-180, 1, 0, 0);
-  glTranslatef(0, -position_[2], 0);
+  //assert(fabs (position_[2] - 10) < 0.000001);
+  glTranslatef(0, -/*position_[2]*/10, 0);
   glRotatef(-pitch_, 1, 0, 0);
   //glTranslatef(0, position_[2], 0);
   glRotatef(180, 1, 0, 0);
@@ -186,6 +187,7 @@ void Camera::position(Vector3 pos)
 {
   position_[0] = -pos[0]*GLOBAL_MULT;
   position_[1] = -pos[1]*GLOBAL_MULT;
+  position_[2] = -pos[2]*GLOBAL_MULT;
 }
 
 void Camera::position(AstralBody* body)
@@ -193,6 +195,7 @@ void Camera::position(AstralBody* body)
   Vector3 newPos = body->getCoord();
   position_[0] = -newPos[0] * GLOBAL_MULT;
   position_[1] = -newPos[1] * GLOBAL_MULT;
+  position_[2] = -newPos[2] * GLOBAL_MULT;
   zoom_ = 1/ (body->getRadius() * GLOBAL_MULT);
 }
 

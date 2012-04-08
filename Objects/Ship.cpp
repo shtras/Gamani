@@ -133,7 +133,7 @@ void Ship::render()
 
   //glTranslatef(coord_[0]*GLOBAL_MULT, coord_[1]*GLOBAL_MULT, coord_[2]*GLOBAL_MULT);
   Vector3 coord = getRealCoordinates(coord_);
-  glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0/*coord[2]*GLOBAL_MULT*/);
+  glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, coord[2]*GLOBAL_MULT);
 
   glRotatef(-90, 1, 0, 0);
   glRotatef(180-yaw_, 0, 1, 0);

@@ -46,11 +46,11 @@ void DynamicBody::renderAbsoluteOrbits()
     Vector3 cp = *itr;
     Vector3 coord;
     coord = getRealCoordinates(cp);
-    glVertex3f(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0);
+    glVertex3f(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, coord[2]*GLOBAL_MULT);
   }
   Vector3 coord = getRealCoordinates(coord_);
   glColor4f(color[0],color[1],color[2],i/(double)SZ);
-  glVertex3f(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0);
+  glVertex3f(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, coord[2]*GLOBAL_MULT);
   glEnd();
   glLineWidth(1.0f);
   glEnable(GL_LIGHTING);
@@ -92,13 +92,13 @@ void DynamicBody::renderRelativeOrbits()
     Vector3 cp = *itr;
     Vector3 coord;
     coord = cp - refCoord;
-    glVertex3f(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0);
+    glVertex3f(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, coord[2]*GLOBAL_MULT);
   }
   assert (itrRef == pointsAround.end());
   Vector3 coord;
   coord = coord_ - Gamani::getInstance().getWorld()->getFollowedObject()->getCoord();
   glColor4f(color[0],color[1],color[2],i/(double)SZ);
-  glVertex3f(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0);
+  glVertex3f(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, coord[2]*GLOBAL_MULT);
   glEnd();
   glLineWidth(1.0f);
   glEnable(GL_LIGHTING);

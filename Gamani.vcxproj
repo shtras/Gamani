@@ -240,6 +240,7 @@
     <ClCompile Include="Objects\ModelRenderable.cpp" />
     <ClCompile Include="Objects\Planet.cpp" />
     <ClCompile Include="Objects\Renderable.cpp" />
+    <ClCompile Include="Objects\Satellite.cpp" />
     <ClCompile Include="Objects\Ship.cpp" />
     <ClCompile Include="Objects\Star.cpp" />
     <ClCompile Include="Objects\StarSystem.cpp" />
@@ -297,6 +298,7 @@
     <ClInclude Include="Objects\ModelRenderable.h" />
     <ClInclude Include="Objects\Planet.h" />
     <ClInclude Include="Objects\Renderable.h" />
+    <ClInclude Include="Objects\Satellite.h" />
     <ClInclude Include="Objects\Ship.h" />
     <ClInclude Include="Objects\Star.h" />
     <ClInclude Include="Objects\StarSystem.h" />

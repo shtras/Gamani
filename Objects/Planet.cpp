@@ -247,7 +247,7 @@ void Planet::render()
   glColor3f(1,1,1);
     
 
-  glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, 0/*coord[2]*GLOBAL_MULT*/);
+  glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, coord[2]*GLOBAL_MULT);
 
   glRotatef(180, 1, 0, 0);
    
