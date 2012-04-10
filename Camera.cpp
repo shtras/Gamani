@@ -171,6 +171,39 @@ void Camera::position()
   //glTranslatef(10, 0, 0);
 
   //glTranslatef(position_[0], position_[1], position_[2]/zoom_);
+  calcRealCoords();
+}
+
+void Camera::calcRealCoords()
+{
+  const double* dCamPos = position_;
+  Vector3 camPos = Vector3(-dCamPos[0], -dCamPos[1], -dCamPos[2]);
+  double camDirAlpha = heading_;
+  double camDirPhi = pitch_;
+  if (camDirPhi > 180) {
+    camDirPhi -= 360.0;
+  }
+  if (camDirPhi < -180) {
+    camDirPhi += 360.0;
+  }
+  double camZoom = zoom_;
+  double ralpha = DegToRad(camDirAlpha);
+  double rphi = DegToRad(camDirPhi);
+  double cx = sin(ralpha)*cos(rphi);
+  double cy = cos(ralpha)*cos(rphi);
+  double cz = sin(rphi);
+
+  Vector3 camDir(cx, cy, cz);
+  //   if (camDirPhi > 90 || camDirPhi < -90) {
+  //     double temp = camDir[0];
+  //     camDir[0] = -camDir[1];
+  //     camDir[1] = -temp;
+  //   }
+  camDir.normalize();
+  camDir *= 10/camZoom;
+  camPos -= camDir;
+  camPos *= 1/GLOBAL_MULT;
+  actualCoords_ = camPos;
 }
 
 void Camera::applyZoom()

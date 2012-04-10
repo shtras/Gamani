@@ -43,7 +43,7 @@ private:
   void testInit();
   void layoutTest();
   void handlePressedKey(int key);
-//public:
+public:
   void handlePressedKeys();
 private:
   Gamani();

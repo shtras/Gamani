@@ -263,6 +263,13 @@ bool SystemParser::fillAstralInfo(AstralBody* bodyToFill, Section* section)
         return false;
       }
       dockable->setPortAngle(getDouble(value));
+    } else if (field == "yawpower") {
+      if (bodyToFill->getType() != AstralBody::ShipType) {
+        Logger::getInstance().log(ERROR_LOG_NAME, "Error parsing starsystem file. Can assign yaw power to ships only");
+        return false;
+      }
+      Ship* ship = static_cast<Ship*>(bodyToFill);
+      ship->setYawPower(getDouble(value));
     } else if (field == "playercontrolled") {
       if (bodyToFill->getType() != AstralBody::ShipType) {
         Logger::getInstance().log(ERROR_LOG_NAME, "Error parsing starsystem file. Only ships can have playercontrolled attribute");

@@ -19,6 +19,8 @@ ParticleManager::~ParticleManager()
 void ParticleManager::updateCamPos()
 {
   Camera& camera = Renderer::getInstance().getCamera();
+  camPos_ = camera.getActualCoords();
+  return;
   const double* dCamPos = camera.getPosition();
   Vector3 camPos = Vector3(-dCamPos[0], -dCamPos[1], /*dCamPos[2]*/0);
   double camDirAlpha = camera.getHeading();

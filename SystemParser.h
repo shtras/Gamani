@@ -3,7 +3,7 @@
 #include "Ship.h"
 #include "LayoutManager.h"
 
-#define PARSER_VERSION 1.0
+#define PARSER_VERSION 1.1
 
 class Section;
 

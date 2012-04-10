@@ -486,21 +486,22 @@ void Renderer::textOut(double x, double y, double z, char* format, ...)
 bool Renderer::rankEnoughToRender(Renderable* object)
 {
   Camera& camera = Renderer::getInstance().getCamera();
-  const double* dCamPos = camera.getPosition();
-  Vector3 camPos = Vector3(-dCamPos[0], -dCamPos[1], /*dCamPos[2]*/0);
-  double camDirAlpha = camera.getHeading();
-  double camDirPhi = camera.getPitch();
-  double camZoom = camera.getZoom();
-  double ralpha = DegToRad(camDirAlpha);
-  double rphi = DegToRad(camDirPhi);
-  double cx = sin(ralpha)*cos(rphi);
-  double cy = cos(ralpha)*cos(rphi);
-  double cz = sin(rphi);
+  Vector3 camPos = camera.getActualCoords();
+  //const double* dCamPos = camera.getPosition();
+  //Vector3 camPos = Vector3(-dCamPos[0], -dCamPos[1], /*dCamPos[2]*/0);
+  //double camDirAlpha = camera.getHeading();
+  //double camDirPhi = camera.getPitch();
+  //double camZoom = camera.getZoom();
+  //double ralpha = DegToRad(camDirAlpha);
+  //double rphi = DegToRad(camDirPhi);
+  //double cx = sin(ralpha)*cos(rphi);
+  //double cy = cos(ralpha)*cos(rphi);
+  //double cz = sin(rphi);
 
-  Vector3 camDir(cx, cy, cz);
-  camDir *= 10/camZoom;
-  camPos -= camDir;
-  camPos *= 1/GLOBAL_MULT;
+  //Vector3 camDir(cx, cy, cz);
+  //camDir *= 10/camZoom;
+  //camPos -= camDir;
+  //camPos *= 1/GLOBAL_MULT;
   double camDist = (camPos - object->getCoord()).getLength();
 
   switch (object->getRank()) {
@@ -610,25 +611,26 @@ void Renderer::checkAndDrawAtmosphere()
 {
   //test
   Camera& camera = Renderer::getInstance().getCamera();
-  const double* dCamPos = camera.getPosition();
-  Vector3 camPos = Vector3(-dCamPos[0], -dCamPos[1], /*dCamPos[2]*/0);
-  double camDirAlpha = camera.getHeading();
-  double camDirPhi = camera.getPitch();
-  double zoom = camera.getZoom();
+  //const double* dCamPos = camera.getPosition();
+  //Vector3 camPos = Vector3(-dCamPos[0], -dCamPos[1], /*dCamPos[2]*/0);
+  //double camDirAlpha = camera.getHeading();
+  //double camDirPhi = camera.getPitch();
+  //double zoom = camera.getZoom();
 
-  double ralpha = DegToRad(camDirAlpha);
-  double rphi = DegToRad(camDirPhi);
-  double cx = sin(ralpha)*cos(rphi);
-  double cy = cos(ralpha)*cos(rphi);
-  double cz = sin(rphi);
+  //double ralpha = DegToRad(camDirAlpha);
+  //double rphi = DegToRad(camDirPhi);
+  //double cx = sin(ralpha)*cos(rphi);
+  //double cy = cos(ralpha)*cos(rphi);
+  //double cz = sin(rphi);
 
-  Vector3 camDir(cx, cy, cz);
-  camDir *= 10/zoom;
+  //Vector3 camDir(cx, cy, cz);
+  //camDir *= 10/zoom;
 
-  camPos -= camDir;
+  //camPos -= camDir;
 
-  //dist *= 1/Renderer::getInstance().getCamera().getZoom();
-  camPos *= 1/GLOBAL_MULT;
+  ////dist *= 1/Renderer::getInstance().getCamera().getZoom();
+  //camPos *= 1/GLOBAL_MULT;
+  Vector3 camPos = camera.getActualCoords();
 
   Star* sun = Gamani::getInstance().getWorld()->getCurrentSystem()->getStars().front();
   assert(sun);
@@ -642,6 +644,9 @@ void Renderer::checkAndDrawAtmosphere()
       continue;
     }
     Planet* planet = static_cast<Planet*>(body);
+    if (!planet->hasAtmosphere()) {
+      continue;
+    }
     Vector3 planetCoord = planet->getCoord();
     Vector3 dist = camPos - planetCoord;
     double distance = dist.getLength();

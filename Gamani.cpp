@@ -142,19 +142,6 @@ bool Gamani::mainLoop()
   double accumKeys = 0.0f;
   double dtKeys = 1;
 
-  //double traceT = 0.0f;
-  //double traceDT = 500.0f;
-
-  /************************************************************************/
-  /* Interface test initialization. Temporary code                        */
-  /************************************************************************/
-  //NavDisplay* form = new NavDisplay();
-  //form->init();
-  //layoutManager_.addLayout(form);
-  /************************************************************************/
-  /* End of interface test initialization                                 */
-  /************************************************************************/
-
   seconds_ = 0;
 
   world_->selectShip();
@@ -196,7 +183,6 @@ bool Gamani::mainLoop()
       ++frame;
       lastDelta = delta;
       delta = time - currentTime;
-      //cout << cntToPause << " " << lastDelta << " " << delta << endl;
       if ((delta > lastDelta)) {
         cntToPause++;
         if (cntToPause > 3) {
@@ -212,7 +198,6 @@ bool Gamani::mainLoop()
       currentTime = time;
       accumulator += delta;
       accumKeys += delta;
-//      traceT += delta;
 
       if (speed_ < 1) {
         dt = 1.0/speed_;
@@ -222,12 +207,6 @@ bool Gamani::mainLoop()
 
       dt *= dtModifier_;
 
-//       while (traceT >= traceDT) {
-//         if (!paused_) {
-//           //world_->snapshot();
-//         }
-//         traceT -= traceDT;
-//       }
       while(accumulator >= dt) {
         if (!paused_) {
 #ifdef MULTITHREAD_RUN
@@ -249,13 +228,6 @@ bool Gamani::mainLoop()
         }
         accumulator -= dt;
       }
-      
-      //while (accumKeys >= dt) {
-      //  for (int i=0; i<speed_; ++i) {
-      //    //handlePressedKeys();
-      //  }
-      //  accumKeys -= dt;
-      //}
 
       if (time - timebase > 1000) {
         double fps = frame*1000.0/(time-timebase);
@@ -264,9 +236,6 @@ bool Gamani::mainLoop()
         char cfps[200];
         sprintf(cfps, "0.3.2.%d %s FPS: %.lf %s %lf", BUILD_NUM, BUILDSTR, fps, (paused_)?"Paused":"Running", speed_);
         SetWindowTextA(Renderer::getInstance().getHwnd(), (LPCSTR)(cfps));
-        if (fps < 5) {
-          //paused_ = true;
-        }
       }
 
       Renderer::getInstance().render();
@@ -345,7 +314,6 @@ void Gamani::handlePressedKey(int key)
     break;
   case 'P':
     pause();
-    //paused_ = !paused_;
     break;
   case 'Y':
     if (shiftPressed_) {
@@ -353,7 +321,6 @@ void Gamani::handlePressedKey(int key)
     } else {
       speedUp();
     }
-    //speed_ *= 2;
     break;
   case 'U':
     if (shiftPressed_) {
@@ -361,7 +328,6 @@ void Gamani::handlePressedKey(int key)
     } else {
       speedDown();
     }
-    //speed_ /= 2;
     break;
   case 'X':
     if (shiftPressed_) {
@@ -384,7 +350,6 @@ void Gamani::handlePressedKey(int key)
     }
     break;
   case 'O':
-    //auxAxes_ = !auxAxes_;
     world_->clearTracks();
     break;
   case 0x31:

@@ -49,6 +49,7 @@ public:
   void toggleAutoRef();
   //void scrollGravityRef();
   CString getCurrProgName();
+  void setYawPower(double yawPower) {yawPower_ = yawPower;}
   double getYawPower() const {return yawPower_;}
   double gatMarchPower() {return marchPower_;}
   AstralBody* getLandedOn() const {return landedOn_;}

@@ -212,21 +212,22 @@ void Planet::render()
   //if (!strcmp(name_.c_str(), "Earth")) {
 
   Camera& camera = Renderer::getInstance().getCamera();
-  const double* dCamPos = camera.getPosition();
-  Vector3 camPos = Vector3(-dCamPos[0], -dCamPos[1], /*dCamPos[2]*/0);
-  double camDirAlpha = camera.getHeading();
-  double camDirPhi = camera.getPitch();
-  double camZoom = camera.getZoom();
+  //const double* dCamPos = camera.getPosition();
+  //Vector3 camPos = Vector3(-dCamPos[0], -dCamPos[1], /*dCamPos[2]*/0);
+  //double camDirAlpha = camera.getHeading();
+  //double camDirPhi = camera.getPitch();
+  //double camZoom = camera.getZoom();
 
-  double ralpha = camDirAlpha * 3.14159265 / 180.0;
-  double rphi = camDirPhi * 3.14159265 / 180.0;
+  //double ralpha = camDirAlpha * 3.14159265 / 180.0;
+  //double rphi = camDirPhi * 3.14159265 / 180.0;
 
-  Vector3 camDir(sin(ralpha), cos(ralpha), sin(rphi));
-  camDir *= 10/camZoom;
+  //Vector3 camDir(sin(ralpha), cos(ralpha), sin(rphi));
+  //camDir *= 10/camZoom;
 
-  camPos -= camDir;
+  //camPos -= camDir;
 
-  camPos *= 1/GLOBAL_MULT;
+  //camPos *= 1/GLOBAL_MULT;
+  Vector3 camPos = camera.getActualCoords();
   double camDist = (camPos - coord_).getLength() - getRadius();
 
 

@@ -26,7 +26,9 @@ public:
   double getPitch() const {return pitch_;}
   void setPitch(double pitch) {pitch_ = pitch;}
   void setHeading(double heading) {heading_ = heading;}
+  Vector3 getActualCoords() {return actualCoords_;}
 private:
+  void calcRealCoords();
   double position_[3];
   double aspect_;
   double heading_;
@@ -36,4 +38,5 @@ private:
   bool globalView_;
   int lastX_;
   int lastY_;
+  Vector3 actualCoords_;
 };
