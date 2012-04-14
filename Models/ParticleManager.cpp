@@ -4,7 +4,7 @@
 #include "Renderer.h"
 #include <algorithm>
 
-ParticleManager::ParticleManager():smokeTex_(-1)
+ParticleManager::ParticleManager():smokeTex_(-1),lightTex_(-1)
 {
 }
 
@@ -61,10 +61,22 @@ void ParticleManager::draw()
   if (smokeTex_ == (GLuint)-1) {
     smokeTex_ = LoadBitmap22("Textures/smoketex.bmp");
   }
+  if (lightTex_ == (GLuint)-1) {
+    lightTex_ = LoadBitmap22("Textures/lighttex.bmp");
+  }
   glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, smokeTex_);
   for (auto itr=particles_.begin(); itr != particles_.end(); ++itr) {
     Particle* particle = *itr;
+    switch (particle->getParticleType()) {
+    case SmokeParticle:
+      glBindTexture(GL_TEXTURE_2D, smokeTex_);
+      break;
+    case LightParticle:
+      glBindTexture(GL_TEXTURE_2D, lightTex_);
+      break;
+    default:
+      assert(0);
+    }
     particle->render();
   }
   glDisable(GL_TEXTURE_2D);
@@ -92,9 +104,23 @@ bool ParticleComp(Particle* p1, Particle* p2)
   return (dist1 > dist2);
 }
 
-void ParticleManager::addParticle(Vector3& coord, Vector3& vel, uint32_t lifeTime, double size)
+void ParticleManager::addParticle(ParticleType type, Vector3& coord, Vector3& vel, uint32_t lifeTime, double size)
 {
-  Particle* newPar = new Particle(coord, vel, lifeTime, size);
+  Particle* newPar = NULL;
+  switch (type) {
+  case SmokeParticle:
+    newPar = new BouncingParticle(coord, vel, lifeTime, size);
+    newPar->setParticleType(SmokeParticle);
+    break;
+  case LightParticle:
+    newPar = new DynamicParticle(coord, vel, lifeTime, size);
+    newPar->setParticleType(LightParticle);
+    break;
+  default:
+    assert(0);
+  }
+   
+  assert(newPar);
   particles_.push_back(newPar);
 }
 
@@ -104,11 +130,9 @@ void ParticleManager::sortParticles()
 }
 
 //////////////////////////////////////////////////////////////////////////
-
-Particle::Particle(Vector3& coord, Vector3& vel, uint32_t lifeTime, double size):
-currLife_(lifeTime), coord_(coord), vel_(vel),size_(size),lifeTime_(lifeTime),rot_(0)
+Particle::Particle()
 {
-  type_ = Renderable::ParticleType;
+
 }
 
 Particle::~Particle()
@@ -118,28 +142,38 @@ Particle::~Particle()
 
 bool Particle::updateLifeTime()
 {
-  double r1 = 0.5 - rand() / (double)RAND_MAX;
-  double r2 = 0.5 - rand() / (double)RAND_MAX;
-  double r3 = 0.5 - rand() / (double)RAND_MAX;
-
   coord_ *= 1.0e6;
   coord_ += vel_ * Gamani::getInstance().getSpeedReduce();
   coord_ *= 1.0/1.0e6;
 
-  coord_ += Vector3(r1, r2, r3)*size_ * 0.3;
-
   --currLife_;
   return currLife_ > 0;
 }
+//////////////////////////////////////////////////////////////////////////
 
-void Particle::render()
+DynamicParticle::DynamicParticle(Vector3& coord, Vector3& vel, uint32_t lifeTime, double size)
+{
+  type_ = Renderable::ParticleType;
+  currLife_ = lifeTime;
+  coord_ = coord;
+  vel_ = vel;
+  size_ = size;
+  lifeTime_ = lifeTime;
+}
+
+DynamicParticle::~DynamicParticle()
+{
+
+}
+
+void DynamicParticle::render()
 {
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   Renderer::getInstance().getCamera().applyZoom();
   //glTranslatef(coord_[0]*GLOBAL_MULT, coord_[1]*GLOBAL_MULT, coord_[2]*GLOBAL_MULT);
   Vector3 coord = getRealCoordinates(coord_);
-  glRotatef(rot_, 0, 1, 0);
+
 
   glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, coord[2]*GLOBAL_MULT);
   glDisable(GL_LIGHTING);
@@ -163,7 +197,13 @@ void Particle::render()
   //glVertex3f(realCamPos[0]*GLOBAL_MULT, realCamPos[1]*GLOBAL_MULT, realCamPos[2]*GLOBAL_MULT);
   //glVertex3f(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, coord[2]*GLOBAL_MULT);
   //glEnd();
-  glColor4f(0.1, 0.1, 0.1, currLife_ / (double)lifeTime_);
+  if (particleType_ == ParticleManager::SmokeParticle) {
+    glColor4f(0.1, 0.1, 0.1, currLife_ / (double)lifeTime_);
+  } else if (particleType_ == ParticleManager::LightParticle) {
+    glColor4f(0.6, 0.9, 0.2, currLife_ / (double)lifeTime_);
+  } else {
+    assert(0);
+  }
   //glEnable(GL_TEXTURE_2D);
   //glBindTexture(GL_TEXTURE_2D, Renderer::getInstance().particleManager_->getSmokeTex());
 
@@ -181,4 +221,27 @@ void Particle::render()
   //glDisable(GL_TEXTURE_2D);
 
   glPopMatrix();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+BouncingParticle::BouncingParticle(Vector3& coord, Vector3& vel, uint32_t lifeTime, double size):
+  DynamicParticle(coord, vel, lifeTime, size)
+{
+
+}
+
+BouncingParticle::~BouncingParticle()
+{
+
+}
+
+bool BouncingParticle::updateLifeTime()
+{
+  bool res = Particle::updateLifeTime();
+  double r1 = 0.5 - rand() / (double)RAND_MAX;
+  double r2 = 0.5 - rand() / (double)RAND_MAX;
+  double r3 = 0.5 - rand() / (double)RAND_MAX;
+  coord_ += Vector3(r1, r2, r3)*size_ * 0.3;
+  return res;
 }

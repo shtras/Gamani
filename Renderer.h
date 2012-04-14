@@ -33,7 +33,7 @@ public:
   CString formatTime (double time, int len = 4);
   void resize (int width, int height);
   void updateParticles();
-  void addParticle(Vector3& coord, Vector3& vel, uint32_t lifeTime, double size) {particleManager_->addParticle(coord, vel, lifeTime, size);}
+  void addParticle(ParticleManager::ParticleType type, Vector3& coord, Vector3& vel, uint32_t lifeTime, double size) {particleManager_->addParticle(type, coord, vel, lifeTime, size);}
   ParticleManager* getParticleManager() {return particleManager_;}
 private:
   Renderer();

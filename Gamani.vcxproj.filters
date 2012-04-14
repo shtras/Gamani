@@ -161,9 +161,6 @@
     <ClCompile Include="Autopilot\APProgram.cpp">
       <Filter>Source Files\Autopilot</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\Forms\StationDisplay.cpp">
-      <Filter>Source Files\GUI\Forms</Filter>
-    </ClCompile>
     <ClCompile Include="GUI\Forms\UpperPanel.cpp">
       <Filter>Source Files\GUI\Forms</Filter>
     </ClCompile>
@@ -208,6 +205,12 @@
     </ClCompile>
     <ClCompile Include="Objects\Satellite.cpp">
       <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\Forms\MainMenu.cpp">
+      <Filter>Source Files\GUI\Forms</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\Forms\CommDisplay.cpp">
+      <Filter>Source Files\GUI\Forms</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -260,9 +263,6 @@
       <Filter>Header Files\GUI\Forms</Filter>
     </ClInclude>
     <ClInclude Include="GUI\Forms\NavDisplay.h">
-      <Filter>Header Files\GUI\Forms</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\Forms\StationDisplay.h">
       <Filter>Header Files\GUI\Forms</Filter>
     </ClInclude>
     <ClInclude Include="GUI\Forms\UpperPanel.h">
@@ -369,6 +369,12 @@
     </ClInclude>
     <ClInclude Include="Objects\Satellite.h">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Forms\MainMenu.h">
+      <Filter>Header Files\GUI\Forms</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Forms\CommDisplay.h">
+      <Filter>Header Files\GUI\Forms</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

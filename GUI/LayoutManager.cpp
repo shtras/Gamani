@@ -116,3 +116,13 @@ bool LayoutManager::handleMessage(UINT message,WPARAM wParam,LPARAM lParam)
   }
   return false;
 }
+
+void LayoutManager::reset()
+{
+  set<WLayout*>::iterator itr = layouts_.begin();
+  for (; itr != layouts_.end(); ++itr) {
+    WLayout* layout = *itr;
+    delete layout;
+  }
+  layouts_.clear();
+}

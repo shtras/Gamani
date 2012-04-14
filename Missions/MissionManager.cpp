@@ -90,3 +90,16 @@ void MissionManager::checkCompleted()
     mission->checkCompleted();
   }
 }
+
+void MissionManager::reset()
+{
+  auto itr = missions_.begin();
+  for (; itr != missions_.end(); ++itr) {
+    Mission* mission = *itr;
+    delete mission;
+  }
+  missions_.clear();
+  missionsMap_.clear();
+  //delete display_;
+  display_ = NULL;
+}

@@ -316,7 +316,7 @@ void Planet::render()
       glDisable ( GL_TEXTURE_2D );
       glEnable(GL_LIGHTING);
     } else {
-      if (texture_ == (GLuint)-1) {
+      if (radius_ > 0.1 && texture_ == (GLuint)-1) {
         CString texName = CString("Textures/") + name_ + CString(".bmp");
         texture_ = LoadBitmap11(texName);
       }

@@ -8,6 +8,7 @@ Station::Station()
   mass_ = 1;
   type_ = StationType;
   yaw_ = 0;
+  dockingLightsOn_ = false;
   //rotationSpeed_ = 360 / 9580.0;
 }
 
@@ -47,29 +48,30 @@ void Station::render()
   }
 
 
-  glPushMatrix();
-  glDisable(GL_LIGHTING);
-  glColor3f(0.5, 1, 0.4);
-  glRotatef(90, 1, 0, 0);
-//   glTranslatef(getDockingPort()[0], getDockingPort()[1], getDockingPort()[2]);
-//   glRotatef(getPortAngle(), 0, 0, 1);
-//   glRotatef(-90, 1, 0, 0);
-  for (int i=1; i<10; ++i) {
-    glPushMatrix();
-    glTranslatef(i*2, 0, 0);
-    glRotatef(getPortAngle(), 0, 0, 1);
-    glRotatef(-90, 1, 0, 0);
-    glBegin(GL_LINES);
-    glVertex3f(-0.1, 0, -0.1);
-    glVertex3f(-0.1, 0, 0.1);
-    glVertex3f(0.1, 0, -0.1);
-    glVertex3f(0.1, 0, 0.1);
-    glEnd();
-    //glutWireSphere(0.1, 10, 10);
-    glPopMatrix();
-  }
-  glEnable(GL_LIGHTING);
-  glPopMatrix();
+//  glPushMatrix();
+//  glDisable(GL_LIGHTING);
+//  glColor3f(0.5, 1, 0.4);
+//  glRotatef(90, 1, 0, 0);
+////   glTranslatef(getDockingPort()[0], getDockingPort()[1], getDockingPort()[2]);
+////   glRotatef(getPortAngle(), 0, 0, 1);
+////   glRotatef(-90, 1, 0, 0);
+//
+//  for (int i=1; i<10; ++i) {
+//    glPushMatrix();
+//    glTranslatef(i*2, 0, 0);
+//    glRotatef(getPortAngle(), 0, 0, 1);
+//    glRotatef(-90, 1, 0, 0);
+//    glBegin(GL_LINES);
+//    glVertex3f(-0.1, 0, -0.1);
+//    glVertex3f(-0.1, 0, 0.1);
+//    glVertex3f(0.1, 0, -0.1);
+//    glVertex3f(0.1, 0, 0.1);
+//    glEnd();
+//    //glutWireSphere(0.1, 10, 10);
+//    glPopMatrix();
+//  }
+//  glEnable(GL_LIGHTING);
+//  glPopMatrix();
 
   drawName();
   glPopMatrix();
@@ -79,6 +81,7 @@ void Station::dock(Ship* ship)
 {
   dockedShips_.push_back(ship);
   //display_->setVisible(true);
+  dockingLightsOn_ = false;
 }
 
 void Station::undock(Ship* ship)

@@ -17,6 +17,8 @@ public:
   void namesButtonClick();
   void tracksButtonClick();
   void hideGUIButtonClick();
+  void exitButtonClick();
+  void saveButtonClick();
 private:
   bool minimized_;
   WButton* minimizeButton_;
@@ -26,4 +28,6 @@ private:
   WButton* namesButton_;
   WButton* tracksButton_;
   WButton* hideGUIButton_;
+  WButton* exitButton_;
+  WButton* saveButton_;
 };

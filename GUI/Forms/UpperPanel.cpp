@@ -57,11 +57,29 @@ void UpperPanel::init()
   tracksButton_->sigClick.connect(this, &UpperPanel::tracksButtonClick);
   addWidget(tracksButton_);
 
+  exitButton_ = new WButton();
+  exitButton_->setDimensions(0.2, 0, 0.05, 1);
+  exitButton_->setLabel("Exit");
+  exitButton_->sigClick.connect(this, &UpperPanel::exitButtonClick);
+  addWidget(exitButton_);
+
+  saveButton_ = new WButton();
+  saveButton_->setDimensions(0.25, 0, 0.05, 1);
+  saveButton_->setLabel("Save");
+  saveButton_->sigClick.connect(this, &UpperPanel::saveButtonClick);
+  addWidget(saveButton_);
+
   //hideGUIButton_ = new WButton();
   //hideGUIButton_->setDimensions(0.2, 0, 0.05, 1);
   //hideGUIButton_->setLabel("GUI");
   //hideGUIButton_->sigClick.connect(this, &UpperPanel::hideGUIButtonClick);
   //addWidget(hideGUIButton_);
+}
+
+void UpperPanel::saveButtonClick()
+{
+  //Gamani::getInstance().pause();
+  Gamani::getInstance().saveSystem();
 }
 
 void UpperPanel::render()
@@ -97,6 +115,11 @@ void UpperPanel::tracksButtonClick()
 void UpperPanel::hideGUIButtonClick()
 {
   Gamani::getInstance().toggleGUI();
+}
+
+void UpperPanel::exitButtonClick()
+{
+  Gamani::getInstance().setNextState(Gamani::MenuState);
 }
 
 void UpperPanel::minimizeButtonClick()

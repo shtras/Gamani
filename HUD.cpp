@@ -4,7 +4,7 @@
 #include "Ship.h"
 #include "APDisplay.h"
 
-HUD::HUD():ship_(NULL)
+HUD::HUD():ship_(NULL),commActive_(false)
 {
 }
 
@@ -25,13 +25,13 @@ void HUD::updateData()
     Display* display = *itr;
     display->updateData();
   }
-  if (visible_) {
-    if (ship_->isDocked() && !stationDisp_->isVisible()) {
-      stationDisp_->setVisible(true);
-    } else if (!ship_->isDocked() && stationDisp_->isVisible()) {
-      stationDisp_->setVisible(false);
-    }
-  }
+  //if (visible_) {
+  //  if (ship_->isDocked() && !stationDisp_->isVisible()) {
+  //    stationDisp_->setVisible(true);
+  //  } else if (!ship_->isDocked() && stationDisp_->isVisible()) {
+  //    stationDisp_->setVisible(false);
+  //  }
+  //}
 }
 
 void HUD::assignTo(Ship* ship)
@@ -67,15 +67,25 @@ void HUD::init(Ship* ship)
   displays_.push_back(apDisp);
   AddLayout.emit(apDisp);
 
-  stationDisp_ = new StationDisplay();
-  stationDisp_->init();
-  stationDisp_->setDimensions(0.3, 0.9, 0.4, 0.45);
-  displays_.push_back(stationDisp_);
-  AddLayout.emit(stationDisp_);
+  commDisp_ = new CommDisplay(navDisplay, navDisplay1);
+  commDisp_->init();
+  commDisp_->setDimensions(0.7, 0.9, 0.3, 0.45);
+  displays_.push_back(commDisp_);
+  AddLayout.emit(commDisp_);
 
   //Has to be after all display initializations
   ship->setHUD(this);
   apDisp->setAP(ship->getAP());
+}
+
+void HUD::toggleComm()
+{
+  commActive_ = !commActive_;
+  if (commActive_) {
+    commDisp_->setVisible(true);
+  } else {
+    commDisp_->setVisible(false);
+  }
 }
 
 void HUD::setVisible(bool value)
@@ -86,4 +96,7 @@ void HUD::setVisible(bool value)
     display->setVisible(value);
   }
   visible_ = value;
+  if (!commActive_) {
+    commDisp_->setVisible(false);
+  }
 }

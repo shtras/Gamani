@@ -8,6 +8,7 @@
 #include "MissionManager.h"
 #include "HUD.h"
 #include <math.h>
+#include "ParticleManager.h"
 
 #define OMP_NUM_THREADS 2
 
@@ -198,6 +199,17 @@ void World::updatePosition(Renderable* obj)
 
   assert(!obj->isStatic());
   DynamicBody* dynObj = static_cast<DynamicBody*>(obj);
+
+  if (dynObj->getType() == Renderable::StationType) {
+    Station* station = static_cast<Station*>(dynObj);
+    if (station->getDockingLightsOn()) {
+      double angle = DegToRad(station->getYaw() + station->getPortAngle());
+      Vector3 partCoord = station->getCoord() + Vector3(station->getPortDist()*station->getRadius()*sin(angle), station->getPortDist()*station->getRadius()*cos(angle), 0);
+      Vector3 velDir = Vector3(sin(angle), cos(angle), 0);
+      Vector3 vel = station->getVelocity() + (velDir).getNormalized()*20000;
+      Renderer::getInstance().getParticleManager()->addParticle(ParticleManager::LightParticle, partCoord, vel, 20, station->getRadius()*0.2);
+    }
+  }
   
   if (dynObj->isLanded()) {
     assert(dynObj->getType() == Renderable::ShipType);
@@ -471,7 +483,7 @@ void World::atmosphereInterraction(Ship* ship)
   //cout << kmh << "km/h ";
   double a = velFactor * density * Gamani::getInstance().getSpeedReduce();
   if (a > 0) {
-    Renderer::getInstance().addParticle(ship->getCoord(), planet->getVelocity() + rotDir*atmSpeed + velToAtm*0.85, a*5*50, ship->getRadius()*1.1*a*4.0);
+    Renderer::getInstance().addParticle(ParticleManager::SmokeParticle, ship->getCoord(), planet->getVelocity() + rotDir*atmSpeed + velToAtm*0.85, a*5*50, ship->getRadius()*1.1*a*4.0);
   }
   //cout << a << " " << Renderer::getInstance().formatVelocity(atmSpeed) << endl;
   vel -= vel.getNormalized() * a;

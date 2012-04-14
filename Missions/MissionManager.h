@@ -17,6 +17,7 @@ public:
   void notifyUpdated(int missionID);
 
   void checkCompleted();
+  void reset();
 private:
   MissionManager();
   ~MissionManager();

@@ -219,3 +219,8 @@ void WLayout::setHovered(bool val)
   }
 }
 
+void WLayout::setMinimizible(bool value)
+{
+  minimizeButton_->setVisible(value);
+}
+

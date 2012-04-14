@@ -209,9 +209,10 @@
     <ClCompile Include="Generic\CString.cpp" />
     <ClCompile Include="GUI\Display.cpp" />
     <ClCompile Include="GUI\Forms\APDisplay.cpp" />
+    <ClCompile Include="GUI\Forms\MainMenu.cpp" />
     <ClCompile Include="GUI\Forms\MissionDisplay.cpp" />
     <ClCompile Include="GUI\Forms\NavDisplay.cpp" />
-    <ClCompile Include="GUI\Forms\StationDisplay.cpp" />
+    <ClCompile Include="GUI\Forms\CommDisplay.cpp" />
     <ClCompile Include="GUI\Forms\UpperPanel.cpp" />
     <ClCompile Include="GUI\GUIRenderer.cpp" />
     <ClCompile Include="GUI\LayoutManager.cpp" />
@@ -266,9 +267,10 @@
     <ClInclude Include="Generic\CString.h" />
     <ClInclude Include="GUI\Display.h" />
     <ClInclude Include="GUI\Forms\APDisplay.h" />
+    <ClInclude Include="GUI\Forms\MainMenu.h" />
     <ClInclude Include="GUI\Forms\MissionDisplay.h" />
     <ClInclude Include="GUI\Forms\NavDisplay.h" />
-    <ClInclude Include="GUI\Forms\StationDisplay.h" />
+    <ClInclude Include="GUI\Forms\CommDisplay.h" />
     <ClInclude Include="GUI\Forms\UpperPanel.h" />
     <ClInclude Include="GUI\GUIRenderer.h" />
     <ClInclude Include="GUI\LayoutManager.h" />

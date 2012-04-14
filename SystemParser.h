@@ -3,7 +3,7 @@
 #include "Ship.h"
 #include "LayoutManager.h"
 
-#define PARSER_VERSION 1.3
+#define PARSER_VERSION 1.4
 
 class Section;
 
@@ -15,7 +15,10 @@ public:
   StarSystem* parseSystem(CString fileName, LayoutManager* layoutManager);
   Ship* getPlayerShip() {return controlledShip_;}
   const vector<AstralBody*>& getFreeObjects() const {return freeObjects_;}
+
+  void dumpSystem(CString fileName);
 private:
+  void dumpBody(AstralBody* body);
   bool isComment(CString str);
   CString stripSpaces(CString str);
   bool readInfo();
@@ -32,7 +35,9 @@ private:
   void calcAutoInfo(AstralBody* from, AstralBody* to, double dist, double angle);
   Vector3 parseVector(CString str);
 
-  ifstream file_;
+  ifstream inputFile_;
+  ofstream outputFile_;
+
   char buffer_[1024];
   bool lineReturned_;
   Section* infoSection_;

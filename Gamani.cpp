@@ -17,10 +17,11 @@
 #endif //DEBUG
 #include "Station.h"
 //#include "StationDisplay.h"
-#include "MissionDisplay.h"
 #include "MissionManager.h"
 #include "SystemParser.h"
 #include "SphereVBO.h"
+
+const char* Version = "0.4.0";
 
 //#define MULTITHREAD_RUN
 
@@ -73,9 +74,9 @@ void toggleVSync()
   }
 }
 
-Gamani::Gamani():world_(new World()), paused_(true), speed_(1), calcStepLength_(0.05), dtModifier_(50),auxAxes_(false),lmDown_(false),rmDown_(false),
+Gamani::Gamani():world_(NULL), paused_(true), speed_(1), calcStepLength_(0.05), dtModifier_(50),auxAxes_(false),lmDown_(false),rmDown_(false),
   lmDrag_(false), rmDrag_(false), tracers_(false), auxPrint_(true), interface_(true), names_(false),skybox1_(false),relativeOrbits_(false),
-  rotateCameraWithObject_(false),shiftPressed_(false),drawingMode_(GL_TRIANGLES),shader_(-1),drawBoundBoxes_(false)
+  rotateCameraWithObject_(false),shiftPressed_(false),drawingMode_(GL_TRIANGLES),shader_(-1),drawBoundBoxes_(false), nextState_(MenuState)
 {
   nonContKeys_.insert('M');
   nonContKeys_.insert('V');
@@ -103,6 +104,9 @@ Gamani::Gamani():world_(new World()), paused_(true), speed_(1), calcStepLength_(
   nonContKeys_.insert(0x36);
   nonContKeys_.insert(0x37);
   nonContKeys_.insert(0xdd); //']'
+
+  version_ = CString(Version) + "." + CString(BUILD_NUM) + " " + CString(BUILDSTR);
+  fileToload_ = "system.txt";
 }
 
 
@@ -120,17 +124,195 @@ Gamani& Gamani::getInstance()
 
 bool Gamani::init(HINSTANCE& hIhstance)
 {
-  testInit();
   Renderer& renderer = Renderer::getInstance();
   renderer.init(hIhstance);
-  renderer.changeRenderList(world_->getAllObjects());
   layoutManager_.setRenderer(new GUIRenderer());
+  return true;
+}
+
+void Gamani::resetState()
+{
+  paused_ = true;
+  speed_ = 1;
+  calcStepLength_ = 0.05;
+  dtModifier_ = 50;
+  auxAxes_ = false;
+  lmDown_ = false;
+  rmDown_ = false;
+  lmDrag_ = false;
+  rmDrag_ = false;
+  tracers_ = false;
+  auxPrint_ = true;
+  interface_ = true;
+  names_ = false;
+  skybox1_ = false;
+  relativeOrbits_ = false;
+  rotateCameraWithObject_ = false;
+  shiftPressed_ = false;
+  drawingMode_ = GL_TRIANGLES;
+  shader_ = -1;
+  drawBoundBoxes_ = false;
+  nonContKeys_.insert('M');
+  nonContKeys_.insert('V');
+  nonContKeys_.insert('P');
+  nonContKeys_.insert('Y');
+  nonContKeys_.insert('U');
+  nonContKeys_.insert('N');
+  nonContKeys_.insert('F');
+  nonContKeys_.insert('L');
+  nonContKeys_.insert('X');
+  nonContKeys_.insert('C');
+  nonContKeys_.insert('Z');
+  //nonContKeys_.insert('Q');
+  //nonContKeys_.insert('E');
+  nonContKeys_.insert('O');
+  nonContKeys_.insert('R');
+  nonContKeys_.insert('K');
+  nonContKeys_.insert(0x30);
+  nonContKeys_.insert(0x31);
+  nonContKeys_.insert(0x32);
+  nonContKeys_.insert(0x33);
+  nonContKeys_.insert(0x34);
+  nonContKeys_.insert(0x35);
+  nonContKeys_.insert(0x39);
+  nonContKeys_.insert(0x36);
+  nonContKeys_.insert(0x37);
+  nonContKeys_.insert(0xdd); //']'
+  nonContKeys_.insert('B');
+}
+
+bool Gamani::startMenu()
+{
+  resetState();
+  layoutManager_.reset();
+  world_ = new World();
+
+  Star* sun = new Star();
+  sun->setMass(0.1);
+  sun->setCoord(Vector3(10000, 0, 0));
+
+  StarSystem* system = new StarSystem();
+  system->addStar(sun);
+  sun->setName("Sun");
+  sun->setRadius(695.5);
+
+  Planet* planet = new Planet();
+  planet->setMass(0.1);
+  planet->setCoord(Vector3(0,0,0));
+  planet->setName("Earth");
+  planet->setRadius(6.371);
+  planet->setRotationPeriod(500);
+  sun->addSatellite(planet);
+  world_->setStarSystem(system);
+  world_->switchFollowedObject(planet);
+  Renderer::getInstance().getCamera().position(planet);
+  Renderer::getInstance().getCamera().zoom(500);
+  Renderer::getInstance().getCamera().setPitch(20);
+  Renderer::getInstance().getCamera().setHeading(310);
+
+  Renderer& renderer = Renderer::getInstance();
+  renderer.changeRenderList(world_->getAllObjects());
+
+  mainMenu_ = new MainMenu();
+  mainMenu_->init();
+  mainMenu_->setMinimizible(false);
+  mainMenu_->setDimensions(0.02, 0.9, 0.25, 0.4);
+  layoutManager_.addLayout(mainMenu_);
+
+  return menuLoop();
+}
+
+bool Gamani::endMenu()
+{
+  delete world_;
+  world_ = NULL;
+  return true;
+}
+
+void Gamani::saveSystem()
+{
+  SystemParser parser;
+  parser.dumpSystem("save.txt");
+}
+
+bool Gamani::startGame()
+{
+  resetState();
+  MissionManager::getInstance().reset();
+
+  Renderer::getInstance().getCamera().setPitch(10);
+  Renderer::getInstance().getCamera().setHeading(180);
+
+  layoutManager_.reset();
+  world_ = new World();
+  if (!testInit()) {
+    return false;
+  }
+  Renderer& renderer = Renderer::getInstance();
+  renderer.changeRenderList(world_->getAllObjects());
+  bool res = mainLoop();
+  return res;
+}
+
+bool Gamani::endGame()
+{
+  delete world_;
+  world_ = NULL;
+  return true;
+}
+
+bool Gamani::menuLoop()
+{
+  setVSync(0);
+
+  MSG msg={0};
+  long timebase=GetTickCount();
+  long currentTime = GetTickCount();
+  long time = 0;
+  double delta = 0;
+  double accum = 0;
+  int frame = 0;
+  while(WM_QUIT!=msg.message) {
+    if (PeekMessage(&msg,NULL,0,0,PM_REMOVE)) {
+      TranslateMessage(&msg);
+      DispatchMessage(&msg);
+    } else {
+      Sleep(20);
+      if (nextState_ != MenuState) {
+        return true;
+      }
+      ++frame;
+      time = GetTickCount();
+      delta = time - currentTime;
+      accum += delta;
+      while (accum >= 50) {
+        world_->interactionStep();
+        accum -= 50;
+      }
+      currentTime = time;
+
+      if (time - timebase > 1000) {
+        double fps = frame*1000.0/(time-timebase);
+        timebase = time;
+        frame = 0;
+        char cfps[200];
+        sprintf(cfps, "%s.%d %s FPS: %.lf", Version, BUILD_NUM, BUILDSTR, fps);
+        SetWindowTextA(Renderer::getInstance().getHwnd(), (LPCSTR)(cfps));
+      }
+
+      Renderer::getInstance().render();
+      layoutManager_.render();
+      Renderer::getInstance().renderEnd();
+      checkReleaseError("Main cycle OpenGL error");
+    }
+  }
+  nextState_ = QuitState;
   return true;
 }
 
 bool Gamani::mainLoop()
 {
-  setVSync(0);
+  //setVSync(0);
   int frame = 0;
   long timebase=GetTickCount();
   long currentTime = GetTickCount();
@@ -148,15 +330,16 @@ bool Gamani::mainLoop()
 
   upperPanel_ = new UpperPanel();
   upperPanel_->init();
+  upperPanel_->setMinimizible(false);
   layoutManager_.addLayout(upperPanel_);
 
-  MissionDisplay* missionDisplay = new MissionDisplay();
-  missionDisplay->init();
-  missionDisplay->setDimensions(0, 0.9, 0.3, 0.4);
-  layoutManager_.addLayout(missionDisplay);
+  missionDisplay_ = new MissionDisplay();
+  missionDisplay_->init();
+  missionDisplay_->setDimensions(0, 0.9, 0.3, 0.4);
+  layoutManager_.addLayout(missionDisplay_);
   AstralBody* station = world_->getObject("Shipyard");
   assert (station && station->getType() == Renderable::StationType);
-  MissionManager::getInstance().setDisplay(missionDisplay);
+  MissionManager::getInstance().setDisplay(missionDisplay_);
   MissionManager::getInstance().testInit(static_cast<Station*>(station));
 
   setShaders("Shaders/TexItems.vert", "Shaders/TexItems.frag", &shader_);
@@ -179,6 +362,9 @@ bool Gamani::mainLoop()
       TranslateMessage(&msg);
       DispatchMessage(&msg);
     } else {
+      if (nextState_ != GameState) {
+        return true;
+      }
       time = GetTickCount();
       ++frame;
       lastDelta = delta;
@@ -206,7 +392,9 @@ bool Gamani::mainLoop()
       }
 
       dt *= dtModifier_;
-
+      if (accumulator < dt) {
+        Sleep(5);
+      }
       while(accumulator >= dt) {
         if (!paused_) {
 #ifdef MULTITHREAD_RUN
@@ -234,7 +422,7 @@ bool Gamani::mainLoop()
         timebase = time;
         frame = 0;
         char cfps[200];
-        sprintf(cfps, "0.3.2.%d %s FPS: %.lf %s %lf", BUILD_NUM, BUILDSTR, fps, (paused_)?"Paused":"Running", speed_);
+        sprintf(cfps, "%s.%d %s FPS: %.lf %s %lf", Version, BUILD_NUM, BUILDSTR, fps, (paused_)?"Paused":"Running", speed_);
         SetWindowTextA(Renderer::getInstance().getHwnd(), (LPCSTR)(cfps));
       }
 
@@ -250,6 +438,7 @@ bool Gamani::mainLoop()
   StopThread = true;
   CloseHandle(ghWriteEvent);
 #endif
+  nextState_ = QuitState;
   return true;
 
 }
@@ -423,6 +612,10 @@ void Gamani::handlePressedKey(int key)
     //}
     break;
     }
+  case 'B':
+    nextState_ = MenuState;
+
+    break;
   default:
     world_->handlePressedKey(key);
     break;
@@ -585,8 +778,22 @@ void Gamani::pause()
 
 bool Gamani::run()
 {
-  bool res = mainLoop();
-  return res;
+  while (1) {
+    switch (nextState_) {
+    case MenuState:
+      startMenu();
+      endMenu();
+      break;
+    case GameState:
+      startGame();
+      endGame();
+      break;
+    case QuitState:
+      return true;
+    }
+  }
+  //bool res = startMenu();
+  return true;
 }
 
 int body(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, LPSTR& lpCmdLine, int& nShowCmd)
@@ -634,13 +841,14 @@ void Gamani::layoutTest()
 
 }
 
-void Gamani::testInit()
+bool Gamani::testInit()
 {
-  Logger::getInstance().log(INFO_LOG_NAME, "DDNS version");
   SystemParser parser;
-  StarSystem* parsedSystem = parser.parseSystem("system.txt", &layoutManager_);
+  StarSystem* parsedSystem = parser.parseSystem(fileToload_, &layoutManager_);
   if (!parsedSystem) {
-    exit(1);
+    nextState_ = MenuState;
+    return false;
+    //exit(1);
   }
   world_->setStarSystem(parsedSystem);
   Ship* playerShip = parser.getPlayerShip();
@@ -649,7 +857,7 @@ void Gamani::testInit()
     world_->addFreeObject(freeObjects[i]);
   }
   world_->switchControlledShip(playerShip);
-  return;
+  return true;
   //Renderer::getInstance().formatDistance(1002342354.234234);
   /*
   Distance 1e6 km = 1e9 m   ;;; 1e6 m = 1e3 km

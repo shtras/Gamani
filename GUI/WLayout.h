@@ -30,6 +30,7 @@ public:
   void setBottom(bool value) {bottom_ = value;}
   bool isHovered() {return hovered_;}
   void setHovered(bool val);
+  void setMinimizible(bool value);
 protected:
   void minimize();
   WButton* minimizeButton_;

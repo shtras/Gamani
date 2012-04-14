@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "APDisplay.h"
 #include "Renderer.h"
+#include "HUD.h"
 
 APDisplay::APDisplay(NavDisplay* left, NavDisplay* right):
   refText_(NULL),fromLeftRefButton_(NULL),fromRightRefButton_(NULL),progNameText_(NULL),statusText_(NULL),landedDockedText_(NULL),
@@ -120,6 +121,12 @@ void APDisplay::init()
   rotateFromButton_->sigClick.connect(this, &APDisplay::rotateFromClick);
   addWidget(rotateFromButton_);
 
+  commButton_ = new WButton();
+  commButton_->setDimensions(0.3, 0, 0.4, 0.05);
+  commButton_->setLabel("Comm");
+  commButton_->sigClick.connect(this, &APDisplay::commButtonClick);
+  addWidget(commButton_);
+
   testInput_ = new WInput();
   testInput_->setDimensions(0.25,0.25,0.5,0.1);
   testInput_->setVisible(false);
@@ -206,6 +213,11 @@ void APDisplay::rotateToClick()
 void APDisplay::rotateFromClick()
 {
   myAP_->getShip()->setAutopilotTo(Autopilot::RotateFrom);
+}
+
+void APDisplay::commButtonClick()
+{
+  myAP_->getShip()->getHUD()->toggleComm();
 }
 
 void APDisplay::render()

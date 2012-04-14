@@ -51,6 +51,9 @@ void Camera::move(double x, double y, double z)
 
 void Camera::zoom(double val)
 {
+  //if (Gamani::getInstance().getNextState() == Gamani::MenuState) {
+  //  return;
+  //}
   if (val > 0) {
     zoom_ += zoom_ * 0.005f * val;
   } else {
@@ -76,6 +79,9 @@ void Camera::toggleGlobalView()
 
 void Camera::rotate(double x, double y, double z)
 {
+  if (Gamani::getInstance().getNextState() == Gamani::MenuState) {
+    return;
+  }
   heading_ -= x;
   if (heading_ > 360) {
     heading_ -= 360;
@@ -108,7 +114,7 @@ void Camera::position()
     testHeading -= Gamani::getInstance().getWorld()->getFollowedObject()->getYaw();
   }
 
-  bool printData = Gamani::getInstance().getAuxPrints();
+  bool printData = Gamani::getInstance().getAuxPrints() && (Gamani::getInstance().getNextState() == Gamani::GameState);
   glColor3f(1,1,1);
   if (printData) {
     Renderer::getInstance().textOut(0 ,0.95,0, "Pitch: %0.2f Heading: %0.2f, Speed: %.3f StepLength: %.3f",
@@ -129,10 +135,16 @@ void Camera::position()
     //  Renderer::getInstance().textOut(-1,0.65,0, "Landed: %d Docked: %s Yaw: %0.2f Program: %s", ship->isLanded(), (ship->isDocked()? "Docked" : (ship->dockedTo_?"Undocking":"No")), 
     //    ship->getYaw(), ship->getCurrProgName());
     //}
+    if (Gamani::getInstance().isPaused()) {
+      Renderer::getInstance().textOut(0, -0.9, 0, "PAUSE");
+    }
   }
 
-  if (Gamani::getInstance().isPaused()) {
-    Renderer::getInstance().textOut(0, -0.9, 0, "PAUSE");
+  if (Gamani::getInstance().getNextState() == Gamani::MenuState) {
+    Renderer::getInstance().textOut(0.7, -0.95, 0, "Gamani %s", Gamani::getInstance().getVersion());
+    pitch_ = 20;
+    heading_ = 310;
+    zoom_ = 6000;
   }
 
   unsigned long long decim = Gamani::getInstance().getSeconds();
@@ -147,7 +159,9 @@ void Camera::position()
   int seconds = decim/100LL;
   decim -= seconds*100LL;
 
-  Renderer::getInstance().textOut(-0.5,0.95,0, "%dY %dD %02d:%02d:%02d.%02ld", years, days, hours, minutes, seconds, decim);
+  if (printData) {
+    Renderer::getInstance().textOut(-0.4,0.95,0, "%dY %dD %02d:%02d:%02d.%02ld", years, days, hours, minutes, seconds, decim);
+  }
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();

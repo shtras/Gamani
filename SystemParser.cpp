@@ -6,8 +6,8 @@
 #include "Dockable.h"
 #include "Station.h"
 #include "HUD.h"
-#include "StationDisplay.h"
 #include "Satellite.h"
+#include "Gamani.h"
 
 
 SystemParser::SystemParser(void):lineReturned_(false),controlledShip_(NULL)
@@ -40,8 +40,8 @@ CString SystemParser::getNextLine()
     CString res = CString(buffer_);
     return stripSpaces(res);
   }
-  while (!file_.eof()) {
-    file_.getline(buffer_, 1024);
+  while (!inputFile_.eof()) {
+    inputFile_.getline(buffer_, 1024);
     CString currString = CString(buffer_);
     currString = stripSpaces(currString);
     if (currString.getSize() == 0) {
@@ -134,7 +134,9 @@ double SystemParser::getDouble(CString str)
   for (int i=0; i<str.getSize(); ++i) {
     char c = str[i];
     int currdigit = 0;
-    if (i == 0 && c == '-') {
+    if (c == '+') {
+      continue;
+    } else if (i == 0 && c == '-') {
       neg = true;
       continue;
     } else if (c == '.') {
@@ -245,6 +247,8 @@ bool SystemParser::fillAstralInfo(AstralBody* bodyToFill, Section* section, Astr
     } else if (field == "angle") {
       autoAngle = getDouble(value);
       autoInfo = true;
+    } else if (field == "yaw") {
+      bodyToFill->setYaw(getDouble(value));
     } else if (field == "name") {
       bodyToFill->setName(value);
     } else if (field == "rotationperiod") {
@@ -407,7 +411,7 @@ bool SystemParser::verifyInfo()
     if (field == CString("version")) {
       double version = getDouble(value);
       if (version != (PARSER_VERSION)) {
-        Logger::getInstance().log(ERROR_LOG_NAME, "Wrong starsystem file version");
+        Logger::getInstance().log(ERROR_LOG_NAME, CString("Wrong starsystem file version: ") + CString(version) + " != " + CString(PARSER_VERSION));
         return false;
       }
     }
@@ -418,13 +422,18 @@ bool SystemParser::verifyInfo()
 StarSystem* SystemParser::parseSystem(CString fileName, LayoutManager* layoutManager)
 {
   layoutManager_ = layoutManager;
-  file_.open(fileName);
+  inputFile_.open(fileName);
+  if (inputFile_.fail()) {
+    Logger::getInstance().log(ERROR_LOG_NAME, CString("Error reading file ") + fileName);
+    inputFile_.clear(ios::failbit);
+    return false;
+  }
   bool res = readInfo();
   if (!res) {
-    file_.close();
+    inputFile_.close();
     return NULL;
   }
-  file_.close();
+  inputFile_.close();
 
   res = verifyInfo();
   if (!res) {
@@ -434,6 +443,87 @@ StarSystem* SystemParser::parseSystem(CString fileName, LayoutManager* layoutMan
   StarSystem* system = parseData();
 
   return system;
+}
+
+void SystemParser::dumpBody(AstralBody* body)
+{
+  switch(body->getType()) {
+  case Renderable::PlanetType:
+    outputFile_ << "Planet {" << endl;
+    break;
+  case Renderable::StarType:
+    outputFile_ << "Star {" << endl;
+    break;
+  case Renderable::ShipType:
+    outputFile_ << "Ship {" << endl;
+    break;
+  case Renderable::StationType:
+    outputFile_ << "Station {" << endl;
+    break;
+  case Renderable::SatelliteType:
+    outputFile_ << "Satellite {" << endl;
+    break;
+  default:
+    assert(0);
+  }
+  outputFile_ << "Name = " << body->getName()  << ";" << endl;
+  outputFile_ << "Coord = (" << body->getCoord()[0] << "," << body->getCoord()[1] << "," << body->getCoord()[2] << ");" << endl;
+  outputFile_ << "Velocity = (" << body->getVelocity()[0] << "," << body->getVelocity()[1] << "," << body->getVelocity()[2] << ");" << endl;
+  outputFile_ << "Mass = " << body->getMass() << ";" << endl;
+  outputFile_ << "Radius = " << body->getRadius() << ";" << endl;
+  outputFile_ << "Yaw = " << body->getYaw() << ";" << endl;
+
+  ModelRenderable* model = dynamic_cast<ModelRenderable*>(body);
+  if (model) {
+    outputFile_ << "Model = " << model->getModelName() << ";" << endl;
+  }
+
+  Dockable* dockable = dynamic_cast<Dockable*>(body);
+  if (dockable) {
+    outputFile_ << "DockingPort = " << dockable->getPortDist() << ";" << endl;
+    outputFile_ << "PortAngle = " << dockable->getPortAngle() << ";" << endl;
+  }
+
+  if (body->getType() == Renderable::PlanetType) {
+    Planet* planet = static_cast<Planet*>(body);
+    outputFile_ << "RotationPeriod = " << 360 / planet->getRotationAngleSpeed() << ";" << endl;
+  }
+
+  if (body->getType() == Renderable::ShipType) {
+    Ship* ship = static_cast<Ship*>(body);
+    if (Gamani::getInstance().getWorld()->getControlledShip() == ship) {
+      outputFile_ << "PlayerControlled = True;" << endl;
+    }
+    outputFile_ << "YawPower = " << ship->getYawPower() << ";" << endl;
+  }
+  
+  vector<AstralBody*>& satellites = body->getSatellites();
+  for (auto itr = satellites.begin(); itr != satellites.end(); ++itr) {
+    dumpBody(*itr);
+  }
+
+  if (body->getType() == Renderable::StarType) {
+    vector<AstralBody*>& freeObjects = Gamani::getInstance().getWorld()->getFreeObjects();
+    for (auto itr = freeObjects.begin(); itr != freeObjects.end(); ++itr) {
+      dumpBody(*itr);
+    }
+  }
+
+  outputFile_ << "}" << endl;
+}
+
+void SystemParser::dumpSystem(CString fileName)
+{
+  StarSystem* system = Gamani::getInstance().getWorld()->getCurrentSystem();
+  outputFile_.open(fileName);
+  outputFile_.precision(15);
+  outputFile_ << "Info {" << endl;
+  outputFile_ << "Version = " << PARSER_VERSION << ";" << endl;
+  outputFile_ << "}" << endl;
+  Star* star = *system->getStars().begin();
+  dumpBody(star);
+
+  outputFile_.close();
 }
 
 
@@ -458,3 +548,4 @@ void Section::addLine(CString line)
 {
   lines_.push_back(line);
 }
+

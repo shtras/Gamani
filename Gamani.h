@@ -2,10 +2,14 @@
 #include "World.h"
 #include "LayoutManager.h"
 #include "UpperPanel.h"
+#include "MissionDisplay.h"
+#include "MainMenu.h"
 
 class Gamani
 {
 public:
+  enum State {MenuState, GameState, QuitState};
+
   static Gamani& getInstance();
   bool init(HINSTANCE& hIhstance);
   bool run();
@@ -39,16 +43,27 @@ public:
   bool isPressed(int key);
   GLuint getShader() {return shader_;}
   bool drawBoundBoxes() {return drawBoundBoxes_;}
+  void setNextState(State nextState) {nextState_ = nextState;}
+  State getNextState() {return nextState_;}
+  const CString& getVersion() {return version_;}
+  void saveSystem();
+  void setFileToLoad(CString fileName) {fileToload_ = fileName;}
 private:
-  void testInit();
+  bool testInit();
   void layoutTest();
   void handlePressedKey(int key);
-public:
+//public:
   void handlePressedKeys();
 private:
   Gamani();
   ~Gamani();
   bool mainLoop();
+  bool menuLoop();
+  bool startMenu();
+  bool endMenu();
+  bool startGame();
+  bool endGame();
+  void resetState();
   set<int> pressedKeys_;
   set<int> nonContKeys_;
   World* world_;
@@ -75,6 +90,8 @@ private:
   bool names_;
 
   UpperPanel* upperPanel_;
+  MissionDisplay* missionDisplay_;
+  MainMenu* mainMenu_;
   bool skybox1_;
   bool relativeOrbits_;
 
@@ -83,5 +100,10 @@ private:
   GLenum drawingMode_;
   GLuint shader_;
   bool drawBoundBoxes_;
+
+  State nextState_;
+  CString version_;
+
+  CString fileToload_;
 };
 

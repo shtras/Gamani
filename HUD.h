@@ -1,5 +1,5 @@
 #pragma once
-#include "StationDisplay.h"
+#include "CommDisplay.h"
 
 class Ship;
 
@@ -15,10 +15,12 @@ public:
   signal1<WLayout*> AddLayout;
   signal1<WLayout*> RemoveLayout;
   void setVisible(bool value);
+  void toggleComm();
 private:
   list<Display*> displays_;
   Ship* ship_;
-  StationDisplay* stationDisp_;
+  CommDisplay* commDisp_;
+  bool commActive_;
   bool visible_;
 };
 

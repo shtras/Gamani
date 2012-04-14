@@ -31,6 +31,7 @@ private:
   void orbitClick();
   void rotateToClick();
   void rotateFromClick();
+  void commButtonClick();
   
   Autopilot* myAP_;
 
@@ -56,6 +57,7 @@ private:
   WButton* orbitButton_;
   WButton* rotateToButton_;
   WButton* rotateFromButton_;
+  WButton* commButton_;
 
   WInput* testInput_;
   WTextBox* programsList_;

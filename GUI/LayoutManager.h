@@ -19,6 +19,8 @@ public:
   bool handleMessage(UINT message,WPARAM wParam,LPARAM lParam);
   bool focusGrabbed() {return focusOn_ != NULL;}
   bool handlePressedKey(int key);
+
+  void reset();
 private:
   bool handleMouseEvent(UINT message, WPARAM wParam, LPARAM lParam);
 
