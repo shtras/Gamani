@@ -2,7 +2,7 @@
 #include "WLayout.h"
 #include "Ship.h"
 
-class Display :public WLayout
+class Display: public WLayout
 {
 public:
   Display();

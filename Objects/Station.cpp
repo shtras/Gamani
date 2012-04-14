@@ -40,11 +40,12 @@ void Station::render()
       glEnable(GL_LIGHTING);
     }
     model->draw();
+    //renderPort();
+
   } else {
     glutSolidCone(radius_*GLOBAL_MULT/4.0f, radius_*GLOBAL_MULT, 10, 5);
   }
 
-  //renderPort();
 
   glPushMatrix();
   glDisable(GL_LIGHTING);
@@ -77,7 +78,7 @@ void Station::render()
 void Station::dock(Ship* ship)
 {
   dockedShips_.push_back(ship);
-  display_->setVisible(true);
+  //display_->setVisible(true);
 }
 
 void Station::undock(Ship* ship)
@@ -87,7 +88,7 @@ void Station::undock(Ship* ship)
     Ship* shipItr = *itr;
     if (shipItr == ship) {
       dockedShips_.erase(itr);
-      display_->setVisible(false);
+      //display_->setVisible(false);
       break;
     }
   }

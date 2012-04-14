@@ -16,7 +16,7 @@
 #include <crtdbg.h>
 #endif //DEBUG
 #include "Station.h"
-#include "StationDisplay.h"
+//#include "StationDisplay.h"
 #include "MissionDisplay.h"
 #include "MissionManager.h"
 #include "SystemParser.h"
@@ -665,223 +665,223 @@ void Gamani::testInit()
   */
 
   //Sun
-  Star* star = new Star();
-  star->setMass(1.98e24);
-  star->setRadius(695.5);
-  star->setName("Sun");
+  //Star* star = new Star();
+  //star->setMass(1.98e24);
+  //star->setRadius(695.5);
+  //star->setName("Sun");
 
-  Planet* planet = NULL;
-  Planet* satellite = NULL;
+  //Planet* planet = NULL;
+  //Planet* satellite = NULL;
 
-  //Mercury
-  planet = new Planet();
-  planet->setCoord(Vector3(57900, 0, 0));
-  planet->setRadius(2.4397);
-  planet->setMass(3.3e17);
-  planet->setVelocity(Vector3(0, -47870, 0));
-  planet->setName("Mercury");
-  planet->setRotationPeriod(1407.5*3600);
-  star->addSatellite(planet);
-  
-  //Venus
-  planet = new Planet();
-  planet->setCoord(Vector3(108000, 0, 0));
-  planet->setRadius(6.0518);
-  planet->setMass(4.8685e18);
-  planet->setVelocity(Vector3(0, -35000, 0));
-  planet->setName("Venus");
-  planet->setRotationPeriod(243.0185*24*3600);
-  star->addSatellite(planet);
+  ////Mercury
+  //planet = new Planet();
+  //planet->setCoord(Vector3(57900, 0, 0));
+  //planet->setRadius(2.4397);
+  //planet->setMass(3.3e17);
+  //planet->setVelocity(Vector3(0, -47870, 0));
+  //planet->setName("Mercury");
+  //planet->setRotationPeriod(1407.5*3600);
+  //star->addSatellite(planet);
+  //
+  ////Venus
+  //planet = new Planet();
+  //planet->setCoord(Vector3(108000, 0, 0));
+  //planet->setRadius(6.0518);
+  //planet->setMass(4.8685e18);
+  //planet->setVelocity(Vector3(0, -35000, 0));
+  //planet->setName("Venus");
+  //planet->setRotationPeriod(243.0185*24*3600);
+  //star->addSatellite(planet);
 
-  //Earth
-  planet = new Planet();
-  planet->setCoord(Vector3(149600, 0, 0));
-  planet->setRadius(6.371);
-  planet->setMass(6.0e18);
-  planet->setVelocity(Vector3(0, -29783, 0));
-  planet->setName("Earth");
-  planet->setRotationPeriod(24*3600);
-  planet->setAtmRadius(6.971);
-  planet->setAtmColor(Vector3(0, 0.75, 1));
-  star->addSatellite(planet);
+  ////Earth
+  //planet = new Planet();
+  //planet->setCoord(Vector3(149600, 0, 0));
+  //planet->setRadius(6.371);
+  //planet->setMass(6.0e18);
+  //planet->setVelocity(Vector3(0, -29783, 0));
+  //planet->setName("Earth");
+  //planet->setRotationPeriod(24*3600);
+  //planet->setAtmRadius(6.971);
+  //planet->setAtmColor(Vector3(0, 0.75, 1));
+  //star->addSatellite(planet);
 
-  Ship* ship = new Ship();
-  ship->setCoord(Vector3(149600 - /*6.371*/10, 0, 0));
-  //ship->setCoord(Vector3(149599, -374.399, 0));
-  ship->setVelocity(Vector3(0/*-6250*/, -29783-6250, 0));
-  //ship->setVelocity(Vector3(-1022, 29783, 0));
-  ship->setRadius(0.00005);
-  //ship->setGravityRef(planet);
-  ship->setName("Galactica");
-  HUD* shipHud = new HUD();
-  shipHud->AddLayout.connect(&layoutManager_, &LayoutManager::addLayout);
-  shipHud->RemoveLayout.connect(&layoutManager_, &LayoutManager::removeLayout);
-  shipHud->init(ship);
-  //ship->setHUD(shipHud);
-  ship->test1_ = planet;
-  ship->initModel("res/ss2.3ds");
-  ship->setDockingPort(Vector3(0, 1.3, 0)); //Hey, screwed up axes. Again...
-  ship->setPortAngle(0);
+  //Ship* ship = new Ship();
+  //ship->setCoord(Vector3(149600 - /*6.371*/10, 0, 0));
+  ////ship->setCoord(Vector3(149599, -374.399, 0));
+  //ship->setVelocity(Vector3(0/*-6250*/, -29783-6250, 0));
+  ////ship->setVelocity(Vector3(-1022, 29783, 0));
+  //ship->setRadius(0.00005);
+  ////ship->setGravityRef(planet);
+  //ship->setName("Galactica");
+  //HUD* shipHud = new HUD();
+  //shipHud->AddLayout.connect(&layoutManager_, &LayoutManager::addLayout);
+  //shipHud->RemoveLayout.connect(&layoutManager_, &LayoutManager::removeLayout);
+  //shipHud->init(ship);
+  ////ship->setHUD(shipHud);
+  //ship->test1_ = planet;
+  //ship->initModel("res/ss2.3ds");
+  ////ship->setDockingPort(Vector3(0, 1.3, 0)); //Hey, screwed up axes. Again...
+  //ship->setPortAngle(0);
 
-  Station* station = new Station();
-  station->setCoord(Vector3(149590.01, 0, 0));
-  station->setVelocity(Vector3(/*-6250*/0, -29783-6250, 0));
-  station->setRadius(0.001);
-  station->setName("Shipyard");
-  StationDisplay* stationDisplay = new StationDisplay();
-  stationDisplay->init();
-  stationDisplay->setVisible(false);
-  layoutManager_.addLayout(stationDisplay);
-  station->setDisplay(stationDisplay);
-  station->initModel("res/station.3ds");
-  station->setDockingPort(Vector3(0.65, 0.03, 0.1));
-  station->setPortAngle(270);
-  planet->addSatellite(station);
+  //Station* station = new Station();
+  //station->setCoord(Vector3(149590.01, 0, 0));
+  //station->setVelocity(Vector3(/*-6250*/0, -29783-6250, 0));
+  //station->setRadius(0.001);
+  //station->setName("Shipyard");
+  ////StationDisplay* stationDisplay = new StationDisplay();
+  ////stationDisplay->init();
+  ////stationDisplay->setVisible(false);
+  ////layoutManager_.addLayout(stationDisplay);
+  ////station->setDisplay(stationDisplay);
+  //station->initModel("res/station.3ds");
+  ////station->setDockingPort(Vector3(0.65, 0.03, 0.1));
+  //station->setPortAngle(270);
+  //planet->addSatellite(station);
 
-  //station->setYawVel(1);
-  //ship->dockedTo_ = station;
-  //ship->docked_ = true;
+  ////station->setYawVel(1);
+  ////ship->dockedTo_ = station;
+  ////ship->docked_ = true;
 
 
-  //Moon
-  satellite = new Planet();
-  satellite->setCoord(Vector3(149600, -374.399, 0));
-  satellite->setRadius(1.736);
-  satellite->setMass(7.3477e16);
-  satellite->setVelocity(Vector3(-1022, -29783, 0));
-  //satellite->setVelocity(Vector3(0, 29783, 0));
-  satellite->setColor(Vector3(1,1,1));
-  satellite->setName("Moon");
-  satellite->setRotationPeriod(27.321582*24*3600);
-  planet->addSatellite(satellite);
-  ship->test2_ = satellite;
+  ////Moon
+  //satellite = new Planet();
+  //satellite->setCoord(Vector3(149600, -374.399, 0));
+  //satellite->setRadius(1.736);
+  //satellite->setMass(7.3477e16);
+  //satellite->setVelocity(Vector3(-1022, -29783, 0));
+  ////satellite->setVelocity(Vector3(0, 29783, 0));
+  //satellite->setColor(Vector3(1,1,1));
+  //satellite->setName("Moon");
+  //satellite->setRotationPeriod(27.321582*24*3600);
+  //planet->addSatellite(satellite);
+  //ship->test2_ = satellite;
 
-  //Mars
-  planet = new Planet();
-  planet->setCoord(Vector3(249600, 0, 0));
-  planet->setRadius(3.386);
-  planet->setMass(6.4185e17);
-  planet->setVelocity(Vector3(0, -24130, 0));
-  planet->setName("Mars");
-  planet->setRotationPeriod(88776);
-  planet->setAtmColor(Vector3(216.0/255.0, 134.0/255.0, 79.0/255.0));
-  planet->setAtmRadius(3.496);
-  star->addSatellite(planet);
+  ////Mars
+  //planet = new Planet();
+  //planet->setCoord(Vector3(249600, 0, 0));
+  //planet->setRadius(3.386);
+  //planet->setMass(6.4185e17);
+  //planet->setVelocity(Vector3(0, -24130, 0));
+  //planet->setName("Mars");
+  //planet->setRotationPeriod(88776);
+  //planet->setAtmColor(Vector3(216.0/255.0, 134.0/255.0, 79.0/255.0));
+  //planet->setAtmRadius(3.496);
+  //star->addSatellite(planet);
 
-  //Phobos
-  satellite = new Planet();
-  satellite->setCoord(Vector3(249600, 9.380, 0));
-  satellite->setRadius(11.1e-3);
-  satellite->setMass(1.972e10);
-  satellite->setVelocity(Vector3(1840, -24130, 0));
-  satellite->setName("Phobos");
-  satellite->setRotationPeriod(7*3600 + 39.2*60);
-  planet->addSatellite(satellite);
+  ////Phobos
+  //satellite = new Planet();
+  //satellite->setCoord(Vector3(249600, 9.380, 0));
+  //satellite->setRadius(11.1e-3);
+  //satellite->setMass(1.972e10);
+  //satellite->setVelocity(Vector3(1840, -24130, 0));
+  //satellite->setName("Phobos");
+  //satellite->setRotationPeriod(7*3600 + 39.2*60);
+  //planet->addSatellite(satellite);
 
-  //Deimos
-  satellite = new Planet();
-  satellite->setCoord(Vector3(249600, 23.460, 0));
-  satellite->setRadius(6.2e-3);
-  satellite->setMass(1.48e9);
-  satellite->setVelocity(Vector3(1350, -24130, 0));
-  satellite->setName("Deimos");
-  satellite->setRotationPeriod(1.26244 * 24 * 3600);
-  planet->addSatellite(satellite);
+  ////Deimos
+  //satellite = new Planet();
+  //satellite->setCoord(Vector3(249600, 23.460, 0));
+  //satellite->setRadius(6.2e-3);
+  //satellite->setMass(1.48e9);
+  //satellite->setVelocity(Vector3(1350, -24130, 0));
+  //satellite->setName("Deimos");
+  //satellite->setRotationPeriod(1.26244 * 24 * 3600);
+  //planet->addSatellite(satellite);
 
-  //Jupiter
-  planet = new Planet();
-  planet->setCoord(Vector3(760000, 0, 0));
-  planet->setRadius(71.492);
-  planet->setMass(1.8986e21);
-  planet->setVelocity(Vector3(0, -13070, 0));
-  planet->setName("Jupiter");
-  planet->setRotationPeriod(9.925*3600);
-  star->addSatellite(planet);
+  ////Jupiter
+  //planet = new Planet();
+  //planet->setCoord(Vector3(760000, 0, 0));
+  //planet->setRadius(71.492);
+  //planet->setMass(1.8986e21);
+  //planet->setVelocity(Vector3(0, -13070, 0));
+  //planet->setName("Jupiter");
+  //planet->setRotationPeriod(9.925*3600);
+  //star->addSatellite(planet);
 
-  //Io
-  satellite = new Planet();
-  satellite->setCoord(Vector3(760000, 421.7, 0));
-  satellite->setRadius(1.321);
-  satellite->setMass(8.9319e16);
-  satellite->setVelocity(Vector3(17430, -13070, 0));
-  satellite->setColor(Vector3(1,1,1));
-  satellite->setName("Io");
-  satellite->setRotationPeriod(1.769137786*24*3600);
-  planet->addSatellite(satellite);
+  ////Io
+  //satellite = new Planet();
+  //satellite->setCoord(Vector3(760000, 421.7, 0));
+  //satellite->setRadius(1.321);
+  //satellite->setMass(8.9319e16);
+  //satellite->setVelocity(Vector3(17430, -13070, 0));
+  //satellite->setColor(Vector3(1,1,1));
+  //satellite->setName("Io");
+  //satellite->setRotationPeriod(1.769137786*24*3600);
+  //planet->addSatellite(satellite);
 
-  //Europa
-  satellite = new Planet();
-  satellite->setCoord(Vector3(760000, 670.99, 0));
-  satellite->setRadius(1.569);
-  satellite->setMass(4.8e16);
-  satellite->setVelocity(Vector3(13740, -13070, 0));
-  satellite->setColor(Vector3(1,1,1));
-  satellite->setName("Europa");
-  satellite->setRotationPeriod(3.551181*24*3600);
-  planet->addSatellite(satellite);
+  ////Europa
+  //satellite = new Planet();
+  //satellite->setCoord(Vector3(760000, 670.99, 0));
+  //satellite->setRadius(1.569);
+  //satellite->setMass(4.8e16);
+  //satellite->setVelocity(Vector3(13740, -13070, 0));
+  //satellite->setColor(Vector3(1,1,1));
+  //satellite->setName("Europa");
+  //satellite->setRotationPeriod(3.551181*24*3600);
+  //planet->addSatellite(satellite);
 
-  //Ganymede
-  satellite = new Planet();
-  satellite->setCoord(Vector3(760000, 1070.4, 0));
-  satellite->setRadius(2.6341);
-  satellite->setMass(1.4819e17);
-  satellite->setVelocity(Vector3(10880, -13070, 0));
-  satellite->setColor(Vector3(1,1,1));
-  satellite->setName("Ganymede");
-  satellite->setRotationPeriod(7.15455296*24*3600);
-  planet->addSatellite(satellite);
+  ////Ganymede
+  //satellite = new Planet();
+  //satellite->setCoord(Vector3(760000, 1070.4, 0));
+  //satellite->setRadius(2.6341);
+  //satellite->setMass(1.4819e17);
+  //satellite->setVelocity(Vector3(10880, -13070, 0));
+  //satellite->setColor(Vector3(1,1,1));
+  //satellite->setName("Ganymede");
+  //satellite->setRotationPeriod(7.15455296*24*3600);
+  //planet->addSatellite(satellite);
 
-  //Callisto
-  satellite = new Planet();
-  satellite->setCoord(Vector3(760000, 1882.7, 0));
-  satellite->setRadius(2.4103);
-  satellite->setMass(1.0759e17);
-  satellite->setVelocity(Vector3(8210, -13070, 0));
-  satellite->setColor(Vector3(1,1,1));
-  satellite->setName("Callisto");
-  satellite->setRotationPeriod(16.6890184*24*3600);
-  planet->addSatellite(satellite);
+  ////Callisto
+  //satellite = new Planet();
+  //satellite->setCoord(Vector3(760000, 1882.7, 0));
+  //satellite->setRadius(2.4103);
+  //satellite->setMass(1.0759e17);
+  //satellite->setVelocity(Vector3(8210, -13070, 0));
+  //satellite->setColor(Vector3(1,1,1));
+  //satellite->setName("Callisto");
+  //satellite->setRotationPeriod(16.6890184*24*3600);
+  //planet->addSatellite(satellite);
 
-  //Saturn
-  planet = new Planet();
-  planet->setCoord(Vector3(1420000, 0, 0));
-  planet->setRadius(60.268);
-  planet->setMass(5.6846e20);
-  planet->setVelocity(Vector3(0, -9690, 0));
-  planet->setName("Saturn");
-  planet->setRotationPeriod(10*3600 + 34*60 + 13);
-  star->addSatellite(planet);
+  ////Saturn
+  //planet = new Planet();
+  //planet->setCoord(Vector3(1420000, 0, 0));
+  //planet->setRadius(60.268);
+  //planet->setMass(5.6846e20);
+  //planet->setVelocity(Vector3(0, -9690, 0));
+  //planet->setName("Saturn");
+  //planet->setRotationPeriod(10*3600 + 34*60 + 13);
+  //star->addSatellite(planet);
 
-  //Uranus
-  planet = new Planet();
-  planet->setCoord(Vector3(2876679.082, 0, 0));
-  planet->setRadius(25.559);
-  planet->setMass(8.6832e19);
-  planet->setVelocity(Vector3(0, -6810, 0));
-  planet->setName("Uranus");
-  planet->setRotationPeriod(0.71833 *24*3600);
-  star->addSatellite(planet);
+  ////Uranus
+  //planet = new Planet();
+  //planet->setCoord(Vector3(2876679.082, 0, 0));
+  //planet->setRadius(25.559);
+  //planet->setMass(8.6832e19);
+  //planet->setVelocity(Vector3(0, -6810, 0));
+  //planet->setName("Uranus");
+  //planet->setRotationPeriod(0.71833 *24*3600);
+  //star->addSatellite(planet);
 
-  //Neptune
-  planet = new Planet();
-  planet->setCoord(Vector3(4503443.661, 0, 0));
-  planet->setRadius(24.341);
-  planet->setMass(1.0243e20);
-  planet->setVelocity(Vector3(0, -5430, 0));
-  planet->setName("Neptune");
-  planet->setRotationPeriod(0.6713 *24*3600);
-  star->addSatellite(planet);
+  ////Neptune
+  //planet = new Planet();
+  //planet->setCoord(Vector3(4503443.661, 0, 0));
+  //planet->setRadius(24.341);
+  //planet->setMass(1.0243e20);
+  //planet->setVelocity(Vector3(0, -5430, 0));
+  //planet->setName("Neptune");
+  //planet->setRotationPeriod(0.6713 *24*3600);
+  //star->addSatellite(planet);
 
-  StarSystem* system = new StarSystem();
-  system->addStar(star);
+  //StarSystem* system = new StarSystem();
+  //system->addStar(star);
 
-  //system->skipTime(1e15);
+  ////system->skipTime(1e15);
 
-  world_->setStarSystem(system);
+  //world_->setStarSystem(system);
 
-  //world_->addFreeObject(station);
-  world_->addFreeObject(ship);
-  world_->switchControlledShip(ship);
+  ////world_->addFreeObject(station);
+  //world_->addFreeObject(ship);
+  //world_->switchControlledShip(ship);
 }
 
 

@@ -11,6 +11,11 @@ StationDisplay::~StationDisplay()
 
 }
 
+void StationDisplay::updateData()
+{
+
+}
+
 void StationDisplay::init()
 {
   setDimensions(0.3, 0.8, 0.4, 0.3);

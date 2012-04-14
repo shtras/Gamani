@@ -1,5 +1,5 @@
 #pragma once
-#include "Display.h"
+#include "StationDisplay.h"
 
 class Ship;
 
@@ -18,5 +18,7 @@ public:
 private:
   list<Display*> displays_;
   Ship* ship_;
+  StationDisplay* stationDisp_;
+  bool visible_;
 };
 

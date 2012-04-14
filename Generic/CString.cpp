@@ -193,6 +193,12 @@ bool CString::operator!= (const CString& other) const
   return !(*this == other);
 }
 
+CString& CString::operator+= (const CString& other)
+{
+  *this = append(other);
+  return *this;
+}
+
 bool CString::isEmpty()
 {
   return len_ == 0;

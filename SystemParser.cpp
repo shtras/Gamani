@@ -201,8 +201,25 @@ Vector3 SystemParser::parseVector(CString str)
   return Vector3(x,y,z);
 }
 
-bool SystemParser::fillAstralInfo(AstralBody* bodyToFill, Section* section)
+void SystemParser::calcAutoInfo(AstralBody* from, AstralBody* to, double dist, double angle)
 {
+  Vector3 coordFrom = from->getCoord();
+  Vector3 velFrom = from->getVelocity();
+  double radAngle = DegToRad(angle);
+  double radAngleVel = DegToRad(angle-90);
+  Vector3 coordTo = coordFrom + Vector3(dist*cos(radAngle), dist*sin(radAngle), 0);
+  double G = 6.6725e-11;
+  double v1 = sqrt (G * from->getMass() / fabs(dist));
+  Vector3 velTo = velFrom + Vector3(v1*cos(radAngleVel), v1*sin(radAngleVel), 0);
+  to->setCoord(coordTo);
+  to->setVelocity(velTo);
+}
+
+bool SystemParser::fillAstralInfo(AstralBody* bodyToFill, Section* section, AstralBody* upperLayer)
+{
+  bool autoInfo = false;
+  double autoDist = 0;
+  double autoAngle = 0;
   const vector<CString>& lines = section->getLines();
   for (unsigned int i=0; i<lines.size(); ++i) {
     CString str = lines[i];
@@ -222,6 +239,12 @@ bool SystemParser::fillAstralInfo(AstralBody* bodyToFill, Section* section)
       bodyToFill->setMass(getDouble(value));
     } else if (field == "velocity") {
       bodyToFill->setVelocity(parseVector(value));
+    } else if (field == "dist") {
+      autoDist = getDouble(value);
+      autoInfo = true;
+    } else if (field == "angle") {
+      autoAngle = getDouble(value);
+      autoInfo = true;
     } else if (field == "name") {
       bodyToFill->setName(value);
     } else if (field == "rotationperiod") {
@@ -255,7 +278,7 @@ bool SystemParser::fillAstralInfo(AstralBody* bodyToFill, Section* section)
         Logger::getInstance().log(ERROR_LOG_NAME, "Cannot assign docking port to object");
         return false;
       }
-      dockable->setDockingPort(parseVector(value));
+      dockable->setPortDist(getDouble(value));
     } else if (field == "portangle") {
       Dockable* dockable = dynamic_cast<Dockable*>(bodyToFill);
       if (!dockable) {
@@ -284,6 +307,14 @@ bool SystemParser::fillAstralInfo(AstralBody* bodyToFill, Section* section)
       return false;
     }
   }
+  if (autoInfo) {
+    if (!upperLayer) {
+      bodyToFill->setCoord(Vector3(0,0,0));
+      bodyToFill->setVelocity(Vector3(0,0,0));
+    } else {
+      calcAutoInfo(upperLayer, bodyToFill, autoDist, autoAngle);
+    }
+  }
   return true;
 }
 
@@ -295,36 +326,36 @@ bool SystemParser::parseSectionInfo(StarSystem* system, Section* section, Astral
   if (name == "star") {
     assert (!upperLayer);
     currBody = new Star();
-    if (!fillAstralInfo(currBody, section)) {
+    if (!fillAstralInfo(currBody, section, upperLayer)) {
       return false;
     }
     system->addStar(static_cast<Star*>(currBody));
   } else if (name == "planet") {
     currBody = new Planet();
-    if (!fillAstralInfo(currBody, section)) {
+    if (!fillAstralInfo(currBody, section, upperLayer)) {
       return false;
     }
     upperLayer->addSatellite(currBody);
   } else if (name == "station") {
     currBody = new Station();
-    if (!fillAstralInfo(currBody, section)) {
+    if (!fillAstralInfo(currBody, section, upperLayer)) {
       return false;
     }
-    StationDisplay* stationDisplay = new StationDisplay();
-    stationDisplay->init();
-    stationDisplay->setVisible(false);
-    layoutManager_->addLayout(stationDisplay);
+    //StationDisplay* stationDisplay = new StationDisplay();
+    //stationDisplay->init();
+    //stationDisplay->setVisible(false);
+    //layoutManager_->addLayout(stationDisplay);
     upperLayer->addSatellite(currBody);
-    (static_cast<Station*>(currBody))->setDisplay(stationDisplay);
+    //(static_cast<Station*>(currBody))->setDisplay(stationDisplay);
   } else if (name == "satellite") {
     currBody = new Satellite();
-    if (!fillAstralInfo(currBody, section)) {
+    if (!fillAstralInfo(currBody, section, upperLayer)) {
       return false;
     }
     upperLayer->addSatellite(currBody);
   } else if (name == "ship") {
     currBody = new Ship();
-    if (!fillAstralInfo(currBody, section)) {
+    if (!fillAstralInfo(currBody, section, upperLayer)) {
       return false;
     }
     HUD* shipHud = new HUD();

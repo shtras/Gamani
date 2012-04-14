@@ -149,13 +149,13 @@ void Ship::render()
       glEnable(GL_LIGHTING);
     }
     model->draw();
+    //renderPort();
+
     glPopMatrix();
   } else {
     glutSolidCone(radius_*GLOBAL_MULT/4.0f, radius_*GLOBAL_MULT, 10, 5);
   }
 
-
-  //renderPort();
 
   drawName();
 
@@ -166,22 +166,45 @@ void Ship::render()
 
 void Ship::setDockedCoord()
 {
-  Vector3 refCoord = dockedTo_->getCoord();
-  Vector3 refPort = dockedTo_->getDockingPort();
-  Vector3 myPort = getDockingPort();
-  double refPortLength = refPort.getLength()*dockedTo_->getRadius() + myPort.getLength()*getRadius();
-  double refYaw = dockedTo_->getYaw();
-  refYaw += 180;
-  double myYaw = getYaw();
-  Vector3 res = refCoord;
-  res += Vector3(refPortLength*cos(refYaw*3.14159265/180.0), refPortLength*sin(refYaw*3.14159265/180.0), 0);
-  velocity_ = dockedTo_->getVelocity();
-  coord_ = res;
-  double newYaw = refYaw + dockedTo_->getPortAngle();
-  yaw_ = newYaw;
-  while (yaw_ > 360.0) {
-    yaw_ -= 360.0;
-  }
+  //Vector3 refCoord = dockedTo_->getCoord();
+
+  //double refPortAngle = dockedTo_->getPortAngle() + dockedTo_->getYaw();
+  //refPortAngle = DegToRad(refPortAngle);
+  //Vector3 refPort = refCoord + Vector3(sin(refPortAngle), cos(refPortAngle), 0) * dockedTo_->getPortDist()*dockedTo_->getRadius();
+
+  //double myPortAngle = getPortAngle() + getYaw();
+  //myPortAngle = DegToRad(myPortAngle);
+  //Vector3 myPort = getCoord() + Vector3(sin(myPortAngle), cos(myPortAngle), 0) * getPortDist() * getRadius();
+
+  //double refPortLength = refPort.getLength()*dockedTo_->getRadius() + myPort.getLength()*getRadius();
+  //double refYaw = dockedTo_->getYaw();
+  //refYaw += 180;
+  //double myYaw = getYaw();
+  //Vector3 res = refCoord;
+  //res += Vector3(refPortLength*cos(refYaw*3.14159265/180.0), refPortLength*sin(refYaw*3.14159265/180.0), 0);
+  //velocity_ = dockedTo_->getVelocity();
+  //coord_ = res;
+  //double newYaw = refYaw + dockedTo_->getPortAngle();
+  //yaw_ = newYaw;
+  //while (yaw_ > 360.0) {
+  //  yaw_ -= 360.0;
+  //}
+  double refPortAngle = dockedTo_->getYaw() + dockedTo_->getPortAngle();
+  refPortAngle = DegToRad(refPortAngle);
+  Vector3 refPort = dockedTo_->getCoord() + Vector3(sin(refPortAngle), cos(refPortAngle), 0)*dockedTo_->getPortDist()*dockedTo_->getRadius();
+  
+  double myYaw = dockedTo_->getYaw() + dockedTo_->getPortAngle() - 180.0 - getPortAngle();
+  setYaw(myYaw);
+  myYaw = DegToRad(myYaw);
+
+  Vector3 myCoord = refPort - Vector3(sin(myYaw), cos(myYaw), 0)*getPortDist()*getRadius();
+  setCoord(myCoord);
+  setVelocity(dockedTo_->getVelocity());
+
+  double dist = (myCoord - dockedTo_->getCoord()).getLength();
+  double radSum = getRadius() + dockedTo_->getRadius();
+  int bbb = 0;
+
 }
 
 void Ship::undock()
@@ -519,14 +542,20 @@ void Ship::autopilotStep()
 
 void Ship::attemptDocking(Station* station)
 {
-  Vector3 stationPort = station->getCoord() + station->getDockingPort();
-  Vector3 myPort = getCoord() + getDockingPort();
+  double stationPortAngle = station->getYaw() + station->getPortAngle();
+  stationPortAngle = DegToRad(stationPortAngle);
+  Vector3 stationPort = station->getCoord() + Vector3(sin(stationPortAngle), cos(stationPortAngle), 0) * station->getPortDist() * station->getRadius();
+
+  double myPortAngle = getYaw() + getPortAngle();
+  myPortAngle = DegToRad(myPortAngle);
+  Vector3 myPort = getCoord() + Vector3(sin(myPortAngle), cos(myPortAngle), 0) * getPortDist() * getRadius();
+
   double portDist = (stationPort - myPort).getLength();
   if (dockedTo_ && !docked_) {
     //Currently undocking
     return;
   }
-  if (portDist < 1.5) {
+  if (portDist < 0.1) {
     double stationPortAngle = station->getPortAngle() + station->getYaw();
     double myPortAngle = getPortAngle() + getYaw();
     double angleDelta = stationPortAngle - myPortAngle - 180.0;
@@ -536,7 +565,7 @@ void Ship::attemptDocking(Station* station)
     while (angleDelta >= 360.0) {
       angleDelta -= 360.0;
     }
-    if (angleDelta < 5 || angleDelta > 355) {
+    if (angleDelta < 15 || angleDelta > 345) {
       docked_ = true;
       station->dock(this);
       dockedTo_ = station;
@@ -553,7 +582,7 @@ void Ship::checkUndocking()
     //Currently undocking
     double dist = (dockedTo_->getCoord() - getCoord()).getLength();
     //double ddd = (dockedTo_->getRadius() + getRadius())*1.2;
-    if (dist > (dockedTo_->getRadius() + getRadius())*2) {
+    if (dist > (dockedTo_->getRadius() + getRadius())*1.1) {
       //Undocking completed
       dockedTo_->undock(this);
       dockedTo_ = NULL;

@@ -1,5 +1,5 @@
 Info {
-  Version = 1.1;
+  Version = 1.3;
 }
 
 Star {
@@ -9,105 +9,189 @@ Star {
 
   //Mercury
   Planet {
-    Coord = (57900, 0, 0);
+    //Coord = (57900, 0, 0);
+	Dist = 57900;
+	Angle = 45;
     Radius = 2.4397;
     Mass = 3.3e17;
-    Velocity = (0, -47870, 0);
+    //Velocity = (0, -47870, 0);
     Name = Mercury;
     RotationPeriod = 5067000;
   }
   
   //Venus
   Planet {
-  Coord = (108000, 0, 0);
-  Radius = 6.0518;
-  Mass = 4.8685e18;
-  Velocity = (0, -35000, 0);
-  Name = Venus;
-  RotationPeriod = 20996798.4;
+    //Coord = (108000, 0, 0);
+    Dist = 108000;
+    Angle = 70;
+    Radius = 6.0518;
+    Mass = 4.8685e18;
+    //Velocity = (0, -35000, 0);
+    Name = Venus;
+    RotationPeriod = 20996798.4;
   }
 
   //Earth
   Planet {
-    Coord = (149600, 0, 0);
+    //Coord = (149600, 0, 0);
+	Dist = 149600;
+	Angle = 120;
     Radius = 6.371;
     Mass = 6.0e18;
-    Velocity = (0, -29783, 0);
+    //Velocity = (0, -29783, 0);
     Name = Earth;
     RotationPeriod = 86400;
     AtmRadius = 6.971;
     AtmColor = (0, 0.75, 1);
 
     Station {
-      Coord = (149590.01, 0, 0);
-      Velocity = (0, -36033, 0);
+      //Coord = (149590.01, 0, 0);
+	  Dist = 9.99;
+	  Angle = 180;
+      //Velocity = (0, -36033, 0);
       Radius = 0.001;
       Name = Shipyard;
       Model = res/station.3ds;
-      DockingPort = (0.65, 0.03, 0.1);
+      DockingPort = 1;
       PortAngle = 270;
     }
     
     //Moon
     Planet {
-      Coord = (149600, -374.399, 0);
+      //Coord = (149600, -374.399, 0);
+	  Dist = 374.399;
+	  Angle = 90;
       Radius = 1.736;
       Mass = 7.3477e16;
-      Velocity = (-1022, -29783, 0);
+      //Velocity = (-1022, -29783, 0);
       Color = (1,1,1);
       Name = Moon;
       RotationPeriod = 2360584.6848;
 	  
 	  Station {
-        Coord = (149596.9, -374.399, 0);
-        Velocity = (-1022, -28533, 0);
+        //Coord = (149596.9, -374.399, 0);
+		Dist = 3.1;
+		Angle = 180;
+        //Velocity = (-1022, -28533, 0);
         Radius = 0.001;
         Name = MoonOrbiter;
         Model = res/station.3ds;
-        DockingPort = (0.65, 0.03, 0.1);
+        DockingPort = 1;
         PortAngle = 270;
 	  }
+	  
+	    
+      Ship {
+        //Coord = (149596.89, -374.399, 0);
+        //Velocity = (-1022, -28533, 0);
+		Dist = 3.11;
+		Angle = 180;
+        Radius = 0.00005;
+        Name = Hawkeye;
+        Model = res/ss2.3ds;
+        PortAngle = 0;
+      }
 	}
 	
 	Satellite {
-	  Coord = (149607.6, 0, 0);
-	  Velocity = (0, -37003, 0);
+	  //Coord = (149607.6, 0, 0);
+	  Dist = 7.6;
+	  Angle = 45;
+	  //Velocity = (0, -37003, 0);
 	  Radius = 0.00005;
 	  Name = sat01;
 	  Model = res/Globalstar.3ds;
     }
 	
 	Satellite {
-	  Coord = (149592.4, 0, 0);
-	  Velocity = (0, -22563, 0);
+	  //Coord = (149592.4, 0, 0);
+	  Dist = 7.6;
+	  Angle = 65;
+	  //Velocity = (0, -22563, 0);
 	  Radius = 0.00005;
 	  Name = sat02;
 	  Model = res/Globalstar.3ds;
     }
 	
 	Satellite {
-	  Coord = (149600, 7.6, 0);
-	  Velocity = (0, -29783, -7220);
+	  //Coord = (149600, 7.6, 0);
+	  Dist = 7.6;
+	  Angle = 120;
+	  //Velocity = (0, 0, -7220);
 	  Radius = 0.00005;
 	  Name = sat03;
 	  Model = res/Globalstar.3ds;
     }
 	
 	Satellite {
-	  Coord = (149600, -7.6, 0);
-	  Velocity = (0, -29783, 7220);
+	  //Coord = (149600, -7.6, 0);
+	  Dist = 7.6;
+	  Angle = 270;
+	  //Velocity = (0, -29783, 7220);
 	  Radius = 0.00005;
 	  Name = sat04;
 	  Model = res/Globalstar.3ds;
+    }
+	
+	Ship {
+      //Coord = (149593.01, 0.0001, 0);
+	  Dist = 10;
+	  Angle = 180;
+      //Velocity = (0, -23533, 0);
+      Radius = 0.00005;
+      Name = Ranger;
+      Model = res/ss2.3ds;
+      DockingPort = 1;
+      PortAngle = 180;
+      PlayerControlled = True;
+    }
+   
+    Ship {
+      //Coord = (149590, 0, 0);
+      //Velocity = (0, -36033, 0);
+	  Dist = 10;
+	  Angle = 180.1;
+      Radius = 0.00005;
+      Name = Avenger;
+      Model = res/ss2.3ds;
+      DockingPort = 1;
+      PortAngle = 0;
+    }
+    
+    Ship {
+      //Coord = (149590, -0.0001, 0);
+      //Velocity = (0, -36033, 0);
+	  Dist = 10;
+	  Angle = 180.2;
+      Radius = 0.00005;
+      Name = Lightning;
+      Model = res/ss2.3ds;
+      DockingPort = 1;
+      PortAngle = 0;
+    }
+	
+	Ship {
+      //Coord = (149590, 0.002, 0);
+      //Velocity = (0, -36033, 0);
+	  Dist = 10;
+	  Angle = 180.5;
+      Radius = 0.001;
+      Name = Galactica;
+      Model = res/new.3ds;
+      DockingPort = 1;
+      PortAngle = 0;
+	  YawPower = 0.005;
     }
   }
 
   //Mars
   Planet {
-    Coord = (249600, 0, 0);
+    //Coord = (249600, 0, 0);
+	Dist = 249600;
+	Angle = 270;
     Radius = 3.386;
     Mass = 6.4185e17;
-    Velocity = (0, -24130, 0);
+    //Velocity = (0, -24130, 0);
     Name = Mars;
     RotationPeriod = 88776;
     AtmColor = (0.84, 0.52, 0.30);
@@ -115,20 +199,24 @@ Star {
     
     //Phobos
     Planet {
-      Coord = (249600, 9.380, 0);
+      //Coord = (249600, 9.380, 0);
+	  Dist = 9.380;
+	  Angle = 20;
       Radius = 11.1e-3;
       Mass = 1.972e10;
-      Velocity = (1840, -24130, 0);
+      //Velocity = (1840, -24130, 0);
       Name = Phobos;
       RotationPeriod = 27552;
     }
 
     //Deimos
     Planet {
-      Coord = (249600, 23.460, 0);
+      //Coord = (249600, 23.460, 0);
+	  Dist = 23.460;
+	  Angle = 300;
       Radius = 6.2e-3;
       Mass = 1.48e9;
-      Velocity = (1350, -24130, 0);
+      //Velocity = (1350, -24130, 0);
       Name = Deimos;
       RotationPeriod = 109074.816;
     }
@@ -136,19 +224,23 @@ Star {
 
   //Jupiter
   Planet {
-    Coord = (760000, 0, 0);
+    //Coord = (760000, 0, 0);
+	Dist = 760000;
+	Angle = 290;
     Radius = 71.492;
     Mass = 1.8986e21;
-    Velocity = (0, -13070, 0);
+    //Velocity = (0, -13070, 0);
     Name = Jupiter;
     RotationPeriod = 35730;
 
     //Io
     Planet {
-      Coord = (760000, 421.7, 0);
+      //Coord = (760000, 421.7, 0);
+	  Dist = 421.7;
+	  Angle = 10;
       Radius = 1.321;
       Mass = 8.9319e16;
-      Velocity = (17430, -13070, 0);
+      //Velocity = (17430, -13070, 0);
       Color = (1,1,1);
       Name = Io;
       RotationPeriod = 152853.5047104;
@@ -156,10 +248,12 @@ Star {
 
     //Europa
     Planet {
-      Coord = (760000, 670.99, 0);
+      //Coord = (760000, 670.99, 0);
+	  Dist = 670.99;
+	  Angle = 45;
       Radius = 1.569;
       Mass = 4.8e16;
-      Velocity = (13740, -13070, 0);
+      //Velocity = (13740, -13070, 0);
       Color = (1,1,1);
       Name = Europa;
       RotationPeriod = 306822.0384;
@@ -167,8 +261,10 @@ Star {
 
     //Ganymede
     Planet {
-      Coord = (760000, 1070.4, 0);
-      Velocity = (10880, -13070, 0);
+      //Coord = (760000, 1070.4, 0);
+	  Dist = 1070.4;
+	  Angle = 100;
+      //Velocity = (10880, -13070, 0);
       Radius = 2.6341;
       Mass = 1.4819e17;
       Color = (1,1,1);
@@ -176,22 +272,38 @@ Star {
       RotationPeriod = 618153.375744;
 	  
 	  Station {
-        Coord = (759996.25, 1070.4, 0);
-        Velocity = (10880, -14700, 0);
+        //Coord = (759996.25, 1070.4, 0);
+		Dist = 3.75;
+		Angle = 180;
+        //Velocity = (10880, -14700, 0);
         Radius = 0.001;
         Name = GanymedeExplorer;
         Model = res/station.3ds;
-        DockingPort = (0.65, 0.03, 0.1);
+        DockingPort = 1;
         PortAngle = 270;
+      }
+	  
+	  Ship {
+        //Coord = (759996.24, 1070.4, 0);
+        //Velocity = (10880, -14700, 0);
+		Dist = 3.76;
+		Angle = 180;
+        Radius = 0.00005;
+        Name = Thunderbolt;
+        Model = res/ss2.3ds;
+        DockingPort = 1;
+        PortAngle = 0;
       }
     }
 
     //Callisto
     Planet {
-      Coord = (760000, 1882.7, 0);
+      //Coord = (760000, 1882.7, 0);
+	  Dist = 1882.7;
+	  Angle = 280;
       Radius = 2.4103;
       Mass = 1.0759e17;
-      Velocity = (8210, -13070, 0);
+      //Velocity = (8210, -13070, 0);
       Color = (1,1,1);
       Name = Callisto;
       RotationPeriod = 1441931.18976;
@@ -200,93 +312,37 @@ Star {
 
   //Saturn
   Planet {
-    Coord = (1420000, 0, 0);
+    //Coord = (1420000, 0, 0);
+	Dist = 1420000;
+	Angle = 20;
     Radius = 60.268;
     Mass = 5.6846e20;
-    Velocity = (0, -9690, 0);
+    //Velocity = (0, -9690, 0);
     Name = Saturn;
     RotationPeriod = 38053;
   }
     
   //Uranus
   Planet {
-    Coord = (2876679.082, 0, 0);
+    //Coord = (2876679.082, 0, 0);
+	Dist = 2876679.082;
+	Angle = 200;
     Radius = 25.559;
     Mass = 8.6832e19;
-    Velocity = (0, -6810, 0);
+    //Velocity = (0, -6810, 0);
     Name = Uranus;
     RotationPeriod = 62063.712;
   }
 
   //Neptune
   Planet {
-    Coord = (4503443.661, 0, 0);
+    //Coord = (4503443.661, 0, 0);
+	Dist = 4503443.661;
+	Angle = 135;
     Radius = 24.341;
     Mass = 1.0243e20;
-    Velocity = (0, -5430, 0);
+    //Velocity = (0, -5430, 0);
     Name = Neptune;
     RotationPeriod = 58000.32;
-  }
-  
-  Ship {
-    Coord = (149596.89, -374.399, 0);
-    Velocity = (-1022, -28533, 0);
-    Radius = 0.00005;
-    Name = Hawkeye;
-    Model = res/ss2.3ds;
-    DockingPort = (0, 1.3, 0);
-    PortAngle = 0;
-  }
-  
-  Ship {
-    Coord = (149593.01, 0.0001, 0);
-    Velocity = (0, -36033, 0);
-    Radius = 0.00005;
-    Name = Ranger;
-    Model = res/ss2.3ds;
-    DockingPort = (0, 1.3, 0);
-    PortAngle = 0;
-    PlayerControlled = True;
-  }
-
-  Ship {
-    Coord = (149590, 0, 0);
-    Velocity = (0, -36033, 0);
-    Radius = 0.00005;
-    Name = Avenger;
-    Model = res/ss2.3ds;
-    DockingPort = (0, 1.3, 0);
-    PortAngle = 0;
-  }
-  
-  Ship {
-    Coord = (149590, -0.0001, 0);
-    Velocity = (0, -36033, 0);
-    Radius = 0.00005;
-    Name = Lightning;
-    Model = res/ss2.3ds;
-    DockingPort = (0, 1.3, 0);
-    PortAngle = 0;
-  }
-  
-  Ship {
-    Coord = (759996.24, 1070.4, 0);
-    Velocity = (10880, -14700, 0);
-    Radius = 0.00005;
-    Name = Thunderbolt;
-    Model = res/ss2.3ds;
-    DockingPort = (0, 1.3, 0);
-    PortAngle = 0;
-  }
-  
-  Ship {
-    Coord = (149590, 0.002, 0);
-    Velocity = (0, -36033, 0);
-    Radius = 0.0005;
-    Name = Galactica;
-    Model = res/new.3ds;
-    DockingPort = (0, 1.3, 0);
-    PortAngle = 0;
-	YawPower = 0.005;
   }
 }

@@ -25,6 +25,13 @@ void HUD::updateData()
     Display* display = *itr;
     display->updateData();
   }
+  if (visible_) {
+    if (ship_->isDocked() && !stationDisp_->isVisible()) {
+      stationDisp_->setVisible(true);
+    } else if (!ship_->isDocked() && stationDisp_->isVisible()) {
+      stationDisp_->setVisible(false);
+    }
+  }
 }
 
 void HUD::assignTo(Ship* ship)
@@ -60,6 +67,12 @@ void HUD::init(Ship* ship)
   displays_.push_back(apDisp);
   AddLayout.emit(apDisp);
 
+  stationDisp_ = new StationDisplay();
+  stationDisp_->init();
+  stationDisp_->setDimensions(0.3, 0.9, 0.4, 0.45);
+  displays_.push_back(stationDisp_);
+  AddLayout.emit(stationDisp_);
+
   //Has to be after all display initializations
   ship->setHUD(this);
   apDisp->setAP(ship->getAP());
@@ -72,4 +85,5 @@ void HUD::setVisible(bool value)
     Display* display = *itr;
     display->setVisible(value);
   }
+  visible_ = value;
 }

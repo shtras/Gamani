@@ -4,15 +4,15 @@
 class Dockable
 {
 public:
-  Dockable():dockingPort_(Vector3()){}
+  Dockable():portDist_(1), portAngle_(0){}
   ~Dockable(){}
-  Vector3 getDockingPort() {return dockingPort_;}
-  void setDockingPort(Vector3 dockingPort) {dockingPort_ = dockingPort;}
   double getPortAngle() {return portAngle_;}
   void setPortAngle(double portAngle) {portAngle_ = portAngle;}
+  void setPortDist(double value) {portDist_ = value;}
+  double getPortDist() {return portDist_;}
 protected:
   void renderPort();
 private:
-  Vector3 dockingPort_;
   double portAngle_;
+  double portDist_;
 };

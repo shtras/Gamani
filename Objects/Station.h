@@ -2,7 +2,7 @@
 #include "DynamicBody.h"
 #include "ModelRenderable.h"
 #include "Dockable.h"
-#include "StationDisplay.h"
+//#include "StationDisplay.h"
 
 class Ship;
 
@@ -14,9 +14,9 @@ public:
   void render();
   void dock(Ship* ship);
   void undock(Ship* ship);
-  void setDisplay(StationDisplay* display) {display_ = display;}
+  //void setDisplay(StationDisplay* display) {display_ = display;}
 protected:
   list<Ship*> dockedShips_;
-  StationDisplay* display_;
+  //StationDisplay* display_;
 private:
 };

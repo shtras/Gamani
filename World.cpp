@@ -199,20 +199,6 @@ void World::updatePosition(Renderable* obj)
   assert(!obj->isStatic());
   DynamicBody* dynObj = static_cast<DynamicBody*>(obj);
   
-  if (dynObj->getType() == Renderable::ShipType) {
-    Ship* ship = static_cast<Ship*>(dynObj);
-    if (ship->isUndocking()) {
-      ship->checkUndocking();
-    } else if (ship->isDocked()) {
-      ship->setDockedCoord();
-      //ship->setCoord(ship->getDockedCoord());
-      if (ship == followedObject_) {
-        Renderer::getInstance().getCamera().position(followedObject_->getCoord());
-      }
-      return;
-    }
-  }
-
   if (dynObj->isLanded()) {
     assert(dynObj->getType() == Renderable::ShipType);
     Ship* ship = static_cast<Ship*>(dynObj);
@@ -238,6 +224,20 @@ void World::updatePosition(Renderable* obj)
     }
     dynObj->setYaw(newYaw);
 
+  }
+
+  if (dynObj->getType() == Renderable::ShipType) {
+    Ship* ship = static_cast<Ship*>(dynObj);
+    if (ship->isUndocking()) {
+      ship->checkUndocking();
+    } else if (ship->isDocked()) {
+      ship->setDockedCoord();
+      //ship->setCoord(ship->getDockedCoord());
+      //if (ship == followedObject_) {
+      //  Renderer::getInstance().getCamera().position(followedObject_->getCoord());
+      //}
+      //return;
+    }
   }
 
   if (followedObject_) {

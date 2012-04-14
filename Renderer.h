@@ -30,6 +30,7 @@ public:
   void resetViewPort();
   CString formatDistance (double dist, int len = 4);
   CString formatVelocity (double vel, int len = 4);
+  CString formatTime (double time, int len = 4);
   void resize (int width, int height);
   void updateParticles();
   void addParticle(Vector3& coord, Vector3& vel, uint32_t lifeTime, double size) {particleManager_->addParticle(coord, vel, lifeTime, size);}

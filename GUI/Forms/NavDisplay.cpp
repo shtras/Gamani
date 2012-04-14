@@ -59,8 +59,16 @@ void NavDisplay::init()
   tText_->setDimensions(0.05, 0.6, 1, 1);
   addWidget(tText_);
 
+  v1Text_ = new WText();
+  v1Text_->setDimensions(0.05, 0.55, 1, 1);
+  addWidget(v1Text_);
+
+  v2Text_ = new WText();
+  v2Text_->setDimensions(0.05, 0.5, 1, 1);
+  addWidget(v2Text_);
+
   atmText_ = new WText();
-  atmText_->setDimensions(0.05, 0.55, 1, 1);
+  atmText_->setDimensions(0.05, 0.45, 1, 1);
   addWidget(atmText_);
 
   modeButton_ = new WButton();
@@ -295,8 +303,17 @@ void NavDisplay::updateData()
   sprintf(sprStr, "Dp: %s", Renderer::getInstance().formatDistance(dp_, 2));
   periText_->setText(sprStr);
 
-  sprintf(sprStr, "T: %d", (int)t_);
+  sprintf(sprStr, "T: %s", Renderer::getInstance().formatTime(t_));
   tText_->setText(sprStr);
+  
+  double G = 6.6725e-11;
+  double v1 = sqrt (G * gravityRef_->getMass() / dist);
+
+  v1Text_->setText(CString("V1: ") + Renderer::getInstance().formatVelocity(v1, 2));
+
+  double v2 = sqrt(2.0)*v1;
+
+  v2Text_->setText(CString("V2: ") + Renderer::getInstance().formatVelocity(v2, 2));
 
   CString atmText = "Not in atmosphere";
   if (ship_->getInAtmosphere()) {
@@ -400,7 +417,12 @@ void NavDisplay::drawSyncOrbit(Ship* ship, DynamicBody* ref)
   glPopMatrix();
 
   glPushMatrix();
-  glRotatef(-tau - 90, 0, 0, 1);
+  double modifier = r.getNormalized().dot(v.getNormalized() * Vector3(0,0,1));
+  if (modifier > 0) {
+    glRotatef(-tau - 90, 0, 0, 1);
+  } else {
+    glRotatef(tau + 90, 0, 0, 1);
+  }
 
   glTranslatef(0, -translateDist, 0);
 
@@ -415,7 +437,12 @@ void NavDisplay::drawSyncOrbit(Ship* ship, DynamicBody* ref)
   }
   glEnd();
   glPopMatrix();
-  glRotatef(-tau1 - 90, 0, 0, 1);
+  double modifier1 = r1.getNormalized().dot(v1.getNormalized() * Vector3(0,0,1));
+  if (modifier1 > 0) {
+    glRotatef(-tau1 - 90, 0, 0, 1);
+  } else {
+    glRotatef(tau1 + 90, 0, 0, 1);
+  }
 
   glTranslatef(0, -translateDist1, 0);
   glBegin(GL_LINE_STRIP);
@@ -582,7 +609,7 @@ void NavDisplay::drawDocking()
   glutWireSphere(0.05, 10, 5);
   
 
-  Vector3 stationPort = station->getDockingPort()*0.05;
+  //Vector3 stationPort = station->getDockingPort()*0.05;
   glRotatef(station->getYaw() + station->getPortAngle() + 90.0, 0, 0, 1);
   
   glBegin(GL_LINES);

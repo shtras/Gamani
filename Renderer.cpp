@@ -207,8 +207,8 @@ LRESULT CALLBACK MainLoop(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 bool Renderer::init(HINSTANCE& hInstance)
 {
-  width_ = 1280;
-  height_ = 800;
+  width_ = 1600;
+  height_ = 900;
   hWnd_ = 0;
   hInstance_ = &hInstance;
   bool res = initWindow();
@@ -605,6 +605,29 @@ CString Renderer::formatVelocity(double vel, int len/* = 20*/)
     return CString(kms, len) + " km/s";
   }
   return CString(kmh, len) + " km/h";
+}
+
+CString Renderer::formatTime(double time, int len/* = 4 */)
+{
+  int days = time / 3600 / 24;
+  time -= days * 3600 * 24;
+  int hours = time / 3600;
+  time -= hours*3600;
+  int minutes = time / 60;
+  time -= minutes*60;
+  int seconds = time;
+  CString res = "";
+  if (days > 0) {
+    res += (CString(days) + "d ");
+  }
+  if (hours > 0) {
+    res += (CString(hours) + ":");
+  }
+  if (minutes > 0) {
+    res += (CString(minutes) + ":");
+  }
+  res += CString(seconds);
+  return res;
 }
 
 void Renderer::checkAndDrawAtmosphere()
