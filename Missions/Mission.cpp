@@ -6,7 +6,7 @@
 int Mission::LastID = 0;
 int Task::LastID = 0;
 
-Mission::Mission():description_(""),completed_(false)
+Mission::Mission():description_(""),completed_(false),visible_(true),finalized_(false)
 {
   id_ = LastID++;
 }
@@ -30,12 +30,16 @@ void Mission::checkCompleted()
   bool res = true;
   for (auto itr = tasks_.begin(); itr != tasks_.end(); ++itr) {
     Task* task = *itr;
-    res &= task->isCompleted();
+    if (task->isCompletedNotCheck()) {
+      continue;
+    }
+    if (task->isCompleted()) {
+      MissionManager::getInstance().notifyUpdated(id_);
+    } else {
+      res = false;
+    }
   }
   completed_ = res;
-  if (res) {
-    MissionManager::getInstance().notifyUpdated(id_);
-  }
 }
 
 bool Mission::isCompleted()
@@ -44,6 +48,21 @@ bool Mission::isCompleted()
     checkCompleted();
   }
   return completed_;
+}
+
+void Mission::finalize()
+{
+  if (finalized_) {
+    return;
+  }
+  finalized_ = true;
+  MissionManager::getInstance().notifyUpdated(id_);
+  for (auto itr=addOnComplete_.begin(); itr != addOnComplete_.end(); ++itr) {
+    MissionManager::getInstance().addMission(*itr);
+  }
+  for (auto itr=removeOnComplete_.begin(); itr != removeOnComplete_.end(); ++itr) {
+    MissionManager::getInstance().removeMission(*itr);
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -97,12 +116,14 @@ void Task::checkCompletion()
   case Orbit:
     res = checkOrbitCompleted();
     break;
+  case MoveFrom:
+    res = checkMoveFromCompleted();
+    break;
   default:
     assert(0);
   }
   if (res) {
-    completed_ = true;
-    
+    completed_ = true;    
   }
 }
 
@@ -141,6 +162,48 @@ bool Task::checkDockCompleted()
 bool Task::checkOrbitCompleted()
 {
   Ship* ship = MissionManager::getInstance().getShip();
-  assert(0);
+
+  Vector3 r = (ship->getCoord() - target_->getCoord()) * 1e6;
+  Vector3 v = (ship->getVelocity() - target_->getVelocity());
+  double M = target_->getMass() * 1e6;
+  Vector3 h = r*v;
+  Vector3 n = Vector3(0,1,0)*h;
+  double G = 6.6725e-11;
+  double myu = G*M;
+  Vector3 e = (r*(v.dot(v) - myu/r.getLength()) - v*(r.dot(v)))*(1.0/myu);
+  double E = v.dot(v)/2.0 - myu/r.getLength();
+  double a = -myu/2.0/E;
+  if (a < 0) {
+    a = -a;
+  }
+  double elen = e.getLength();
+  double b = sqrt(a*a*(1.0-e.dot(e)));
+
+
+  double eps = 1.0-(b*b/(a*a));
+  if (eps > 0) {
+    eps = sqrt(eps);
+  } else {
+    eps = 0;
+  }
+
+  double dp = a*(1-eps) * 1e-6;
+  double da = a*(1+eps) * 1e-6;
+
+  if (da >= targetDist_ && dp >= targetDist_) {
+    return true;
+  }
+
+  return false;
+}
+
+bool Task::checkMoveFromCompleted()
+{
+  Ship* ship = MissionManager::getInstance().getShip();
+  Vector3 dir = ship->getCoord() - target_->getCoord();
+  double dist = dir.getLength() - target_->getRadius();
+  if (dist > targetDist_) {
+    return true;
+  }
   return false;
 }

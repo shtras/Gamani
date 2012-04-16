@@ -2,7 +2,7 @@
 #include "WButton.h"
 #include "Renderer.h"
 
-WButton::WButton():param_(NULL),hasParam_(false)
+WButton::WButton():param_(NULL),hasParam_(false),highlighted_(false)
 {
 }
 
@@ -29,7 +29,15 @@ void WButton::render(double left, double top, double width, double height)
 {
   Vector4 color1 = Vector4(0.12, 0.15, 0.35, 0.9);
   Vector4 color2 = Vector4(0.7, 0.21, 0.65, 0.9);
-  if (isHovered()) {
+  if (highlighted_) {
+    if (isHovered()) {
+      color1 = Vector4(0.17, 0.6, 0.4, 0.95);
+      color2 = Vector4(0.75, 0.76, 0.7, 0.95);
+    } else {
+      color1 = Vector4(0.12, 0.55, 0.35, 0.9);
+      color2 = Vector4(0.7, 0.71, 0.65, 0.9);
+    }
+  } else if (isHovered()) {
     color1 = Vector4(0.17, 0.2, 0.4, 0.95);
     color2 = Vector4(0.75, 0.26, 0.7, 0.95);
   }
@@ -53,7 +61,7 @@ void WButton::render(double left, double top, double width, double height)
   glVertex3f(0, 0, 0);
   glVertex3f(width-0.04, 0, 0);
   glVertex3f(width, 0.04, 0);
-  glColor4f(0.7,0.21,0.65, 0.9);
+  glColor4f(color2[0], color2[1], color2[2], color2[3]);
   glVertex3f(width, height, 0);
   glVertex3f(0, height, 0);
   glEnd();

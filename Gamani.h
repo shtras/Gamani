@@ -2,7 +2,6 @@
 #include "World.h"
 #include "LayoutManager.h"
 #include "UpperPanel.h"
-#include "MissionDisplay.h"
 #include "MainMenu.h"
 
 class Gamani
@@ -90,7 +89,6 @@ private:
   bool names_;
 
   UpperPanel* upperPanel_;
-  MissionDisplay* missionDisplay_;
   MainMenu* mainMenu_;
   bool skybox1_;
   bool relativeOrbits_;

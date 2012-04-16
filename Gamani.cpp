@@ -256,6 +256,7 @@ bool Gamani::startGame()
 
 bool Gamani::endGame()
 {
+  Renderer::getInstance().getParticleManager()->reset();
   delete world_;
   world_ = NULL;
   return true;
@@ -333,13 +334,9 @@ bool Gamani::mainLoop()
   upperPanel_->setMinimizible(false);
   layoutManager_.addLayout(upperPanel_);
 
-  missionDisplay_ = new MissionDisplay();
-  missionDisplay_->init();
-  missionDisplay_->setDimensions(0, 0.9, 0.3, 0.4);
-  layoutManager_.addLayout(missionDisplay_);
   AstralBody* station = world_->getObject("Shipyard");
   assert (station && station->getType() == Renderable::StationType);
-  MissionManager::getInstance().setDisplay(missionDisplay_);
+  MissionManager::getInstance().init(&layoutManager_);
   MissionManager::getInstance().testInit(static_cast<Station*>(station));
 
   setShaders("Shaders/TexItems.vert", "Shaders/TexItems.frag", &shader_);
@@ -581,15 +578,16 @@ void Gamani::handlePressedKey(int key)
     }
     break;
   case 0xdd:
+    break;
     //switchDrawingMode();
     {
       Ship* ship[6];
-      ship[0] = static_cast<Ship*>(world_->getObject("Hawkeye"));
+      ship[0] = static_cast<Ship*>(world_->getObject("Galactica"));
       ship[1] = static_cast<Ship*>(world_->getObject("Ranger"));
       ship[2] = static_cast<Ship*>(world_->getObject("Avenger"));
       ship[3] = static_cast<Ship*>(world_->getObject("Lightning"));
       ship[4] = static_cast<Ship*>(world_->getObject("Thunderbolt"));
-      ship[5] = static_cast<Ship*>(world_->getObject("Galactica"));
+      ship[5] = static_cast<Ship*>(world_->getObject("Hawkeye"));
       static int shipNum = -1;
       if (shiftPressed_) {
         --shipNum;
@@ -857,6 +855,8 @@ bool Gamani::testInit()
     world_->addFreeObject(freeObjects[i]);
   }
   world_->switchControlledShip(playerShip);
+  //Star* star = *parsedSystem->getStars().begin();
+  //Renderer::getInstance().getParticleManager()->addParticle(ParticleManager::StarParticle, star, 0, 0, -1, 0.00001);
   return true;
   //Renderer::getInstance().formatDistance(1002342354.234234);
   /*

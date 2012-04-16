@@ -14,9 +14,11 @@ public:
   void setParam(void* param);
   signal0<> sigClick;
   signal1<void*> sigClickParam;
+  void setHighlighted(bool value) {highlighted_ = value;}
 private:
   CString label_;
   void* param_;
   bool hasParam_;
+  bool highlighted_;
 };
 

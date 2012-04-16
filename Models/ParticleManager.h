@@ -1,36 +1,40 @@
 #pragma once
 #include <list>
 #include "Renderable.h"
+#include "AstralBody.h"
 
 class Particle;
 
 class ParticleManager
 {
 public:
-  enum ParticleType {SmokeParticle, LightParticle};
+  enum ParticleType {SmokeParticle, LightParticle, StarParticle};
   ParticleManager();
   ~ParticleManager();
 
   void draw();
   void updateLifetime();
-  void addParticle(ParticleType type, Vector3& coord, Vector3& vel, uint32_t lifeTime, double size);
+  void addParticle(ParticleType type, Vector3& coord, Vector3& vel, int lifeTime, double size);
+  void addParticle(ParticleType type, AstralBody* boundedTo, double dist, double angle, int lifeTime, double size);
   GLuint getSmokeTex() {return smokeTex_;}
   const Vector3& getCamPos() {return camPos_;}
+  void reset();
 private:
   void updateCamPos();
   void sortParticles();
   vector<Particle*> particles_;
   GLuint smokeTex_;
   GLuint lightTex_;
+  GLuint starTex_;
   Vector3 camPos_;
 };
 
 class Particle: public Renderable
 {
 public:
-  Particle();
+  Particle(int lifeTime);
   virtual ~Particle();
-  virtual void render() = 0;
+  virtual void render();
   virtual bool updateLifeTime();
 
   virtual bool isStatic() {return false;}
@@ -48,29 +52,35 @@ protected:
   Vector3 vel_;
   double size_;
   ParticleManager::ParticleType particleType_;
+private:
+  Particle();
 };
 
 class DynamicParticle: public Particle
 {
 public:
-  DynamicParticle(Vector3& coord, Vector3& vel, uint32_t lifeTime, double size);
+  DynamicParticle(Vector3& coord, Vector3& vel, int lifeTime, double size);
   ~DynamicParticle();
-  virtual void render();
-    
 protected:
 };
 
 class BouncingParticle: public DynamicParticle
 {
 public:
-  BouncingParticle(Vector3& coord, Vector3& vel, uint32_t lifeTime, double size);
+  BouncingParticle(Vector3& coord, Vector3& vel, int lifeTime, double size);
   ~BouncingParticle();
   bool updateLifeTime();
 protected:
 };
 
-//class BoundedParticle: public Particle
-//{
-//public:
-//private:
-//};
+class BoundedParticle: public Particle
+{
+public:
+  BoundedParticle(AstralBody* boundedTo, double dist, double angle, int lifeTime, double size);
+  ~BoundedParticle();
+  virtual bool updateLifeTime();
+private:
+  AstralBody* boundedTo_;
+  double dist_;
+  double angle_;
+};

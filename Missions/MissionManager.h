@@ -2,13 +2,15 @@
 #include "MissionDisplay.h"
 #include "Mission.h"
 #include "Station.h"
+#include "LayoutManager.h"
 
 class MissionManager
 {
 public:
   static MissionManager& getInstance();
-  void setDisplay(MissionDisplay* display);
+  void init(LayoutManager* layoutManager);
   void addMission(Mission* mission);
+  void removeMission(Mission* mission);
   void addTask(int missionID, Task* task);
   void testInit(Station* station);
   Mission* getMissionByID(int id);
@@ -18,6 +20,9 @@ public:
 
   void checkCompleted();
   void reset();
+
+  signal1<WLayout*> AddLayout;
+  signal1<WLayout*> RemoveLayout;
 private:
   MissionManager();
   ~MissionManager();

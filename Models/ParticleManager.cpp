@@ -4,7 +4,7 @@
 #include "Renderer.h"
 #include <algorithm>
 
-ParticleManager::ParticleManager():smokeTex_(-1),lightTex_(-1)
+ParticleManager::ParticleManager():smokeTex_(-1),lightTex_(-1),starTex_(-1)
 {
 }
 
@@ -64,12 +64,18 @@ void ParticleManager::draw()
   if (lightTex_ == (GLuint)-1) {
     lightTex_ = LoadBitmap22("Textures/lighttex.bmp");
   }
+  if (starTex_ == (GLuint)-1) {
+    starTex_ = LoadBitmap22("Textures/startex.bmp");
+  }
   glEnable(GL_TEXTURE_2D);
   for (auto itr=particles_.begin(); itr != particles_.end(); ++itr) {
     Particle* particle = *itr;
     switch (particle->getParticleType()) {
     case SmokeParticle:
       glBindTexture(GL_TEXTURE_2D, smokeTex_);
+      break;
+    case StarParticle:
+      glBindTexture(GL_TEXTURE_2D, starTex_);
       break;
     case LightParticle:
       glBindTexture(GL_TEXTURE_2D, lightTex_);
@@ -96,6 +102,16 @@ void ParticleManager::updateLifetime()
   }
 }
 
+void ParticleManager::reset()
+{
+  auto itr=particles_.begin();
+  for (; itr != particles_.end(); ++itr) {
+    Particle* particle = *itr;
+    delete particle;
+  }
+  particles_.clear();
+}
+
 bool ParticleComp(Particle* p1, Particle* p2)
 {
   const Vector3& camPos = Renderer::getInstance().getParticleManager()->getCamPos();
@@ -104,7 +120,7 @@ bool ParticleComp(Particle* p1, Particle* p2)
   return (dist1 > dist2);
 }
 
-void ParticleManager::addParticle(ParticleType type, Vector3& coord, Vector3& vel, uint32_t lifeTime, double size)
+void ParticleManager::addParticle(ParticleType type, Vector3& coord, Vector3& vel, int lifeTime, double size)
 {
   Particle* newPar = NULL;
   switch (type) {
@@ -116,10 +132,30 @@ void ParticleManager::addParticle(ParticleType type, Vector3& coord, Vector3& ve
     newPar = new DynamicParticle(coord, vel, lifeTime, size);
     newPar->setParticleType(LightParticle);
     break;
+  case StarParticle:
+    newPar = new DynamicParticle(coord, vel, lifeTime, size);
+    newPar->setParticleType(StarParticle);
+    break;
   default:
     assert(0);
   }
    
+  assert(newPar);
+  particles_.push_back(newPar);
+}
+
+void ParticleManager::addParticle(ParticleType type, AstralBody* boundedTo, double dist, double angle, int lifeTime, double size)
+{
+  Particle* newPar = NULL;
+  switch (type) {
+  case StarParticle:
+    newPar = new BoundedParticle(boundedTo, dist, angle, lifeTime, size);
+    newPar->setParticleType(StarParticle);
+    break;
+  default:
+    assert(0);
+  }
+
   assert(newPar);
   particles_.push_back(newPar);
 }
@@ -130,7 +166,7 @@ void ParticleManager::sortParticles()
 }
 
 //////////////////////////////////////////////////////////////////////////
-Particle::Particle()
+Particle::Particle(int lifeTime):lifeTime_(lifeTime)
 {
 
 }
@@ -145,36 +181,35 @@ bool Particle::updateLifeTime()
   coord_ *= 1.0e6;
   coord_ += vel_ * Gamani::getInstance().getSpeedReduce();
   coord_ *= 1.0/1.0e6;
-
+  if (currLife_ == -1) {
+    return true;
+  }
   --currLife_;
   return currLife_ > 0;
 }
-//////////////////////////////////////////////////////////////////////////
 
-DynamicParticle::DynamicParticle(Vector3& coord, Vector3& vel, uint32_t lifeTime, double size)
-{
-  type_ = Renderable::ParticleType;
-  currLife_ = lifeTime;
-  coord_ = coord;
-  vel_ = vel;
-  size_ = size;
-  lifeTime_ = lifeTime;
-}
-
-DynamicParticle::~DynamicParticle()
-{
-
-}
-
-void DynamicParticle::render()
+void Particle::render()
 {
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
-  Renderer::getInstance().getCamera().applyZoom();
-  //glTranslatef(coord_[0]*GLOBAL_MULT, coord_[1]*GLOBAL_MULT, coord_[2]*GLOBAL_MULT);
+  //Renderer::getInstance().getCamera().applyZoom();
   Vector3 coord = getRealCoordinates(coord_);
 
 
+
+  double dist = coord.getLength();
+  double zoom = Renderer::getInstance().getCamera().getZoom();
+  double distMOne = 1/dist * 1e8 * 0.5;
+  if (zoom > distMOne) {
+    glScalef(distMOne, distMOne, distMOne);
+  } else {
+    Renderer::getInstance().getCamera().applyZoom();
+  }
+
+
+
+
+  //glTranslatef(coord_[0]*GLOBAL_MULT, coord_[1]*GLOBAL_MULT, coord_[2]*GLOBAL_MULT);
   glTranslatef(coord[0]*GLOBAL_MULT, coord[1]*GLOBAL_MULT, coord[2]*GLOBAL_MULT);
   glDisable(GL_LIGHTING);
 
@@ -184,7 +219,7 @@ void DynamicParticle::render()
   Vector3 lookDir = camPos - coord_;
   lookDir.normalize();
   //cout << camDirAlpha << " " << camDirPhi << " " << camDir[2] << endl;
- 
+
   Vector3 z = Vector3(0, 0, 1);
 
   Vector3 v1 = lookDir * z;
@@ -201,6 +236,8 @@ void DynamicParticle::render()
     glColor4f(0.1, 0.1, 0.1, currLife_ / (double)lifeTime_);
   } else if (particleType_ == ParticleManager::LightParticle) {
     glColor4f(0.6, 0.9, 0.2, currLife_ / (double)lifeTime_);
+  } else if (particleType_ == ParticleManager::StarParticle) {
+    glColor4f(0.95, 1, 0.7, currLife_ / (double)lifeTime_);
   } else {
     assert(0);
   }
@@ -222,10 +259,25 @@ void DynamicParticle::render()
 
   glPopMatrix();
 }
+//////////////////////////////////////////////////////////////////////////
+
+DynamicParticle::DynamicParticle(Vector3& coord, Vector3& vel, int lifeTime, double size):Particle(lifeTime)
+{
+  type_ = Renderable::ParticleType;
+  currLife_ = lifeTime;
+  coord_ = coord;
+  vel_ = vel;
+  size_ = size;
+}
+
+DynamicParticle::~DynamicParticle()
+{
+
+}
 
 //////////////////////////////////////////////////////////////////////////
 
-BouncingParticle::BouncingParticle(Vector3& coord, Vector3& vel, uint32_t lifeTime, double size):
+BouncingParticle::BouncingParticle(Vector3& coord, Vector3& vel, int lifeTime, double size):
   DynamicParticle(coord, vel, lifeTime, size)
 {
 
@@ -243,5 +295,28 @@ bool BouncingParticle::updateLifeTime()
   double r2 = 0.5 - rand() / (double)RAND_MAX;
   double r3 = 0.5 - rand() / (double)RAND_MAX;
   coord_ += Vector3(r1, r2, r3)*size_ * 0.3;
+  return res;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+BoundedParticle::BoundedParticle(AstralBody* boundedTo, double dist, double angle, int lifeTime, double size):Particle(lifeTime)
+{
+  boundedTo_ = boundedTo;
+  dist_ = dist;
+  angle_ = angle;
+  size_ = size;
+}
+
+BoundedParticle::~BoundedParticle()
+{
+
+}
+
+bool BoundedParticle::updateLifeTime()
+{
+  bool res = Particle::updateLifeTime();
+  coord_ = boundedTo_->getCoord();
+  vel_ = boundedTo_->getVelocity();
   return res;
 }

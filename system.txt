@@ -80,18 +80,6 @@ Star {
         DockingPort = 1;
         PortAngle = 270;
 	  }
-	  
-	    
-      Ship {
-        //Coord = (149596.89, -374.399, 0);
-        //Velocity = (-1022, -28533, 0);
-		Dist = 3.11;
-		Angle = 180;
-        Radius = 0.00005;
-        Name = Hawkeye;
-        Model = res/ss2.3ds;
-        PortAngle = 0;
-      }
 	}
 	
 	Satellite {
@@ -136,8 +124,9 @@ Star {
 	
 	Ship {
       //Coord = (149593.01, 0.0001, 0);
-	  Dist = 10;
-	  Angle = 0;
+	  Dist = 6.37;
+	  Angle = 270;
+	  Yaw = 0;
       //Velocity = (0, -23533, 0);
       Radius = 0.00005;
       Name = Ranger;
@@ -220,6 +209,17 @@ Star {
       //Velocity = (1350, -24130, 0);
       Name = Deimos;
       RotationPeriod = 109074.816;
+    }
+	
+	Ship {
+	  //Coord = (149596.89, -374.399, 0);
+	  //Velocity = (-1022, -28533, 0);
+	  Dist = 5;
+	  Angle = 180;
+	  Radius = 0.00005;
+	  Name = Hawkeye;
+	  Model = res/ss2.3ds;
+	  PortAngle = 0;
     }
   }
 

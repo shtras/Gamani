@@ -213,6 +213,7 @@
     <ClCompile Include="GUI\Forms\MissionDisplay.cpp" />
     <ClCompile Include="GUI\Forms\NavDisplay.cpp" />
     <ClCompile Include="GUI\Forms\CommDisplay.cpp" />
+    <ClCompile Include="GUI\Forms\TextPanel.cpp" />
     <ClCompile Include="GUI\Forms\UpperPanel.cpp" />
     <ClCompile Include="GUI\GUIRenderer.cpp" />
     <ClCompile Include="GUI\LayoutManager.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="GUI\Forms\MissionDisplay.h" />
     <ClInclude Include="GUI\Forms\NavDisplay.h" />
     <ClInclude Include="GUI\Forms\CommDisplay.h" />
+    <ClInclude Include="GUI\Forms\TextPanel.h" />
     <ClInclude Include="GUI\Forms\UpperPanel.h" />
     <ClInclude Include="GUI\GUIRenderer.h" />
     <ClInclude Include="GUI\LayoutManager.h" />

@@ -212,6 +212,9 @@
     <ClCompile Include="GUI\Forms\CommDisplay.cpp">
       <Filter>Source Files\GUI\Forms</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\Forms\TextPanel.cpp">
+      <Filter>Source Files\GUI\Forms</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Autopilot\APProgram.h">
@@ -374,6 +377,9 @@
       <Filter>Header Files\GUI\Forms</Filter>
     </ClInclude>
     <ClInclude Include="GUI\Forms\CommDisplay.h">
+      <Filter>Header Files\GUI\Forms</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Forms\TextPanel.h">
       <Filter>Header Files\GUI\Forms</Filter>
     </ClInclude>
   </ItemGroup>

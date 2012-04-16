@@ -148,7 +148,12 @@ void Ship::render()
       glutWireSphere(1, 10, 10);
       glEnable(GL_LIGHTING);
     }
+    float ambient_light_color[] = {0.15f, 0.15f, 0.15f, 1.0f};
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_light_color);
     model->draw();
+    float light_color[] = {0.0f, 0.0f, 0.0f, 1.0f};
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_color);
+
     //renderPort();
 
     glPopMatrix();
