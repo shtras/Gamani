@@ -47,17 +47,9 @@ void Star::render()
   //  glScalef(5000/zoom, 5000/zoom, 5000/zoom);
   //  glPopMatrix();
   //}
+  GLfloat light_position1[] = { 0, 0, 0, 1};
+  glLightfv(GL_LIGHT1, GL_POSITION, light_position1);
 
-
-  GLfloat light_position[] = { 0, 0, 0, 1};
-  GLfloat light_color[] = { 1, 1, 1, 1.0f };
-  GLfloat ambient_light_color[] = { 0, 0, 0, 1.0f };
-  GLfloat test[] = { 0.05, 0.05, 0.05, 1.0f };
-  glLightfv(GL_LIGHT1, GL_AMBIENT, test);
-  glLightfv(GL_LIGHT1, GL_POSITION, light_position);
-  glLightfv(GL_LIGHT1, GL_DIFFUSE, light_color);
-  glLightfv(GL_LIGHT1, GL_SPECULAR, light_color);
-  glEnable(GL_LIGHT1);
 
   glEnable(GL_LIGHT0);
   glPopMatrix();
@@ -82,5 +74,6 @@ void Star::render()
   drawName();
 
   glDisable(GL_LIGHT0);
+  //gluDeleteQuadric(earth);
   glPopMatrix();
 }

@@ -57,6 +57,12 @@
     <Filter Include="Source Files\Missions">
       <UniqueIdentifier>{79515a4c-d617-493e-9324-1907ab79c63d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ADP">
+      <UniqueIdentifier>{8ddaeb81-9c40-43fb-b266-2c81bbc3a241}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ADP">
+      <UniqueIdentifier>{d47461e9-62d3-4e49-b8f2-c2d112070383}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Gamani.cpp">
@@ -214,6 +220,9 @@
     </ClCompile>
     <ClCompile Include="GUI\Forms\TextPanel.cpp">
       <Filter>Source Files\GUI\Forms</Filter>
+    </ClCompile>
+    <ClCompile Include="ADP\ADP.cpp">
+      <Filter>Source Files\ADP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -381,6 +390,9 @@
     </ClInclude>
     <ClInclude Include="GUI\Forms\TextPanel.h">
       <Filter>Header Files\GUI\Forms</Filter>
+    </ClInclude>
+    <ClInclude Include="ADP\ADP.h">
+      <Filter>Header Files\ADP</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

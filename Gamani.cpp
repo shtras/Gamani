@@ -808,6 +808,110 @@ int body(HINSTANCE& hInstance, HINSTANCE& hPrevInstance, LPSTR& lpCmdLine, int& 
   return 0;
 }
 
+int char2bin(char* str, int start, int end)
+{
+  int res = 0;
+  for (int i=start; i<end; ++i) {
+    char c = str[i];
+    if (c == '0') {
+    } else if (c == '1') {
+      res++;
+    }
+    if (i != end-1) {
+      res <<= 1;
+    }
+  }
+  return res;
+}
+
+double log2(double a)
+{
+  return log(a)/log(2.0);
+}
+
+char* tobinaryfrac(double number)
+{
+  char* res = new char[53];
+  double curr = number;
+  for (int i=0; i<52; ++i) {
+    curr *= 2.0;
+    if (curr >= 1) {
+      res[i] = '1';
+      curr -= 1.0;
+    } else {
+      res[i] = '0';
+    }
+  }
+  res[52] = 0;
+  return res;
+}
+
+double getDouble(double n)
+{
+  //sign bit, 11-bit exponent, 52-bit mantissa
+
+  //N=M*n^p
+  //M - mantiss
+  //N = m*2^e
+  //log_a(b) = log_e(b)/log_e(a);
+  int sign = (n>0)?0:1;
+  n = fabs(n);
+  double n1 = log2(n);
+  double n2 = log2(n/2);
+
+  if (n == 0) {
+    n1 = -128;
+    n2 = -128;
+  }
+
+  double mn = max(fabs(n1), fabs(n2));
+  double fn = floor(mn);
+
+  int sign1 = (n1>=0)?1:-1;
+  int sign2 = (n2>=0)?1:-1;
+  if (sign1 != sign2) {
+    sign1 = sign2 = 1;
+    fn = 0;
+  }
+
+  fn *= sign1;
+  int e = fn;
+  double p = pow(2.0, e);
+  double m = n/p;
+
+  double check = m * p;
+
+  e += 1023;
+  if (n == 0) {
+    m = 1;
+    e = 0;
+    sign = 0;
+  } else {
+    assert (m >= 1 && m < 2);
+  }
+  m -= 1.0;
+
+  char* mantis = tobinaryfrac(m);
+  cout << mantis << endl;
+  int exp = e;
+  int mant1 = char2bin(mantis, 0, 20);
+  int mant2 = char2bin(mantis, 20, 52);
+  delete[] mantis;
+  int a1 = sizeof(float);
+  int a2 = sizeof(double);
+  double res;
+  
+  int* iarr = (int*)&res;
+  //int exp = char2bin("000 0000 0000");
+  //int mant1 = char2bin("0000 0000 0000 0000 1000");
+  //int mant2 = char2bin("0000 0000 0000 0000 0000 0000 0000 0000");
+  int i1 = (((sign<<11) + exp)<<20)+mant1;
+  int i2 = mant2;
+  iarr[0] = i2;
+  iarr[1] = i1;
+  return res;
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 #ifdef DEBUG
@@ -817,6 +921,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   _CrtMemState s1;
   _CrtMemCheckpoint(&s1);
 #endif
+  {
+    double test = 0;
+    int* tt = (int*)&test;
+    double a1 = getDouble(1.3e4);
+    double a2 = getDouble(-2);
+    double a3 = getDouble(4);
+    double a4 = getDouble(0.99);
+    double a5 = getDouble(1);
+    double a55 = getDouble(1.01);
+    double a6 = getDouble(.75);
+    double a7 = getDouble(2.5);
+    double a8 = getDouble(0.1);
+    double a9 = getDouble(-2.5);
+    double a10 = getDouble(1.3e-5);
+    double a11 = getDouble(-1.3e-5);
+    double a12 = getDouble(0);
+
+    int aaa = 0;
+  }
+
   Logger::getInstance().log(INFO_LOG_NAME, "Application started");
   int res = body(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
 

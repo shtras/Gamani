@@ -81,7 +81,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <OpenMPSupport>false</OpenMPSupport>
-      <AdditionalIncludeDirectories>.;Objects;Math;GUI;GUI/Forms;Generic;Models;pngLib;Autopilot;Missions</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;Objects;Math;GUI;GUI/Forms;Generic;Models;pngLib;Autopilot;Missions;ADP</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -135,7 +135,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <OpenMPSupport>false</OpenMPSupport>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.;Objects;Math;GUI;GUI/Forms;Generic;Models;pngLib;Autopilot;Missions</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;Objects;Math;GUI;GUI/Forms;Generic;Models;pngLib;Autopilot;Missions;ADP</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <StructMemberAlignment>Default</StructMemberAlignment>
@@ -201,6 +201,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ADP\ADP.cpp" />
     <ClCompile Include="Autopilot\APProgram.cpp" />
     <ClCompile Include="Autopilot\Autopilot.cpp" />
     <ClCompile Include="auxFuncs.cpp" />
@@ -260,6 +261,7 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ADP\ADP.h" />
     <ClInclude Include="Autopilot\APProgram.h" />
     <ClInclude Include="Autopilot\Autopilot.h" />
     <ClInclude Include="auxFuncs.h" />

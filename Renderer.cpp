@@ -339,6 +339,15 @@ bool Renderer::initOpenGL()
   //glEnable(GL_LINE_SMOOTH);
   checkReleaseError("Set parameters 1 error");
 
+  GLfloat light_color1[] = { 1, 1, 1, 1.0f };
+  GLfloat ambient_light_color1[] = { 0, 0, 0, 1.0f };
+  GLfloat test1[] = { 0.05, 0.05, 0.05, 1.0f };
+  glLightfv(GL_LIGHT1, GL_AMBIENT, test1);
+  
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, light_color1);
+  glLightfv(GL_LIGHT1, GL_SPECULAR, light_color1);
+  glEnable(GL_LIGHT1);
+
   GLfloat light_position[] = { 0, 0, 0, 1};
   GLfloat light_color[] = { 1, 1, 1, 1.0f };
   GLfloat ambient_light_color[] = { 0, 0, 0, 1.0f };
@@ -349,7 +358,17 @@ bool Renderer::initOpenGL()
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_light_color);
   //glLightModelf(GL_LIGHT_MODEL_COLOR_CONTROL,GL_SEPARATE_SPECULAR_COLOR);
 
-  glEnable(GL_LIGHT0);
+
+  GLfloat light_position2[] = { 0, 0, 0, 1};
+  GLfloat light_color2[] = { 0, 0, 0, 0.0f };
+  GLfloat ambient_light_color2[] = { 0.2, 0.2, 0.2, 1.0f };
+  glLightfv(GL_LIGHT2, GL_POSITION, light_position2);
+  glLightfv(GL_LIGHT2, GL_DIFFUSE, light_color2);
+  glLightfv(GL_LIGHT2, GL_SPECULAR, light_color2);
+  glLightfv(GL_LIGHT2, GL_AMBIENT, ambient_light_color2);
+  glDisable(GL_LIGHT2);
+
+  glDisable(GL_LIGHT0);
   glEnable(GL_LIGHTING);
 
   glEnable(GL_BLEND);

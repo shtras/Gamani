@@ -51,7 +51,7 @@ public:
   CString getCurrProgName();
   void setYawPower(double yawPower) {yawPower_ = yawPower;}
   double getYawPower() const {return yawPower_;}
-  double gatMarchPower() {return marchPower_;}
+  double getMarchPower() {return marchPower_;}
   AstralBody* getLandedOn() const {return landedOn_;}
   bool isLaunching();
   void setDockedCoord();

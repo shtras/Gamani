@@ -156,7 +156,7 @@ void ApproachProg::step()
   Vector3 tgtCoord = target_->getCoord();
   Vector3 shipCoord = getShip()->getCoord();
   double dist = (tgtCoord - shipCoord).getLength();
-  double timeToDist = sqrt(dist/2.0*1e6 / getShip()->gatMarchPower()) * 2;
+  double timeToDist = sqrt(dist/2.0*1e6 / getShip()->getMarchPower()) * 2;
   Vector3 tgtNewCord = (target_->getCoord()*1e6 + target_->getVelocity()*timeToDist) * 1e-6;
 
 
@@ -201,7 +201,7 @@ void ApproachProgStep2::step()
   Vector3 tgtCoord = target_->getCoord();
   Vector3 shipCoord = getShip()->getCoord();
   double dist = (tgtCoord - shipCoord).getLength() - target_->getRadius()*1.1;
-  double timeToDist = sqrt(dist * 1e6 / (getShip()->gatMarchPower()/0.05)) * 2.0;
+  double timeToDist = sqrt(dist * 1e6 / (getShip()->getMarchPower()/0.05)) * 2.0;
   double timeToRotate = 6.0; //TODO: Calculate from yawPower
   timeToDist -= timeToRotate;
   if (timeToDist < 0) {
@@ -378,7 +378,7 @@ void EqSpeedProg::init()
   Vector3 tgtCoord = target_->getCoord();
   Vector3 shipCoord = getShip()->getCoord();
   double dist = (tgtCoord - shipCoord).getLength();
-  double timeToDist = sqrt(dist/2.0*1e6 / getShip()->gatMarchPower()) * 2;
+  double timeToDist = sqrt(dist/2.0*1e6 / getShip()->getMarchPower()) * 2;
   Vector3 tgtNewCord = (target_->getCoord()*1e6 + target_->getVelocity()*timeToDist) * 1e-6;
   Vector3 dir = tgtCoord - shipCoord;
   double targetAngle = dir.getAngle();
