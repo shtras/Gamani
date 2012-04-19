@@ -81,7 +81,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <OpenMPSupport>false</OpenMPSupport>
-      <AdditionalIncludeDirectories>.;Objects;Math;GUI;GUI/Forms;Generic;Models;pngLib;Autopilot;Missions;ADP</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;Objects;Math;GUI;GUI/Forms;Generic;Models;pngLib;Autopilot;Missions;ADP;ADP/Compiler</AdditionalIncludeDirectories>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -201,7 +201,10 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ADPCompiler.cpp" />
+    <ClCompile Include="ADPISA.cpp" />
     <ClCompile Include="ADP\ADP.cpp" />
+    <ClCompile Include="ADP\ADPFactory.cpp" />
     <ClCompile Include="Autopilot\APProgram.cpp" />
     <ClCompile Include="Autopilot\Autopilot.cpp" />
     <ClCompile Include="auxFuncs.cpp" />
@@ -261,7 +264,10 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ADPCompiler.h" />
+    <ClInclude Include="ADPISA.h" />
     <ClInclude Include="ADP\ADP.h" />
+    <ClInclude Include="ADP\ADPFactory.h" />
     <ClInclude Include="Autopilot\APProgram.h" />
     <ClInclude Include="Autopilot\Autopilot.h" />
     <ClInclude Include="auxFuncs.h" />

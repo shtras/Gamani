@@ -37,6 +37,7 @@ public:
   CString remove(char c);
   CString substr(int begin, int end);
   vector<CString> tokenize(char c);
+  void replace(char c, char to);
 private:
   char* cont_;
   int len_;

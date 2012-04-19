@@ -63,6 +63,12 @@
     <Filter Include="Header Files\ADP">
       <UniqueIdentifier>{d47461e9-62d3-4e49-b8f2-c2d112070383}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ADP\Compiler">
+      <UniqueIdentifier>{dfb233a6-952b-420d-90bb-502fc38eaf86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ADP\Compiler">
+      <UniqueIdentifier>{6299d6c3-060b-451b-94e2-95ccf199c707}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Gamani.cpp">
@@ -222,6 +228,15 @@
       <Filter>Source Files\GUI\Forms</Filter>
     </ClCompile>
     <ClCompile Include="ADP\ADP.cpp">
+      <Filter>Source Files\ADP</Filter>
+    </ClCompile>
+    <ClCompile Include="ADPCompiler.cpp">
+      <Filter>Source Files\ADP\Compiler</Filter>
+    </ClCompile>
+    <ClCompile Include="ADPISA.cpp">
+      <Filter>Source Files\ADP</Filter>
+    </ClCompile>
+    <ClCompile Include="ADP\ADPFactory.cpp">
       <Filter>Source Files\ADP</Filter>
     </ClCompile>
   </ItemGroup>
@@ -392,6 +407,15 @@
       <Filter>Header Files\GUI\Forms</Filter>
     </ClInclude>
     <ClInclude Include="ADP\ADP.h">
+      <Filter>Header Files\ADP</Filter>
+    </ClInclude>
+    <ClInclude Include="ADPCompiler.h">
+      <Filter>Header Files\ADP\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="ADPISA.h">
+      <Filter>Header Files\ADP</Filter>
+    </ClInclude>
+    <ClInclude Include="ADP\ADPFactory.h">
       <Filter>Header Files\ADP</Filter>
     </ClInclude>
   </ItemGroup>

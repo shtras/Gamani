@@ -20,6 +20,7 @@
 #include "MissionManager.h"
 #include "SystemParser.h"
 #include "SphereVBO.h"
+#include "ADPCompiler.h"
 
 const char* Version = "0.4.0";
 
@@ -914,38 +915,25 @@ double getDouble(double n)
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+  Logger::getInstance().log(INFO_LOG_NAME, "Application started");
 #ifdef DEBUG
   AllocConsole();
   FILE* stream = NULL;
   errno_t err = freopen_s(&stream, "CON", "w", stdout);
+  Logger::getInstance().log(INFO_LOG_NAME, "Console allocated");
   _CrtMemState s1;
   _CrtMemCheckpoint(&s1);
 #endif
-  {
-    double test = 0;
-    int* tt = (int*)&test;
-    double a1 = getDouble(1.3e4);
-    double a2 = getDouble(-2);
-    double a3 = getDouble(4);
-    double a4 = getDouble(0.99);
-    double a5 = getDouble(1);
-    double a55 = getDouble(1.01);
-    double a6 = getDouble(.75);
-    double a7 = getDouble(2.5);
-    double a8 = getDouble(0.1);
-    double a9 = getDouble(-2.5);
-    double a10 = getDouble(1.3e-5);
-    double a11 = getDouble(-1.3e-5);
-    double a12 = getDouble(0);
 
-    int aaa = 0;
-  }
+  ADPCompiler compiler;
+  char memory[32000];
+  compiler.compile("res/asm/killrot.asm", memory, 32000);
 
-  Logger::getInstance().log(INFO_LOG_NAME, "Application started");
   int res = body(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
 
 #ifdef DEBUG
   FreeConsole();
+  Logger::getInstance().log(INFO_LOG_NAME, "Console deallocated");
   _CrtMemState s2;
   _CrtMemState s3;
   _CrtMemCheckpoint( &s2 );
@@ -955,6 +943,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     //_CrtDumpMemoryLeaks();
   }
 #endif
+  Logger::getInstance().log(INFO_LOG_NAME, CString("Application ended with return code ") + CString(res));
   return res;
 }
 

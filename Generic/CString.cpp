@@ -271,3 +271,12 @@ CString CString::substr(int begin, int end)
   }
   return res;
 }
+
+void CString::replace(char c, char to)
+{
+  for (int i=0; i<len_; ++i) {
+    if (cont_[i] == c) {
+      cont_[i] = to;
+    }
+  }
+}
