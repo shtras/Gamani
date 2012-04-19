@@ -49,12 +49,12 @@ vector<CString> ADPCompiler::format(CString line)
   return res;
 }
 
-bool ADPCompiler::createInstr(CString& label, CString& opcode, CString& op1, CString& op2)
+bool ADPCompiler::createInstr(CString& label, CString& mnemonic, CString& op1, CString& op2)
 {
   if (!label.isEmpty()) {
     labels_[label] = addr_;
   }
-  Instruction* instr = ADPFactory::getInstance().createInstr(opcode, op1, op2);
+  Instruction* instr = ADPFactory::getInstance().createInstr(mnemonic, op1, op2);
   if (!instr) {
     return false;
   }
@@ -70,7 +70,7 @@ bool ADPCompiler::parseLine(CString line)
   vector<CString> parts = format(line);
   assert(parts.size() >= 2);
   CString label = "";
-  CString opcode = "";
+  CString mnemonic = "";
   CString op1 = "";
   CString op2 = "";
   uint32_t idx = 0;
@@ -80,14 +80,14 @@ bool ADPCompiler::parseLine(CString line)
     idx++;
     assert(parts.size() >= 3);
   }
-  opcode = parts[idx];
+  mnemonic = parts[idx];
   op1 = parts[idx+1];
   if (parts.size() == idx+3) {
     op2 = parts[idx+2];
   }
   assert(parts.size() < idx+4);
 
-  if (!createInstr(label, opcode, op1, op2)) {
+  if (!createInstr(label, mnemonic, op1, op2)) {
     return false;
   }
 

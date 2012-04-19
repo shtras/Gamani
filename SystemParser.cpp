@@ -121,7 +121,7 @@ bool SystemParser::readInfo()
   return true;
 }
 
-double SystemParser::getDouble(CString str)
+double SystemParser::getDouble(CString& str)
 {
   str = str.toLower();
   double res = 0;

@@ -10,7 +10,9 @@ public:
     return instance;
   }
 
-  Instruction* createInstr(CString& opcode, CString& op1, CString& op2);
+  Instruction* createInstr(CString& mnemonic, CString& op1, CString& op2);
+  AModeOperand* createAmodeOperand(CString& op);
+  FPROperand* createFPROperand(CString& op);
 private:
   ADPFactory();
   ~ADPFactory();
