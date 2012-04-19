@@ -29,7 +29,7 @@ private:
   bool isCloseSectionLine(CString line);
   bool verifyInfo();
   StarSystem* parseData();
-  double getDouble(CString str);
+  double getDouble(CString& str);
   bool parseSectionInfo(StarSystem* system, Section* section, AstralBody* upperLayer);
   bool fillAstralInfo(AstralBody* bodyToFill, Section* section, AstralBody* upperLayer);
   void calcAutoInfo(AstralBody* from, AstralBody* to, double dist, double angle);

@@ -178,5 +178,66 @@ FPROperand* ADPFactory::createFPROperand(CString& op)
 
 Instruction* ADPFactory::createInstr(CString& mnemonic, CString& op1, CString& op2)
 {
+  if (Mov::isMe(mnemonic)) {
+    return new Mov(createAmodeOperand(op1), createAmodeOperand(op2));
+  } else if (Add::isMe(mnemonic)) {
+    return new Add(createAmodeOperand(op1), createAmodeOperand(op2));
+  } else if (Sub::isMe(mnemonic)) {
+    return new Sub(createAmodeOperand(op1), createAmodeOperand(op2));
+  } else if (And::isMe(mnemonic)) {
+    return new And(createAmodeOperand(op1), createAmodeOperand(op2));
+  } else if (Or::isMe(mnemonic)) {
+    return new Or(createAmodeOperand(op1), createAmodeOperand(op2));
+  } else if (Not::isMe(mnemonic)) {
+    return new Not(createAmodeOperand(op1), createAmodeOperand(op2));
+  } else if (Xor::isMe(mnemonic)) {
+    return new Xor(createAmodeOperand(op1), createAmodeOperand(op2));
+  } else if (Asl::isMe(mnemonic)) {
+    return new Asl(createAmodeOperand(op1), createAmodeOperand(op2));
+  } else if (Asr::isMe(mnemonic)) {
+    return new Asr(createAmodeOperand(op1), createAmodeOperand(op2));
+  } else if (Push::isMe(mnemonic)) {
+
+  } else if (Pop::isMe(mnemonic)) {
+
+  } else if (Lpsw::isMe(mnemonic)) {
+
+  } else if (Spsw::isMe(mnemonic)) {
+
+  } else if (Cmp::isMe(mnemonic)) {
+    return new Cmp(createAmodeOperand(op1), createAmodeOperand(op2));
+  } else if (Jmp::isMe(mnemonic)) {
+
+  } else if (Je::isMe(mnemonic)) {
+
+  } else if (Jne::isMe(mnemonic)) {
+
+  } else if (Jg::isMe(mnemonic)) {
+
+  } else if (Jge::isMe(mnemonic)) {
+
+  } else if (Call::isMe(mnemonic)) {
+
+  } else if (Ret::isMe(mnemonic)) {
+
+  } else if (Fmov::isMe(mnemonic)) {
+
+  } else if (Fadd::isMe(mnemonic)) {
+
+  } else if (Fsub::isMe(mnemonic)) {
+
+  } else if (Fmul::isMe(mnemonic)) {
+
+  } else if (Fdiv::isMe(mnemonic)) {
+
+  } else if (FLoad::isMe(mnemonic)) {
+
+  } else if (Fstore::isMe(mnemonic)) {
+
+  } else if (Fcmp::isMe(mnemonic)) {
+
+  } else {
+
+  }
   return NULL;
 }

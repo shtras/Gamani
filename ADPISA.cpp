@@ -11,7 +11,7 @@ Instruction::~Instruction()
 
 }
 
-D_S_Form::D_S_Form(char opcode):Instruction(opcode)
+D_S_Form::D_S_Form(char opcode, AModeOperand* op1, AModeOperand* op2):Instruction(opcode), dest_(op1), src_(op2)
 {
 
 }
@@ -101,6 +101,21 @@ int Jcc_Form::getSize()
   return 0;
 }
 
+Null_Form::Null_Form(char opcode):Instruction(opcode)
+{
+
+}
+
+Null_Form::~Null_Form()
+{
+
+}
+
+int Null_Form::getSize()
+{
+  return 0;
+}
+
 Operand::Operand()
 {
 
@@ -127,7 +142,8 @@ int AModeOperand::getSize()
   return 0;
 }
 
-FPROperand::FPROperand(FPR* fpr)
+FPROperand::FPROperand(FPR* fpr):
+  fpr_(fpr)
 {
 
 }
@@ -142,7 +158,8 @@ int FPROperand::getSize()
   return 0;
 }
 
-Amode::Amode( int num )
+Amode::Amode( int num ):
+  num_(num)
 {
 
 }
@@ -157,7 +174,8 @@ int Amode::getSize()
   return 0;
 }
 
-GPR::GPR( int num )
+GPR::GPR( int num ):
+  num_(num)
 {
 
 }
@@ -167,7 +185,8 @@ GPR::~GPR()
 
 }
 
-Immediate::Immediate( int val )
+Immediate::Immediate( int val ):
+  val_(val)
 {
 
 }
@@ -177,7 +196,8 @@ Immediate::~Immediate()
 
 }
 
-FPR::FPR( int num, double fimm)
+FPR::FPR( int num, double fimm):
+  num_(num), fimm_(fimm)
 {
 
 }
@@ -189,10 +209,10 @@ FPR::~FPR()
 
 int FPR::getSize()
 {
-
+  return 0;
 }
 
-Mov::Mov():D_S_Form('0'+0)
+Mov::Mov(AModeOperand* op1, AModeOperand* op2):D_S_Form('0'+0, op1, op2)
 {
 
 }
@@ -202,7 +222,7 @@ Mov::~Mov()
 
 }
 
-Add::Add():D_S_Form('0'+1)
+Add::Add(AModeOperand* op1, AModeOperand* op2):D_S_Form('0'+1, op1, op2)
 {
 
 }
@@ -212,7 +232,7 @@ Add::~Add()
 
 }
 
-Sub::Sub():D_S_Form('0'+2)
+Sub::Sub(AModeOperand* op1, AModeOperand* op2):D_S_Form('0'+2, op1, op2)
 {
 
 }
@@ -222,7 +242,7 @@ Sub::~Sub()
 
 }
 
-And::And():D_S_Form('0'+3)
+And::And(AModeOperand* op1, AModeOperand* op2):D_S_Form('0'+3, op1, op2)
 {
 
 }
@@ -232,7 +252,7 @@ And::~And()
 
 }
 
-Or::Or():D_S_Form('0'+4)
+Or::Or(AModeOperand* op1, AModeOperand* op2):D_S_Form('0'+4, op1, op2)
 {
 
 }
@@ -242,7 +262,7 @@ Or::~Or()
 
 }
 
-Not::Not():D_S_Form('0'+5)
+Not::Not(AModeOperand* op1, AModeOperand* op2):D_S_Form('0'+5, op1, op2)
 {
 
 }
@@ -252,7 +272,7 @@ Not::~Not()
 
 }
 
-Xor::Xor():D_S_Form('0'+6)
+Xor::Xor(AModeOperand* op1, AModeOperand* op2):D_S_Form('0'+6, op1, op2)
 {
 
 }
@@ -262,7 +282,7 @@ Xor::~Xor()
 
 }
 
-Asl::Asl():D_S_Form('0'+7)
+Asl::Asl(AModeOperand* op1, AModeOperand* op2):D_S_Form('0'+7, op1, op2)
 {
 
 }
@@ -272,7 +292,7 @@ Asl::~Asl()
 
 }
 
-Asr::Asr():D_S_Form('0'+8)
+Asr::Asr(AModeOperand* op1, AModeOperand* op2):D_S_Form('0'+8, op1, op2)
 {
 
 }
@@ -322,7 +342,7 @@ Spsw::~Spsw()
 
 }
 
-Cmp::Cmp():D_S_Form('0'+0x10)
+Cmp::Cmp(AModeOperand* op1, AModeOperand* op2):D_S_Form('0'+0x10, op1, op2)
 {
 
 }
@@ -388,6 +408,16 @@ Call::Call():D_Form('0'+0x16)
 }
 
 Call::~Call()
+{
+
+}
+
+Ret::Ret():Null_Form('0'+0x17)
+{
+
+}
+
+Ret::~Ret()
 {
 
 }

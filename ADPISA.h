@@ -22,7 +22,7 @@ private:
 class D_S_Form: public Instruction
 {
 public:
-  D_S_Form(char opcode);
+  D_S_Form(char opcode, AModeOperand* op1, AModeOperand* op2);
   virtual ~D_S_Form();
   virtual int getSize();
 private:
@@ -79,6 +79,15 @@ class Jcc_Form: public Instruction
 public:
   Jcc_Form(char opcode);
   virtual ~Jcc_Form();
+  virtual int getSize();
+private:
+};
+
+class Null_Form: public Instruction
+{
+public:
+  Null_Form(char opcode);
+  ~Null_Form();
   virtual int getSize();
 private:
 };
@@ -156,7 +165,7 @@ private:
 class Mov: public D_S_Form
 {
 public:
-  Mov();
+  Mov(AModeOperand* op1, AModeOperand* op2);
   ~Mov();
   static bool isMe(CString& mnemonic) {return mnemonic == "mov";}
 };
@@ -164,7 +173,7 @@ public:
 class Add: public D_S_Form
 {
 public:
-  Add();
+  Add(AModeOperand* op1, AModeOperand* op2);
   ~Add();
   static bool isMe(CString& mnemonic) {return mnemonic == "add";}
 };
@@ -172,7 +181,7 @@ public:
 class Sub: public D_S_Form
 {
 public:
-  Sub();
+  Sub(AModeOperand* op1, AModeOperand* op2);
   ~Sub();
   static bool isMe(CString& mnemonic) {return mnemonic == "sub";}
 };
@@ -180,7 +189,7 @@ public:
 class And: public D_S_Form
 {
 public:
-  And();
+  And(AModeOperand* op1, AModeOperand* op2);
   ~And();
   static bool isMe(CString& mnemonic) {return mnemonic == "and";}
 };
@@ -188,7 +197,7 @@ public:
 class Or: public D_S_Form
 {
 public:
-  Or();
+  Or(AModeOperand* op1, AModeOperand* op2);
   ~Or();
   static bool isMe(CString& mnemonic) {return mnemonic == "or";}
 };
@@ -196,7 +205,7 @@ public:
 class Not: public D_S_Form
 {
 public:
-  Not();
+  Not(AModeOperand* op1, AModeOperand* op2);
   ~Not();
   static bool isMe(CString& mnemonic) {return mnemonic == "not";}
 };
@@ -204,7 +213,7 @@ public:
 class Xor: public D_S_Form
 {
 public:
-  Xor();
+  Xor(AModeOperand* op1, AModeOperand* op2);
   ~Xor();
   static bool isMe(CString& mnemonic) {return mnemonic == "xor";}
 };
@@ -212,7 +221,7 @@ public:
 class Asl: public D_S_Form
 {
 public:
-  Asl();
+  Asl(AModeOperand* op1, AModeOperand* op2);
   ~Asl();
   static bool isMe(CString& mnemonic) {return mnemonic == "asl";}
 };
@@ -220,7 +229,7 @@ public:
 class Asr: public D_S_Form
 {
 public:
-  Asr();
+  Asr(AModeOperand* op1, AModeOperand* op2);
   ~Asr();
   static bool isMe(CString& mnemonic) {return mnemonic == "asr";}
 };
@@ -260,7 +269,7 @@ public:
 class Cmp: public D_S_Form
 {
 public:
-  Cmp();
+  Cmp(AModeOperand* op1, AModeOperand* op2);
   ~Cmp();
   static bool isMe(CString& mnemonic) {return mnemonic == "cmp";}
 };
@@ -311,6 +320,14 @@ public:
   Call();
   ~Call();
   static bool isMe(CString& mnemonic) {return mnemonic == "call";}
+};
+
+class Ret: public Null_Form
+{
+public:
+  Ret();
+  ~Ret();
+  static bool isMe(CString& mnemonic) {return mnemonic == "ret";}
 };
 
 class Fmov: public F_F_Form
