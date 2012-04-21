@@ -1,6 +1,6 @@
 #pragma once
-
 #include "AstralBody.h"
+#include "ADP.h"
 
 class Ship;
 class APProgram;
@@ -28,6 +28,8 @@ public:
   vector<CString> getPrograms();
   void enqueue(APProgram* prog);
   void clearQueue();
+
+  void loadProg(CString fileName);
 private:
   void GC();
   Ship* ship_;
@@ -39,4 +41,5 @@ private:
   list <APProgram*> queue_;
 
   CString lastError_;
+  ADP* adp_;
 };

@@ -142,3 +142,88 @@ void setShaders(const char* vertex, const char* frag, GLuint* pn)
     assert(0);
   }
 }
+
+char setBit(char byte, int bit)
+{
+  assert(bit >= 0 && bit < 8);
+  char mask = 0x80 >> bit;
+  return byte | mask;
+}
+
+char unsetBit(char byte, int bit)
+{
+  assert(bit >= 0 && bit < 8);
+  char mask = (0x80 >> bit)^0xff;
+  return byte & mask;
+}
+
+int getBit(int byte, int bit)
+{
+  assert(bit >= 0 && bit < 32);
+  int mask = 0x80 >> bit;
+  return ((byte & mask)>0)?1:0;
+}
+
+void dumpNumber(char* mem, int& offset, int number, int len)
+{
+  assert(len <= 32);
+  int start = 0;
+  if (len <= 8) {
+    start = 8-len;
+  }
+  if (len > 8) {
+    assert (len % 8 == 0);
+  }
+  int currBit = start;
+  for (int i=0; i<len; ++i) {
+    int charNum = offset/8;
+    int bitNum = offset%8;
+    int bit = getBit(number, currBit++);
+    if (currBit >= 8) {
+      currBit = 0;
+      number >>= 8;
+    }
+    if (bit) {
+      mem[charNum] = setBit(mem[charNum], bitNum);
+    } else {
+      mem[charNum] = unsetBit(mem[charNum], bitNum);
+    }
+    ++offset;
+  }
+}
+
+int getBits(char* mem, int& offset, int len)
+{
+  assert(len <= 32);
+  int res = 0;
+  for (int i=0; i<len; ++i) {
+    int charNum = offset/8;
+    int bitNum = offset%8;
+    int bit = getBit(mem[charNum], bitNum);
+    res += bit;
+    if (i != len-1) {
+      res <<= 1;
+    }
+    ++offset;
+  }
+  return res;
+}
+
+int get8bit(char* mem, int& offset)
+{
+  return getBits(mem, offset, 8);
+}
+
+int get16bit(char* mem, int& offset)
+{
+  int i1 = get8bit(mem, offset);
+  int i2 = get8bit(mem, offset);
+  return (i2 << 8) + i1;
+}
+
+int get32bit(char* mem, int& offset)
+{
+  int i1 = get16bit(mem, offset);
+  int i2 = get16bit(mem, offset);
+  return (i2 << 16) + i1;
+}

@@ -1,7 +1,6 @@
-/*
+ADP-12 specification
 
-opcode
-oooo oo
+Opcodes (6 bit):
 0x00 mov
 0x01 add
 0x02 sub
@@ -15,11 +14,11 @@ oooo oo
 0x0a pop
 0x0b lpsw
 0x0c spsw
+--Reserved--
 0x0d
 0x0e
 0x0f
-
-for shifted second operand 's' is added to opcode (mov --> movs)
+* For shifted second operand 's' is added to opcode (mov --> movs). Operand is shifted by 16 bits
 
 0x10 cmp a, b                ; PSW set as in sub a, b
 0x11 jmp oooo ooamode
@@ -29,8 +28,16 @@ for shifted second operand 's' is added to opcode (mov --> movs)
 0x15 jge oooo oott tttt tttt ; S == 0
 0x16 call
 0x17 ret
+--Reserved--
+0x18
+0x19
+0x1a
+0x1b
+0x1c
+0x1d
+0x1e
+0x1f
 
-oooo oo
 0x20: fmov ddd sss
 0x21: fadd
 0x22: fsub
@@ -39,14 +46,32 @@ oooo oo
 0x25: fload fff amode 0
 0x26: fstore amode 0 fff
 0x27: fcmp
+--Reserved--
+0x28
+0x29
+0x2a
+0x2b
+0x2c
+0x2d
+0x2e
+0x2f
 
-operand
+Instruction forms and comments:
+amode amode		- first amode cannot be 101 or 111
+amode 			- if amode is 101 or 111, opcode is extended by 111
+jcc				- target is 10-bit immediate
+fpr fpr
+amode fpr       - amode cannot be 101 or 111
+fpr amode       - amode cannot be 101 or 111
+null form		- opcode extended by 11
 
-PSW:
+PSW - processor status word:
 ZCSO - zero carry sign overflow. Modified by each instruction that modifies dest register
 
-registers
-GPR
+Operands:
+
+Registers
+GPR:
 rrr
 0x0 - 0x5: r0 - r5
 0x6: rsp - stack pointer
@@ -57,31 +82,73 @@ fff
 0x0 - 0x6: f0 - f6
 0x7: 64-bit immediate
 
-GPR addressing modes:
+GPR addressing modes (amodes):
 oooo ooaa arrr faaa rrr0 ;f - flag for source operand: 0 - regular, 1 - shifted
-for each amode except 101 and 111 the last bit is reserved
-000: rrr - register
-001: [rrr] - register
+for each amode except 101 and 111 the last bit is reserved and set to 0
+000: rrr
+001: [rrr]
 010: [rrr++]
 011: [rrr--]
-100: 
+100: --Reserved--
 101: iiii
 110: iiii iiii [rrr]
 111: iiii iiii iiii iiii - immediate
 
-memory (x4bit):
-0x00 0000
+Memory (x4bit words):
+0x000000
 ...
-0xe0 0000
+0xe00000
 
-        0x0000: movs r1, 0xe0   ; 0000 0000 0001 1111 0000 0000 1110 0000                                                         001F00E0
-        0x0008: mov  r2, [r1]   ; 0000 0000 0010 0001 0010                                                                        00212
-        0x000d: push r2         ; 0010 0100 0010                                                                                  0AD1
-        0x0010: movs [r2], 0x1  ; 0000 0000 1010 1101 0001                                                                        40153
-        0x0015: xor  r3, r3     ; 0001 1000 0011 0000 0110                                                                        18306
-loop:   0x001a: add  r3, 1      ; 0000 0100 0011 0101 0001                                                                        04351
-        0x001f: cmp  r3, 10     ; 0100 0000 0011 0101 1010                                                                        4035A
-        0x0024: jne  loop       ; 0100 1111 1111 0010                                                                             4FF2
-        0x0028: fmov f5, 1.3e4  ; 1000 0010 1111 0100 0000 1100 1001 0110 0100 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000  82F40C9640000000
-        0x0041: mov 15[r2], r1  ; 0000 0010 1001 1110 0000 0010                                                                   29E02
-*/
+Example:
+		jmp		main			; 0100 0111 1111 0001 1100 0000 0000
+func:	mov		r2, 10			; 0000 0000 0010 0101 1010 
+loop:	sub		r2, 1			; 0000 1000 0010 0101 0001
+		cmp		r2, 0			; 0100 0000 0010 0101 0000
+		jg		loop			; 0101 0011 1111 0010
+		ret						; 0101 1111
+main:	movs	r1, 0x10		; 0000 0000 0001 1111 0001 0000 0000 0000
+		add 	r1, 0x2000		; 0000 0100 0001 0111 0000 0000 0010 0000
+		fload	f0, [r1]		; 1001 0100 0001 0010
+		fadd	f0, 3.5e10		; 1000 0100 0111 0101 0011 0100 1100 0010 0000 0100 0010 0000 0000 0000 0000 0000 0000 0011 1100
+		fmov	f1, 1e10		; 1000 0000 1111 0101 1111 1010 0000 0000 0010 0100 0010 0000 0000 0000 0000 0000 0000 0010 0000
+		fsub	f0, f1			; 1000 1000 0001
+		fstore	0x10[r1], f0	; 1001 1011 0000 1000 0001 0000
+		call	func			; 0101 1011 1111 0000 0111 0000 0000
+		mov 	r3, 5			; 0000 0000 0011 0101 0101
+		fmov	f2, 0.5			; 1000 0001 0111 0000 0000 0000 0000 1110 0000 0011 1111 0000 0000 0000 0000 0000 0000 0000 0000
+loop1:	fmul 	f5, 2.0			; 1000 1110 1111 0000 0000 0000 0000 0000 0000 0100 0000 0000 0000 0000 0000 0000 0000 0000 0000
+		sub		r3, 1			; 0000 1000 0011 0101 0001
+		cmp		r3, 0			; 0100 0000 0011 0101 0000
+		jg		loop1			; 0101 0011 1101 1111
+wait:	jmp 	wait			; 0100 0111 1111 1001 1111 0000 0000
+
+Compiled:
+47 f1 c0 00 02 5a 08 25 14 02 50 53 f2 5f 00 1f
+10 00 04 17 00 20 94 12 84 75 34 c2 04 20 00 00
+03 c8 0f 5f a0 02 42 00 00 00 20 88 19 b0 81 05
+bf 07 00 00 35 58 17 00 00 e0 3f 00 00 00 00 8e
+f0 00 00 04 00 00 00 00 00 83 51 40 35 05 3d f4
+7f 9f 00
+
+Parsed:
+0x00 Jmp 28
+0x07 Mov r2, 10
+0x0c Sub r2, 1
+0x11 Cmp r2, 0
+0x16 Jg -14
+0x1a Ret
+0x1c Movs r1, 16
+0x24 Add r1, 8192
+0x2c Fload f0, [r1]
+0x30 Fadd f0, 3.5e+010
+0x43 Fmov f1, 1e+010
+0x56 Fsub f0, f1
+0x59 Fstore 16[r1], f0
+0x5f Call 7
+0x66 Mov r3, 5
+0x6b Fmov f2, 0.5
+0x7e Fmul f5, 2
+0x91 Sub r3, 1
+0x96 Cmp r3, 0
+0x9b Jg -33
+0x9f Jmp 159

@@ -191,7 +191,7 @@ Vector3 SystemParser::parseVector(CString str)
     Logger::getInstance().log(ERROR_LOG_NAME, CString("Cannot parse vector string: ") + str);
     return Vector3();
   }
-  str = str.substr(1, str.getSize() - 1);
+  str = str.substr(1, str.getSize() - 2);
   vector<CString> parts = str.tokenize(',');
   if (parts.size() != 3) {
     Logger::getInstance().log(ERROR_LOG_NAME, CString("Cannot parse vector string: ") + str);

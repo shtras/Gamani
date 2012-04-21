@@ -84,7 +84,7 @@ int getHexInt(CString& op)
       res += (c-'0');
     } else {
       assert (c >= 'a' && c <= 'f');
-      res += (c-'a');
+      res += (c-'a'+10);
     }
     if (i != op.getSize() - 1) {
       res *= 16;
@@ -96,8 +96,12 @@ int getHexInt(CString& op)
 int getDecInt(CString& op)
 {
   int res = 0;
+  bool neg = false;
   for (int i=0; i<op.getSize(); ++i) {
     char c = op[i];
+    if (i == 0 && c == '-') {
+      neg = true;
+    }
     assert (c >= '0' && c <= '9');
     int v = c - '0';
     res += v;
@@ -105,15 +109,24 @@ int getDecInt(CString& op)
       res *= 10;
     }
   }
+  if (neg) {
+    res = -res;
+  }
   return res;
 }
 
-int getInt(CString& op)
+int getInt(CString& op, bool& res)
 {
   if (op[0] == '0' && op[1] == 'x') {
-    return getHexInt(op);
-  } else {
+    res = true;
+    return getHexInt(op.substr(2, op.getSize()-1));
+  } else if ((op[0] >= '0' && op[0] <= '9') || op[0] == '-') {
+    res = true;
     return getDecInt(op);
+  } else {
+    //Assuming label
+    res = false;
+    return 0;
   }
 }
 
@@ -128,30 +141,20 @@ AModeOperand* ADPFactory::createAmodeOperand(CString& op)
     amodeNum = 0;
     gprNum = op[1] - '0';
   } else if (op[0] == '[') {
-    gprNum = op[2] - '0';
-    if (op[op.getSize()-2] == '+') {
-      assert(op[op.getSize()-3] == '+');
-      amodeNum = 2;
-    } else if (op[op.getSize()-2] == '-') {
-      assert(op[op.getSize()-3] == '-');
-      amodeNum = 3;
-    } else {
-      amodeNum = 1;
-    }
+    amodeNum = 1;
+    gprNum = op[1] - '0';
   } else if (op[op.getSize()-1] == ']') {
     int idx = op.getIndex('[');
-    immVal = getInt(op.substr(0, idx-1));
+    bool number = false;
+    immVal = getInt(op.substr(0, idx-1), number);
     imm = new Immediate(immVal);
-    amodeNum = 6;
-    gprNum = op[op.getSize()-3] - '0';
+    amodeNum = 2;
+    gprNum = op[op.getSize()-2] - '0';
   } else {
-    immVal = getInt(op);
+    bool number = false;
+    immVal = getInt(op, number);
     imm = new Immediate(immVal);
-    if (immVal <= 0xf) {
-      amodeNum = 5;
-    } else {
-      amodeNum = 7;
-    }
+    amodeNum = 3;
   }
   GPR* gpr = NULL;
   if (gprNum != -1) {
@@ -169,7 +172,7 @@ FPROperand* ADPFactory::createFPROperand(CString& op)
   if (op[0] == 'f') {
     val = op[1] - '0';
   } else {
-    val = 7;
+    val = 0xf;
     fimm = getDouble(op);
   }
   FPR* fpr = new FPR(val, fimm);
@@ -178,66 +181,345 @@ FPROperand* ADPFactory::createFPROperand(CString& op)
 
 Instruction* ADPFactory::createInstr(CString& mnemonic, CString& op1, CString& op2)
 {
+  bool shifted = false;
+  if (mnemonic[mnemonic.getSize()-1] == 's') {
+    shifted = true;
+    mnemonic = mnemonic.substr(0, mnemonic.getSize()-2);
+  }
+  Instruction* res = NULL;
+  bool number = false;
   if (Mov::isMe(mnemonic)) {
-    return new Mov(createAmodeOperand(op1), createAmodeOperand(op2));
+    res = new Mov(createAmodeOperand(op1), createAmodeOperand(op2));
   } else if (Add::isMe(mnemonic)) {
-    return new Add(createAmodeOperand(op1), createAmodeOperand(op2));
+    res = new Add(createAmodeOperand(op1), createAmodeOperand(op2));
   } else if (Sub::isMe(mnemonic)) {
-    return new Sub(createAmodeOperand(op1), createAmodeOperand(op2));
+    res = new Sub(createAmodeOperand(op1), createAmodeOperand(op2));
   } else if (And::isMe(mnemonic)) {
-    return new And(createAmodeOperand(op1), createAmodeOperand(op2));
+    res = new And(createAmodeOperand(op1), createAmodeOperand(op2));
   } else if (Or::isMe(mnemonic)) {
-    return new Or(createAmodeOperand(op1), createAmodeOperand(op2));
+    res = new Or(createAmodeOperand(op1), createAmodeOperand(op2));
   } else if (Not::isMe(mnemonic)) {
-    return new Not(createAmodeOperand(op1), createAmodeOperand(op2));
+    res = new Not(createAmodeOperand(op1), createAmodeOperand(op2));
   } else if (Xor::isMe(mnemonic)) {
-    return new Xor(createAmodeOperand(op1), createAmodeOperand(op2));
+    res = new Xor(createAmodeOperand(op1), createAmodeOperand(op2));
   } else if (Asl::isMe(mnemonic)) {
-    return new Asl(createAmodeOperand(op1), createAmodeOperand(op2));
+    res = new Asl(createAmodeOperand(op1), createAmodeOperand(op2));
   } else if (Asr::isMe(mnemonic)) {
-    return new Asr(createAmodeOperand(op1), createAmodeOperand(op2));
+    res = new Asr(createAmodeOperand(op1), createAmodeOperand(op2));
   } else if (Push::isMe(mnemonic)) {
-
+    res = new Push(createAmodeOperand(op1));
   } else if (Pop::isMe(mnemonic)) {
-
+    res = new Pop(createAmodeOperand(op1));
   } else if (Lpsw::isMe(mnemonic)) {
-
+    res = new Lpsw(createAmodeOperand(op1));
   } else if (Spsw::isMe(mnemonic)) {
-
+    res = new Spsw(createAmodeOperand(op1));
   } else if (Cmp::isMe(mnemonic)) {
-    return new Cmp(createAmodeOperand(op1), createAmodeOperand(op2));
+    res = new Cmp(createAmodeOperand(op1), createAmodeOperand(op2));
   } else if (Jmp::isMe(mnemonic)) {
-
+    res = new Jmp(createAmodeOperand(op1));
   } else if (Je::isMe(mnemonic)) {
-
+    res = new Je(new Immediate(getInt(op1, number)));
   } else if (Jne::isMe(mnemonic)) {
-
+    res = new Jne(new Immediate(getInt(op1, number)));
   } else if (Jg::isMe(mnemonic)) {
-
+    res = new Jg(new Immediate(getInt(op1, number)));
   } else if (Jge::isMe(mnemonic)) {
-
+    res = new Jge(new Immediate(getInt(op1, number)));
   } else if (Call::isMe(mnemonic)) {
-
+    res = new Call(createAmodeOperand(op1));
   } else if (Ret::isMe(mnemonic)) {
-
+    res = new Ret();
   } else if (Fmov::isMe(mnemonic)) {
-
+    res = new Fmov(createFPROperand(op1), createFPROperand(op2));
   } else if (Fadd::isMe(mnemonic)) {
-
+    res = new Fadd(createFPROperand(op1), createFPROperand(op2));
   } else if (Fsub::isMe(mnemonic)) {
-
+    res = new Fsub(createFPROperand(op1), createFPROperand(op2));
   } else if (Fmul::isMe(mnemonic)) {
-
+    res = new Fmul(createFPROperand(op1), createFPROperand(op2));
   } else if (Fdiv::isMe(mnemonic)) {
-
-  } else if (FLoad::isMe(mnemonic)) {
-
+    res = new Fdiv(createFPROperand(op1), createFPROperand(op2));
+  } else if (Fload::isMe(mnemonic)) {
+    res = new Fload(createFPROperand(op1), createAmodeOperand(op2));
   } else if (Fstore::isMe(mnemonic)) {
-
+    res = new Fstore(createAmodeOperand(op1), createFPROperand(op2));
   } else if (Fcmp::isMe(mnemonic)) {
-
+    res = new Fcmp(createFPROperand(op1), createFPROperand(op2));
   } else {
 
   }
+  res->setShiftedSrc(shifted);
+  return res;
+}
+
+FPROperand* ADPFactory::createFPROperand( char* mem, int& offset )
+{
+  int fprNum = getBits(mem, offset, 4);
+  double immVal = 0;
+  if (fprNum == 0xf) {
+    int reserve = getBits(mem, offset, 2);
+    assert(reserve == 0);
+    int imm1 = get32bit(mem, offset);
+    int imm2 = get32bit(mem, offset);
+    int* iarr = (int*)&immVal;
+    iarr[0] = imm2;
+    iarr[1] = imm1;
+  }
+  FPR* fpr = new FPR(fprNum, immVal);
+  return new FPROperand(fpr);
+}
+
+AModeOperand* ADPFactory::createAmodeOperand(char* mem, int& offset)
+{
+  int amodeNum = getBits(mem, offset, 2);
+  int regNum = -1;
+  int immVal = 0;
+  bool hasImm = false;
+  if (amodeNum == 0 || amodeNum == 1) {
+    regNum = getBits(mem, offset, 4);
+  } else if (amodeNum == 2) {
+    hasImm = true;
+    immVal = getBits(mem, offset, 12);
+    regNum = getBits(mem, offset, 4);
+  } else if (amodeNum == 3) {
+    hasImm = true;
+    int imm1 = getBits(mem, offset, 8);
+    int imm2 = getBits(mem, offset, 8);
+    immVal = (imm2 << 8) + imm1;
+  } else {
+    return NULL;
+  }
+  Immediate* imm = NULL;
+  GPR* gpr = NULL;
+  if (hasImm) {
+    imm = new Immediate(immVal);
+  }
+  if (regNum != -1) {
+    gpr = new GPR(regNum);
+  }
+  Amode* amode = new Amode(amodeNum);
+  return new AModeOperand(amode, gpr, imm);
+}
+
+Instruction* ADPFactory::createD_S_Form(char opcode, char* mem, int& offset)
+{
+  AModeOperand* amodeOp1 = createAmodeOperand(mem, offset);
+  int shiftedBit = getBits(mem, offset, 1);
+  AModeOperand* amodeOp2 = createAmodeOperand(mem, offset);
+
+  int zeros = (8 - offset%8);
+  if (zeros != 8) {
+    int reserve = getBits(mem, offset, zeros);
+    assert(reserve == 0);
+  }
+
+  Instruction* res = NULL;
+  switch (opcode) {
+  case 0x0:
+    res = new Mov(amodeOp1, amodeOp2);
+    break;
+  case 0x1:
+    res = new Add(amodeOp1, amodeOp2);
+    break;
+  case 0x2:
+    res = new Sub(amodeOp1, amodeOp2);
+    break;
+  case 0x3:
+    res = new And(amodeOp1, amodeOp2);
+    break;
+  case 0x4:
+    res = new Or(amodeOp1, amodeOp2);
+    break;
+  case 0x5:
+    res = new Not(amodeOp1, amodeOp2);
+    break;
+  case 0x6:
+    res = new Xor(amodeOp1, amodeOp2);
+    break;
+  case 0x7:
+    res = new Asl(amodeOp1, amodeOp2);
+    break;
+  case 0x8:
+    res = new Asr(amodeOp1, amodeOp2);
+    break;
+  case 0x10:
+    res = new Cmp(amodeOp1, amodeOp2);
+    break;
+  }
+  res->setShiftedSrc(shiftedBit == 1);
+  return res;
+}
+
+Instruction* ADPFactory::createD_Form( char opcode, char* mem, int& offset )
+{
+  AModeOperand* op = NULL;
+  op = createAmodeOperand(mem, offset);
+
+  int zeros = (8 - offset%8);
+  if (zeros != 8) {
+    int reserve = getBits(mem, offset, zeros);
+    assert(reserve == 0);
+  }
+  Instruction* res = NULL;
+  switch (opcode) {
+  case 0x9:
+    res = new Push(op);
+    break;
+  case 0xa:
+    res = new Pop(op);
+    break;
+  case 0xb:
+    res = new Lpsw(op);
+    break;
+  case 0xc:
+    res = new Spsw(op);
+    break;
+  case 0x11:
+    res = new Jmp(op);
+    break;
+  case 0x16:
+    res = new Call(op);
+    break;
+  }
+  return res;
+}
+
+Instruction* ADPFactory::createF_F_Form( char opcode, char* mem, int& offset )
+{
+  FPROperand* fprOp1 = createFPROperand(mem, offset);
+  FPROperand* fprOp2 = createFPROperand(mem, offset);
+  int zeros = (8 - offset%8);
+  if (zeros != 8) {
+    int reserve = getBits(mem, offset, zeros);
+    assert(reserve == 0);
+  }
+  switch (opcode) {
+  case 0x20:
+    return new Fmov(fprOp1, fprOp2);
+  case 0x21:
+    return new Fadd(fprOp1, fprOp2);
+  case 0x22:
+    return new Fsub(fprOp1, fprOp2);
+  case 0x23:
+    return new Fmul(fprOp1, fprOp2);
+  case 0x24:
+    return new Fdiv(fprOp1, fprOp2);
+  case 0x27:
+    return new Fcmp(fprOp1, fprOp2);
+  }
   return NULL;
+}
+
+Instruction* ADPFactory::createJcc_Form( char opcode, char* mem, int& offset )
+{
+  int imm1 = getBits(mem, offset, 10);
+  //int imm2 = getBits(mem, offset, 8);
+  int immVal = imm1;//(imm2 << 2) + imm1;
+  if ((immVal & 0x200) != 0) {
+    //sign extend
+    immVal |= 0xFFFFFC00;
+  }
+  Immediate* imm = new Immediate(immVal);
+  switch (opcode) {
+  case 0x12:
+    return new Je(imm);
+  case 0x13:
+    return new Jne(imm);
+  case 0x14:
+    return new Jg(imm);
+  case 0x15:
+    return new Jge(imm);
+  }
+  return NULL;
+}
+
+Instruction* ADPFactory::createNull_Form( char opcode, char* mem, int& offset )
+{
+  int reserve = getBits(mem, offset, 2);
+  assert(reserve == 3);
+  switch (opcode) {
+  case 0x17:
+    return new Ret();
+  }
+  return NULL;
+}
+
+Instruction* ADPFactory::createG_F_Form( char opcode, char* mem, int& offset )
+{
+  AModeOperand* op1 = createAmodeOperand(mem, offset);
+  FPROperand* op2 = createFPROperand(mem, offset);
+  switch (opcode) {
+  case 0x26:
+    return new Fstore(op1, op2);
+  }
+  return NULL;
+}
+
+Instruction* ADPFactory::createF_G_Form( char opcode, char* mem, int& offset )
+{
+  FPROperand* op1 = createFPROperand(mem, offset);
+  AModeOperand* op2 = createAmodeOperand(mem, offset);
+  switch (opcode) {
+  case 0x25:
+    return new Fload(op1, op2);
+  }
+  return NULL;
+}
+
+Instruction* ADPFactory::createInstr(char* mem, int& offset)
+{
+  char opcode = getBits(mem, offset, 6);
+  Instruction* res = NULL;
+  switch (opcode) {
+  case 0x0:
+  case 0x1:
+  case 0x2:
+  case 0x3:
+  case 0x4:
+  case 0x5:
+  case 0x6:
+  case 0x7:
+  case 0x8:
+  case 0x10:
+    res = createD_S_Form(opcode, mem, offset);
+    break;
+  case 0x9:
+  case 0xa:
+  case 0xb:
+  case 0xc:
+  case 0x11:
+  case 0x16:
+    res =  createD_Form(opcode, mem, offset);
+    break;
+  case 0x20:
+  case 0x21:
+  case 0x22:
+  case 0x23:
+  case 0x24:
+  case 0x27:
+    res = createF_F_Form(opcode, mem, offset);
+    break;
+  case 0x12:
+  case 0x13:
+  case 0x14:
+  case 0x15:
+    res = createJcc_Form(opcode, mem, offset);
+    break;
+  case 0x17:
+    res = createNull_Form(opcode, mem, offset);
+    break;
+  case 0x25:
+    res = createF_G_Form(opcode, mem, offset);
+    break;
+  case 0x26:
+    res = createG_F_Form(opcode, mem, offset);
+    break;
+  }
+  int zeros = 8 - offset%8;
+  if (zeros != 8) {
+    int reserve = getBits(mem, offset, zeros);
+    assert (reserve == 0);
+  }
+  return res;
 }

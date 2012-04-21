@@ -266,7 +266,7 @@ CString CString::substr(int begin, int end)
     return "";
   }
   CString res;
-  for (int i=begin; i<end; ++i) {
+  for (int i=begin; i<=end; ++i) {
     res = res.append(cont_[i]);
   }
   return res;

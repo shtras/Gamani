@@ -21,6 +21,7 @@
 #include "SystemParser.h"
 #include "SphereVBO.h"
 #include "ADPCompiler.h"
+#include "ADPFactory.h"
 
 const char* Version = "0.4.0";
 
@@ -314,6 +315,65 @@ bool Gamani::menuLoop()
 
 bool Gamani::mainLoop()
 {
+  //ADPCompiler compiler;
+  //char memory[32000];
+  //compiler.compile("res/asm/killrot.asm", memory, 32000);
+  //int lastAddr = compiler.getLastAddr();
+  //ofstream dumpFile("dump1.txt");
+  //for (int i=0; i<lastAddr / 8; ++i) {
+  //  if (i%8 == 0) {
+  //    //dumpFile << endl;
+  //  }
+  //  for (int j=0; j<8; ++j) {
+  //    if (j%8 == 0) {
+  //      //dumpFile << " ";
+  //    }
+  //    char bit = getBit(memory[i], j);
+  //    //dumpFile << (char)(bit + '0');
+  //  }
+  //  dumpFile << memory[i];
+  //}
+  //dumpFile.close();
+
+  //int offset = 0;
+  //int testAddr = 0;
+  //vector<Instruction*> instrs;
+  //while(1) {
+  //  Instruction* instr = ADPFactory::getInstance().createInstr(memory, offset);
+  //  if (!instr) {
+  //    break;
+  //  }
+  //  cout << hex << testAddr/8 << " " << instr->toString() << endl;
+  //  instrs.push_back(instr);
+  //  testAddr += instr->getSize();
+  //  assert (testAddr == offset);
+  //  if (offset >= lastAddr) {
+  //    break;
+  //  }
+  //}
+
+  //char memory1[32000];
+  //int rs[8];
+  //for (int i=0; i<8; ++i) {
+  //  rs[i] = i;
+  //}
+  //double fs[8];
+  //int psw;
+  //auto itr = instrs.begin();
+  //Instruction* instr1 = *(itr++);
+  //Instruction* instr2 = *(itr++);
+  //Instruction* instr3 = *(itr++);
+  //Instruction* instr4 = *(itr++);
+  //instr1->emit(memory1, rs, fs, psw);
+  //instr2->emit(memory1, rs, fs, psw);
+  //instr3->emit(memory1, rs, fs, psw);
+  //instr4->emit(memory1, rs, fs, psw);
+  //int aaa = 0;
+
+
+
+
+
   //setVSync(0);
   int frame = 0;
   long timebase=GetTickCount();
@@ -403,6 +463,10 @@ bool Gamani::mainLoop()
             seconds_ += calcStepLength_*dt * (100/dtModifier_);
 #ifndef MULTITHREAD_RUN
             world_->interactionStep();
+            //for (int k=0; k<=1000; ++k) {
+            //  instr1->emit(memory1, rs, fs, psw);
+            //}
+
             handlePressedKeys();
 #endif
             if (++snapshotTimer > 10000) {
@@ -903,9 +967,6 @@ double getDouble(double n)
   double res;
   
   int* iarr = (int*)&res;
-  //int exp = char2bin("000 0000 0000");
-  //int mant1 = char2bin("0000 0000 0000 0000 1000");
-  //int mant2 = char2bin("0000 0000 0000 0000 0000 0000 0000 0000");
   int i1 = (((sign<<11) + exp)<<20)+mant1;
   int i2 = mant2;
   iarr[0] = i2;
@@ -924,10 +985,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   _CrtMemState s1;
   _CrtMemCheckpoint(&s1);
 #endif
-
-  ADPCompiler compiler;
-  char memory[32000];
-  compiler.compile("res/asm/killrot.asm", memory, 32000);
 
   int res = body(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
 

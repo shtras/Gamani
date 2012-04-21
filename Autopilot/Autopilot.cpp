@@ -3,8 +3,9 @@
 #include "Ship.h"
 #include "APProgram.h"
 #include "Gamani.h"
+#include "ADPCompiler.h"
 
-Autopilot::Autopilot(Ship* ship):ship_(ship),ref_(NULL),lastError_("No errors")
+Autopilot::Autopilot(Ship* ship):ship_(ship),ref_(NULL),lastError_("No errors"),adp_(new ADP())
 {
 
 }
@@ -38,6 +39,12 @@ void Autopilot::clearQueue()
 
 void Autopilot::step()
 {
+  if (adp_->isRunning()) {
+    for (int i=0; i<50; ++i) {
+      adp_->step();
+    }
+  }
+
   if (programs_.size() == 0) {
     if (queue_.size() == 0) {
       return;
@@ -163,4 +170,14 @@ vector<CString> Autopilot::getPrograms()
     res.push_back(getProgName(progItr->getID()));
   }
   return res;
+}
+
+void Autopilot::loadProg(CString fileName)
+{
+  ADPCompiler compiler;
+  char memory[32000];
+  compiler.compile(fileName, memory, 32000);
+  int lastAddr = compiler.getLastAddr();
+  bool res = adp_->loadProgram(memory, lastAddr/8);
+  assert(res);
 }

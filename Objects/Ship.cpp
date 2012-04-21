@@ -380,6 +380,7 @@ void Ship::setAutopilotTo(Autopilot::ProgID prog)
   switch (prog) {
   case Autopilot::KillRot:
     autopilot_->enqueue(new KillRotProg(autopilot_));
+    autopilot_->loadProg("res/asm/killrot.asm");
     break;
   case Autopilot::Launch:
     autopilot_->enqueue(new LaunchProg(autopilot_));
