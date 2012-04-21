@@ -142,7 +142,7 @@ AModeOperand* ADPFactory::createAmodeOperand(CString& op)
     gprNum = op[1] - '0';
   } else if (op[0] == '[') {
     amodeNum = 1;
-    gprNum = op[1] - '0';
+    gprNum = op[2] - '0';
   } else if (op[op.getSize()-1] == ']') {
     int idx = op.getIndex('[');
     bool number = false;

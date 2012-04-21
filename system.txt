@@ -133,7 +133,6 @@ Star {
       Model = res/ss2.3ds;
       DockingPort = 1;
       PortAngle = 0;
-      PlayerControlled = True;
     }
    
     Ship {
@@ -146,6 +145,7 @@ Star {
       Model = res/ss2.3ds;
       DockingPort = 1;
       PortAngle = 0;
+      PlayerControlled = True;
     }
     
     Ship {

@@ -78,7 +78,8 @@ void toggleVSync()
 
 Gamani::Gamani():world_(NULL), paused_(true), speed_(1), calcStepLength_(0.05), dtModifier_(50),auxAxes_(false),lmDown_(false),rmDown_(false),
   lmDrag_(false), rmDrag_(false), tracers_(false), auxPrint_(true), interface_(true), names_(false),skybox1_(false),relativeOrbits_(false),
-  rotateCameraWithObject_(false),shiftPressed_(false),drawingMode_(GL_TRIANGLES),shader_(-1),drawBoundBoxes_(false), nextState_(MenuState)
+  rotateCameraWithObject_(false),shiftPressed_(false),drawingMode_(GL_TRIANGLES),shader_(-1),drawBoundBoxes_(false), nextState_(MenuState),
+  printASM_(false)
 {
   nonContKeys_.insert('M');
   nonContKeys_.insert('V');
@@ -564,7 +565,11 @@ void Gamani::handlePressedKey(int key)
     }
     break;
   case 'P':
-    pause();
+    if (shiftPressed_) {
+      printASM_ = !printASM_;
+    } else {
+      pause();
+    }
     break;
   case 'Y':
     if (shiftPressed_) {
@@ -985,6 +990,63 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   _CrtMemState s1;
   _CrtMemCheckpoint(&s1);
 #endif
+
+
+  //ADPCompiler compiler;
+  //char memory[32000];
+  //compiler.compile("res/asm/killrot.asm", memory, 32000);
+  //int lastAddr = compiler.getLastAddr();
+  //ofstream dumpFile("dump1.txt");
+  //for (int i=0; i<lastAddr / 8; ++i) {
+  //  if (i%8 == 0) {
+  //    //dumpFile << endl;
+  //  }
+  //  for (int j=0; j<8; ++j) {
+  //    if (j%8 == 0) {
+  //      //dumpFile << " ";
+  //    }
+  //    char bit = getBit(memory[i], j);
+  //    //dumpFile << (char)(bit + '0');
+  //  }
+  //  dumpFile << memory[i];
+  //}
+  //dumpFile.close();
+
+  //int offset = 0;
+  //int testAddr = 0;
+  //vector<Instruction*> instrs;
+  //while(1) {
+  //  Instruction* instr = ADPFactory::getInstance().createInstr(memory, offset);
+  //  if (!instr) {
+  //    break;
+  //  }
+  //  cout << hex << testAddr/8 << " " << instr->toString() << endl;
+  //  instrs.push_back(instr);
+  //  testAddr += instr->getSize();
+  //  assert (testAddr == offset);
+  //  if (offset >= lastAddr) {
+  //    break;
+  //  }
+  //}
+
+  //char memory1[32000];
+  //int rs[8];
+  //for (int i=0; i<8; ++i) {
+  //  rs[i] = i;
+  //}
+  //double fs[8];
+  //int psw;
+  //auto itr = instrs.begin();
+  //Instruction* instr1 = *(itr++);
+  //Instruction* instr2 = *(itr++);
+  //Instruction* instr3 = *(itr++);
+  //Instruction* instr4 = *(itr++);
+  //instr1->emit(memory1, rs, fs, psw);
+  //instr2->emit(memory1, rs, fs, psw);
+  //instr3->emit(memory1, rs, fs, psw);
+  //instr4->emit(memory1, rs, fs, psw);
+  //int aaa = 0;
+
 
   int res = body(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
 

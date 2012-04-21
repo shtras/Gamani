@@ -17,6 +17,7 @@ Autopilot::~Autopilot()
 
 void Autopilot::stopProg()
 {
+  adp_->halt();
   GC();
   while (programs_.size() > 0) {
     APProgram* prog = programs_.back();
@@ -42,6 +43,18 @@ void Autopilot::step()
   if (adp_->isRunning()) {
     for (int i=0; i<50; ++i) {
       adp_->step();
+    }
+    static int cnt = 0;
+    if (cnt++ == 5) {
+      adp_->setMem(0x9500, getShip()->getYawVel());
+      adp_->irq(0);
+      cnt = 0;
+    }
+    double yawPower = adp_->getMem(0x10000);
+    if (yawPower > 0) {
+      ship_->yawLeft(yawPower);
+    } else  if (yawPower < 0) {
+      ship_->yawRight(-yawPower);
     }
   }
 

@@ -280,9 +280,7 @@ vector<Vector3> Ship::calcOrbit(AstralBody* from, AstralBody* to, double& minDis
 
 void Ship::yawLeft()
 {
-  yawLeft(yawPower_);
-  engageEngine(RearLeft);
-  engageEngine(FrontRight);
+  yawLeft(1);
 }
 
 void Ship::yawLeft(double val)
@@ -290,9 +288,18 @@ void Ship::yawLeft(double val)
   if (docked_) {
     return;
   }
-  if (val > yawPower_) {
-    val = yawPower_;
+  //if (val > yawPower_) {
+  //  val = yawPower_;
+  //}
+  if (val > 1) {
+    val = 1;
   }
+  if (val < 0) {
+    val = 0;
+  }
+  engageEngine(RearLeft, val);
+  engageEngine(FrontRight, val);
+  val *= yawPower_;
   yawVel_ -= val;
   if (yawVel_ < -maxYawVel_) {
     yawVel_ = -maxYawVel_;
@@ -301,9 +308,7 @@ void Ship::yawLeft(double val)
 
 void Ship::yawRight()
 {
-  yawRight(yawPower_);
-  engageEngine(RearRight);
-  engageEngine(FrontLeft);
+  yawRight(1);
 }
 
 void Ship::yawRight(double val)
@@ -311,9 +316,18 @@ void Ship::yawRight(double val)
   if (docked_) {
     return;
   }
-  if (val > yawPower_) {
-    val = yawPower_;
+  //if (val > yawPower_) {
+  //  val = yawPower_;
+  //}
+  if (val > 1) {
+    val = 1;
   }
+  if (val < 0) {
+    val = 0;
+  }
+  engageEngine(RearRight, val);
+  engageEngine(FrontLeft, val);
+  val *= yawPower_;
   yawVel_ += val;
   if (yawVel_ >= maxYawVel_) {
     yawVel_ = maxYawVel_;
@@ -379,7 +393,7 @@ void Ship::setAutopilotTo(Autopilot::ProgID prog)
   //autopilot_->clearQueue();
   switch (prog) {
   case Autopilot::KillRot:
-    autopilot_->enqueue(new KillRotProg(autopilot_));
+    //autopilot_->enqueue(new KillRotProg(autopilot_));
     autopilot_->loadProg("res/asm/killrot.asm");
     break;
   case Autopilot::Launch:

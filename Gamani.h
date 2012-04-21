@@ -47,6 +47,7 @@ public:
   const CString& getVersion() {return version_;}
   void saveSystem();
   void setFileToLoad(CString fileName) {fileToload_ = fileName;}
+  bool printASM() {return printASM_;}
 private:
   bool testInit();
   void layoutTest();
@@ -103,5 +104,6 @@ private:
   CString version_;
 
   CString fileToload_;
+  bool printASM_;
 };
 

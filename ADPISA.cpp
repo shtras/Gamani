@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "ADPISA.h"
 
-Instruction::Instruction( char opcode ):opcode_(opcode)
+Instruction::Instruction( char opcode ):opcode_(opcode),size_(-1)
 {
 
 }
@@ -15,6 +15,14 @@ void Instruction::dumpOpcode(char* mem, int& offset)
 {
   char opcode = getOpcode();
   dumpNumber(mem, offset, opcode, 6);
+}
+
+int Instruction::getCachedSize()
+{
+  if (size_ == -1) {
+    size_ = getSize();
+  }
+  return size_;
 }
 
 D_S_Form::D_S_Form(char opcode, AModeOperand* op1, AModeOperand* op2):Instruction(opcode), dest_(op1), src_(op2),shiftedSrc_(false)
@@ -161,6 +169,12 @@ int D_Form::getS( char* memory, int* rs, double* fs, int& psw )
   return 0;
 }
 
+int* D_Form::getD( char* memory, int* rs, double* fs, int& psw )
+{
+  assert(dest_->getAmode()->getNum() == 0);
+  return &(rs[dest_->getGPR()->getNum()]);
+}
+
 F_F_Form::F_F_Form(char opcode, FPROperand* op1, FPROperand* op2):Instruction(opcode),dest_(op1), src_(op2)
 {
 
@@ -250,9 +264,9 @@ double* G_F_Form::getFD( char* memory, int* rs, double* fs, int& psw )
   case 0:
     return (double*)&(rs[dest_->getGPR()->getNum()]);
   case 1:
-    return (double*)&(memory[rs[dest_->getGPR()->getNum()]]);
+    return (double*)(memory + rs[dest_->getGPR()->getNum()]);
   case 2:
-    return (double*)&(memory[dest_->getImm()->getVal() + rs[dest_->getGPR()->getNum()]]);
+    return (double*)(memory + dest_->getImm()->getVal() + rs[dest_->getGPR()->getNum()]);
   case 3:
     assert(0);
   }
@@ -583,7 +597,9 @@ Add::~Add()
 
 void Add::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int* dest = getD(memory, rs, fs, psw);
+  int src = getS(memory, rs, fs, psw);
+  *dest += src;
 }
 
 Sub::Sub(AModeOperand* op1, AModeOperand* op2):D_S_Form(2, op1, op2)
@@ -615,7 +631,9 @@ And::~And()
 
 void And::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int* dest = getD(memory, rs, fs, psw);
+  int src = getS(memory, rs, fs, psw);
+  *dest &= src;
 }
 
 Or::Or(AModeOperand* op1, AModeOperand* op2):D_S_Form(4, op1, op2)
@@ -630,7 +648,9 @@ Or::~Or()
 
 void Or::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int* dest = getD(memory, rs, fs, psw);
+  int src = getS(memory, rs, fs, psw);
+  *dest |= src;
 }
 
 Not::Not(AModeOperand* op1, AModeOperand* op2):D_S_Form(5, op1, op2)
@@ -645,7 +665,9 @@ Not::~Not()
 
 void Not::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int* dest = getD(memory, rs, fs, psw);
+  int src = getS(memory, rs, fs, psw);
+  *dest = !src;
 }
 
 Xor::Xor(AModeOperand* op1, AModeOperand* op2):D_S_Form(6, op1, op2)
@@ -660,7 +682,9 @@ Xor::~Xor()
 
 void Xor::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int* dest = getD(memory, rs, fs, psw);
+  int src = getS(memory, rs, fs, psw);
+  *dest ^= src;
 }
 
 Asl::Asl(AModeOperand* op1, AModeOperand* op2):D_S_Form(7, op1, op2)
@@ -675,7 +699,9 @@ Asl::~Asl()
 
 void Asl::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int* dest = getD(memory, rs, fs, psw);
+  int src = getS(memory, rs, fs, psw);
+  *dest <<= src;
 }
 
 Asr::Asr(AModeOperand* op1, AModeOperand* op2):D_S_Form(8, op1, op2)
@@ -690,7 +716,9 @@ Asr::~Asr()
 
 void Asr::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int* dest = getD(memory, rs, fs, psw);
+  int src = getS(memory, rs, fs, psw);
+  *dest >>= src;
 }
 
 Push::Push(AModeOperand* op):D_Form(9, op)
@@ -705,7 +733,9 @@ Push::~Push()
 
 void Push::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int src = getS(memory, rs, fs, psw);
+  memory[rs[14]] = src;
+  rs[14] -= 4;
 }
 
 Pop::Pop(AModeOperand* op):D_Form(0xa, op)
@@ -720,7 +750,9 @@ Pop::~Pop()
 
 void Pop::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int* dest = getD(memory, rs, fs, psw);
+  rs[14] += 4;
+  *dest = memory[rs[14]];
 }
 
 Lpsw::Lpsw(AModeOperand* op):D_Form(0xb, op)
@@ -735,7 +767,8 @@ Lpsw::~Lpsw()
 
 void Lpsw::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int* dest = getD(memory, rs, fs, psw);
+  *dest = psw;
 }
 
 Spsw::Spsw(AModeOperand* op):D_Form(0xc, op)
@@ -750,7 +783,8 @@ Spsw::~Spsw()
 
 void Spsw::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int src = getS(memory, rs, fs, psw);
+  psw = src;
 }
 
 Cmp::Cmp(AModeOperand* op1, AModeOperand* op2):D_S_Form(0x10, op1, op2)
@@ -807,7 +841,10 @@ Je::~Je()
 
 void Je::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int Z = psw & 0x8;
+  if (Z) {
+    rs[15] += getS(memory, rs, fs, psw);
+  }
 }
 
 Jne::Jne(Immediate* imm):Jcc_Form(0x13, imm)
@@ -822,7 +859,10 @@ Jne::~Jne()
 
 void Jne::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int Z = psw & 0x8;
+  if (!Z) {
+    rs[15] += getS(memory, rs, fs, psw);
+  }
 }
 
 Jg::Jg(Immediate* imm):Jcc_Form(0x14, imm)
@@ -839,7 +879,7 @@ void Jg::emit( char* memory, int* rs, double* fs, int& psw )
 {
   int S = psw & 0x2;
   int Z = psw & 0x8;
-  if (Z && S) {
+  if (!Z && !S) {
     rs[15] += getS(memory, rs, fs, psw);
   }
 }
@@ -856,7 +896,10 @@ Jge::~Jge()
 
 void Jge::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  int S = psw & 0x2;
+  if (!S) {
+    rs[15] += getS(memory, rs, fs, psw);
+  }
 }
 
 Call::Call(AModeOperand* op):D_Form(0x16, op)
@@ -871,7 +914,9 @@ Call::~Call()
 
 void Call::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  memory[rs[14]] = rs[15];
+  rs[14] -= 4;
+  rs[15] = getS(memory, rs, fs, psw);
 }
 
 Ret::Ret():Null_Form(0x17)
@@ -886,7 +931,8 @@ Ret::~Ret()
 
 void Ret::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  rs[14] += 4;
+  rs[15] = memory[rs[14]];
 }
 
 Fmov::Fmov(FPROperand* op1, FPROperand* op2):F_F_Form(0x20, op1, op2)
@@ -918,7 +964,9 @@ Fadd::~Fadd()
 
 void Fadd::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  double* dest = getFD(memory, rs, fs, psw);
+  double src = getFS(memory, rs, fs, psw);
+  *dest += src;
 }
 
 Fsub::Fsub(FPROperand* op1, FPROperand* op2):F_F_Form(0x22, op1, op2)
@@ -933,7 +981,9 @@ Fsub::~Fsub()
 
 void Fsub::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  double* dest = getFD(memory, rs, fs, psw);
+  double src = getFS(memory, rs, fs, psw);
+  *dest -= src;
 }
 
 Fmul::Fmul(FPROperand* op1, FPROperand* op2):F_F_Form(0x23, op1, op2)
@@ -948,7 +998,9 @@ Fmul::~Fmul()
 
 void Fmul::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  double* dest = getFD(memory, rs, fs, psw);
+  double src = getFS(memory, rs, fs, psw);
+  *dest *= src;
 }
 
 Fdiv::Fdiv(FPROperand* op1, FPROperand* op2):F_F_Form(0x24, op1, op2)
@@ -963,7 +1015,9 @@ Fdiv::~Fdiv()
 
 void Fdiv::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  double* dest = getFD(memory, rs, fs, psw);
+  double src = getFS(memory, rs, fs, psw);
+  *dest /= src;
 }
 
 Fcmp::Fcmp(FPROperand* op1, FPROperand* op2):F_F_Form(0x27, op1, op2)
@@ -978,7 +1032,18 @@ Fcmp::~Fcmp()
 
 void Fcmp::emit( char* memory, int* rs, double* fs, int& psw )
 {
-
+  double dest = *getFD(memory, rs, fs, psw);
+  double src = getFS(memory, rs, fs, psw);
+  if (dest < src) {
+    psw |= 0x2; //S = 1
+  } else {
+    psw &= 0xd; //S = 0
+  }
+  if (dest == src) {
+    psw |= 0x8; //Z = 1
+  } else {
+    psw &= 0x7; //Z = 0
+  }
 }
 
 Fload::Fload(FPROperand* op1, AModeOperand* op2):F_G_Form(0x25, op1, op2)

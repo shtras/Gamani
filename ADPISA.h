@@ -14,6 +14,7 @@ public:
   Instruction(char opcode);
   virtual ~Instruction();
   virtual bool isMe(char opcode) {return opcode == opcode_;}
+  int getCachedSize();
   virtual int getSize() = 0;
   virtual CString toString() = 0;
   virtual CString getMnemonic() = 0;
@@ -32,6 +33,7 @@ public:
   virtual double getFS(char* memory, int* rs, double* fs, int& psw) {return 0;}
 private:
   char opcode_;
+  int size_;
 };
 
 class D_S_Form: public Instruction
@@ -61,6 +63,7 @@ public:
   virtual CString toString();
   virtual void dump(char* mem, int& offset);
   virtual int getFirstImmAddr();
+  virtual int* getD(char* memory, int* rs, double* fs, int& psw);
   virtual int getS(char* memory, int* rs, double* fs, int& psw);
 private:
   AModeOperand* dest_;

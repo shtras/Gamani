@@ -112,9 +112,9 @@ bool ADPCompiler::createInstr(CString& label, CString& mnemonic, CString& op1, C
       return false;
     }
     if (instr->isJcc()) {
-      relativeLabelRefs_[addr_ + immAddr] = op1;
+      relativeLabelRefs_[addr_ + immAddr] = op2;
     } else {
-      labelRefs_[addr_ + immAddr] = op1;
+      labelRefs_[addr_ + immAddr] = op2;
     }
   }
   int testAddr = addr_ + instr->getSize();
