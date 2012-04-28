@@ -991,43 +991,42 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   _CrtMemCheckpoint(&s1);
 #endif
 
+  ADPCompiler compiler;
+  char memory[32000];
+  compiler.compile("res/asm/killrot.asm", memory, 32000);
+  int lastAddr = compiler.getLastAddr();
+  ofstream dumpFile("dump1.txt");
+  for (int i=0; i<lastAddr / 8; ++i) {
+    if (i%8 == 0) {
+      //dumpFile << endl;
+    }
+    for (int j=0; j<8; ++j) {
+      if (j%8 == 0) {
+        //dumpFile << " ";
+      }
+      char bit = getBit(memory[i], j);
+      //dumpFile << (char)(bit + '0');
+    }
+    dumpFile << memory[i];
+  }
+  dumpFile.close();
 
-  //ADPCompiler compiler;
-  //char memory[32000];
-  //compiler.compile("res/asm/killrot.asm", memory, 32000);
-  //int lastAddr = compiler.getLastAddr();
-  //ofstream dumpFile("dump1.txt");
-  //for (int i=0; i<lastAddr / 8; ++i) {
-  //  if (i%8 == 0) {
-  //    //dumpFile << endl;
-  //  }
-  //  for (int j=0; j<8; ++j) {
-  //    if (j%8 == 0) {
-  //      //dumpFile << " ";
-  //    }
-  //    char bit = getBit(memory[i], j);
-  //    //dumpFile << (char)(bit + '0');
-  //  }
-  //  dumpFile << memory[i];
-  //}
-  //dumpFile.close();
-
-  //int offset = 0;
-  //int testAddr = 0;
-  //vector<Instruction*> instrs;
-  //while(1) {
-  //  Instruction* instr = ADPFactory::getInstance().createInstr(memory, offset);
-  //  if (!instr) {
-  //    break;
-  //  }
-  //  cout << hex << testAddr/8 << " " << instr->toString() << endl;
-  //  instrs.push_back(instr);
-  //  testAddr += instr->getSize();
-  //  assert (testAddr == offset);
-  //  if (offset >= lastAddr) {
-  //    break;
-  //  }
-  //}
+  int offset = 0;
+  int testAddr = 0;
+  vector<Instruction*> instrs;
+  while(1) {
+    Instruction* instr = ADPFactory::getInstance().createInstr(memory, offset);
+    if (!instr) {
+      break;
+    }
+    cout << hex << testAddr/8 << " " << instr->toString() << endl;
+    instrs.push_back(instr);
+    testAddr += instr->getSize();
+    assert (testAddr == offset);
+    if (offset >= lastAddr) {
+      break;
+    }
+  }
 
   //char memory1[32000];
   //int rs[8];

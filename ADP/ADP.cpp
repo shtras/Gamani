@@ -33,7 +33,7 @@ void ADP::reset()
   for (int i=0; i<16; ++i) {
     gpr_[i] = 0;
   }
-  gpr_[14] = 0x100000 - 1;
+  gpr_[14] = 0x100000 - 4;
   for (int i=0; i<15; ++i) {
     fpr_[i] = 0;
   }
@@ -61,10 +61,14 @@ void ADP::irq(int num)
   if (!running_) {
     return;
   }
-  if (memory_[0x9000] != -1) {
-    memory_[gpr_[14]] = gpr_[15];
+  if ((psw_ & 0x1) != 0) {
+    return;
+  }
+  if (*(int*)(memory_+0x9000) != -1) {
+    psw_ |= 0x1;
     gpr_[14] -= 4;
-    gpr_[15] = memory_[0x9000];
+    *(int*)(memory_+gpr_[14]) = gpr_[15];
+    gpr_[15] = *(int*)(memory_+0x9000);
   }
 }
 
@@ -108,10 +112,10 @@ bool ADP::step()
   if (Gamani::getInstance().printASM()) {
     cout << hex << pc << " " << instr->toString() << endl;
     for (int i=0; i<16; ++i) {
-      cout << gpr_[i] << " ";
+      cout << i << ":" << gpr_[i] << " ";
     }
-    for (int i=0; i<5; ++i) {
-      cout << fpr_[i] << " ";
+    for (int i=0; i<15; ++i) {
+      cout << i << ":" << fpr_[i] << " ";
     }
     cout << endl;
   }

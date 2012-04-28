@@ -137,19 +137,32 @@ AModeOperand* ADPFactory::createAmodeOperand(CString& op)
   int immVal = 0;
   Immediate* imm = NULL;
 
-  if (op[0] == 'r') {
+  if (op[0] == 'r' && op.getSize() > 1 && op[1] >= '0' && op[1] <= '9') {
     amodeNum = 0;
     gprNum = op[1] - '0';
+    if (op.getSize() == 3 && op[2] >= '0' && op[2] <= '9') {
+      gprNum *= 10;
+      gprNum += op[2] - '0';
+    }
   } else if (op[0] == '[') {
     amodeNum = 1;
     gprNum = op[2] - '0';
+    if (op[3] >= '0' && op[3] <= '9') {
+      gprNum *= 10;
+      gprNum += op[3] - '0';
+    }
   } else if (op[op.getSize()-1] == ']') {
     int idx = op.getIndex('[');
     bool number = false;
     immVal = getInt(op.substr(0, idx-1), number);
     imm = new Immediate(immVal);
     amodeNum = 2;
-    gprNum = op[op.getSize()-2] - '0';
+    int regNumIdx = op.getIndex('[') + 2;
+    gprNum = op[regNumIdx] - '0';
+    if (op[regNumIdx+1] >= '0' && op[regNumIdx+1] <= '9') {
+      gprNum *= 10;
+      gprNum += op[regNumIdx + 1] - '0';
+    }    
   } else {
     bool number = false;
     immVal = getInt(op, number);
@@ -171,6 +184,10 @@ FPROperand* ADPFactory::createFPROperand(CString& op)
   double fimm = 0;
   if (op[0] == 'f') {
     val = op[1] - '0';
+    if (op.getSize() == 3) {
+      val *= 10;
+      val += op[2] - '0';
+    }
   } else {
     val = 0xf;
     fimm = getDouble(op);
@@ -226,10 +243,16 @@ Instruction* ADPFactory::createInstr(CString& mnemonic, CString& op1, CString& o
     res = new Jg(new Immediate(getInt(op1, number)));
   } else if (Jge::isMe(mnemonic)) {
     res = new Jge(new Immediate(getInt(op1, number)));
+  } else if (Jl::isMe(mnemonic)) {
+    res = new Jl(new Immediate(getInt(op1, number)));
+  } else if (Jle::isMe(mnemonic)) {
+    res = new Jle(new Immediate(getInt(op1, number)));
   } else if (Call::isMe(mnemonic)) {
     res = new Call(createAmodeOperand(op1));
   } else if (Ret::isMe(mnemonic)) {
     res = new Ret();
+  } else if (Reti::isMe(mnemonic)) {
+    res = new Reti();
   } else if (Fmov::isMe(mnemonic)) {
     res = new Fmov(createFPROperand(op1), createFPROperand(op2));
   } else if (Fadd::isMe(mnemonic)) {
@@ -240,6 +263,8 @@ Instruction* ADPFactory::createInstr(CString& mnemonic, CString& op1, CString& o
     res = new Fmul(createFPROperand(op1), createFPROperand(op2));
   } else if (Fdiv::isMe(mnemonic)) {
     res = new Fdiv(createFPROperand(op1), createFPROperand(op2));
+  } else if (Fneg::isMe(mnemonic)) {
+    res = new Fneg(createFPROperand(op1), createFPROperand(op2));
   } else if (Fload::isMe(mnemonic)) {
     res = new Fload(createFPROperand(op1), createAmodeOperand(op2));
   } else if (Fstore::isMe(mnemonic)) {
@@ -378,7 +403,7 @@ Instruction* ADPFactory::createD_Form( char opcode, char* mem, int& offset )
   case 0x11:
     res = new Jmp(op);
     break;
-  case 0x16:
+  case 0x1d:
     res = new Call(op);
     break;
   }
@@ -406,6 +431,8 @@ Instruction* ADPFactory::createF_F_Form( char opcode, char* mem, int& offset )
   case 0x24:
     return new Fdiv(fprOp1, fprOp2);
   case 0x27:
+    return new Fneg(fprOp1, fprOp2);
+  case 0x2c:
     return new Fcmp(fprOp1, fprOp2);
   }
   return NULL;
@@ -430,6 +457,10 @@ Instruction* ADPFactory::createJcc_Form( char opcode, char* mem, int& offset )
     return new Jg(imm);
   case 0x15:
     return new Jge(imm);
+  case 0x16:
+    return new Jl(imm);
+  case 0x17:
+    return new Jle(imm);
   }
   return NULL;
 }
@@ -439,8 +470,10 @@ Instruction* ADPFactory::createNull_Form( char opcode, char* mem, int& offset )
   int reserve = getBits(mem, offset, 2);
   assert(reserve == 3);
   switch (opcode) {
-  case 0x17:
+  case 0x1e:
     return new Ret();
+  case 0x1f:
+    return new Reti();
   }
   return NULL;
 }
@@ -489,7 +522,7 @@ Instruction* ADPFactory::createInstr(char* mem, int& offset)
   case 0xb:
   case 0xc:
   case 0x11:
-  case 0x16:
+  case 0x1d:
     res =  createD_Form(opcode, mem, offset);
     break;
   case 0x20:
@@ -498,15 +531,19 @@ Instruction* ADPFactory::createInstr(char* mem, int& offset)
   case 0x23:
   case 0x24:
   case 0x27:
+  case 0x2c:
     res = createF_F_Form(opcode, mem, offset);
     break;
   case 0x12:
   case 0x13:
   case 0x14:
   case 0x15:
+  case 0x16:
+  case 0x17:
     res = createJcc_Form(opcode, mem, offset);
     break;
-  case 0x17:
+  case 0x1e:
+  case 0x1f:
     res = createNull_Form(opcode, mem, offset);
     break;
   case 0x25:
@@ -515,6 +552,9 @@ Instruction* ADPFactory::createInstr(char* mem, int& offset)
   case 0x26:
     res = createG_F_Form(opcode, mem, offset);
     break;
+  default:
+    Logger::getInstance().log(ERROR_LOG_NAME, CString("Cannot parse instruction: unknown opcode ") + CString((int)opcode));
+    assert(0);
   }
   int zeros = 8 - offset%8;
   if (zeros != 8) {

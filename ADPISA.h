@@ -48,7 +48,7 @@ public:
   virtual void setShiftedSrc(bool value) {shiftedSrc_ = value;}
   virtual int* getD(char* memory, int* rs, double* fs, int& psw);
   virtual int getS(char* memory, int* rs, double* fs, int& psw);
-private:
+protected:
   AModeOperand* dest_;
   AModeOperand* src_;
   bool shiftedSrc_;
@@ -413,6 +413,26 @@ public:
   virtual void emit(char* memory, int* rs, double* fs, int& psw);
 };
 
+class Jl: public Jcc_Form
+{
+public:
+  Jl(Immediate* imm);
+  ~Jl();
+  static bool isMe(CString& mnemonic) {return mnemonic == "jl";}
+  virtual CString getMnemonic() {return "Jl";}
+  virtual void emit(char* memory, int* rs, double* fs, int& psw);
+};
+
+class Jle: public Jcc_Form
+{
+public:
+  Jle(Immediate* imm);
+  ~Jle();
+  static bool isMe(CString& mnemonic) {return mnemonic == "jle";}
+  virtual CString getMnemonic() {return "Jle";}
+  virtual void emit(char* memory, int* rs, double* fs, int& psw);
+};
+
 class Call: public D_Form
 {
 public:
@@ -430,6 +450,16 @@ public:
   ~Ret();
   static bool isMe(CString& mnemonic) {return mnemonic == "ret";}
   virtual CString getMnemonic() {return "Ret";}
+  virtual void emit(char* memory, int* rs, double* fs, int& psw);
+};
+
+class Reti: public Null_Form
+{
+public:
+  Reti();
+  ~Reti();
+  static bool isMe(CString& mnemonic) {return mnemonic == "reti";}
+  virtual CString getMnemonic() {return "RetI";}
   virtual void emit(char* memory, int* rs, double* fs, int& psw);
 };
 
@@ -482,6 +512,17 @@ public:
   virtual CString getMnemonic() {return "Fdiv";}
   virtual void emit(char* memory, int* rs, double* fs, int& psw);
 };
+
+class Fneg: public F_F_Form
+{
+public:
+  Fneg(FPROperand* op1, FPROperand* op2);
+  ~Fneg();
+  static bool isMe(CString& mnemonic) {return mnemonic == "fneg";}
+  virtual CString getMnemonic() {return "Fneg";}
+  virtual void emit(char* memory, int* rs, double* fs, int& psw);
+};
+
 
 class Fcmp: public F_F_Form
 {

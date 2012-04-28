@@ -42,6 +42,8 @@ Ship::Ship():autopilot_(NULL)
     engineStates_[i] = 0;
   }
   inAtmosphereOf_ = NULL;
+  light_ = 0;
+  lights_ = false;
 }
 
 Ship::~Ship()
@@ -278,11 +280,6 @@ vector<Vector3> Ship::calcOrbit(AstralBody* from, AstralBody* to, double& minDis
   return points;
 }
 
-void Ship::yawLeft()
-{
-  yawLeft(1);
-}
-
 void Ship::yawLeft(double val)
 {
   if (docked_) {
@@ -304,11 +301,6 @@ void Ship::yawLeft(double val)
   if (yawVel_ < -maxYawVel_) {
     yawVel_ = -maxYawVel_;
   }
-}
-
-void Ship::yawRight()
-{
-  yawRight(1);
 }
 
 void Ship::yawRight(double val)

@@ -61,12 +61,18 @@ bool ADPCompiler::isLabel(CString op)
     return false;
   }
   if (op[0] == 'r') {
-    if (op.getSize() == 2 && op[1] >= '0' && op[1] <= '5') {
+    if (op.getSize() == 2 && op[1] >= '0' && op[1] <= '9') {
+      return false;
+    }
+    if (op.getSize() == 3 && op[1] >= '0' && op[1] <= '9' && op[2] >= '0' && op[2] <= '9') {
       return false;
     }
   }
   if (op[0] == 'f') {
-    if (op.getSize() == 2 && op[1] >= '0' && op[1] <= '6') {
+    if (op.getSize() == 2 && op[1] >= '0' && op[1] <= '9') {
+      return false;
+    }
+    if (op.getSize() == 3 && op[1] >= '0' && op[1] <= '9' && op[2] >= '0' && op[2] <= '9') {
       return false;
     }
   }

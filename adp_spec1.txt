@@ -1,0 +1,172 @@
+ADP-12 specification
+
+Opcodes (6 bit):
+0x00 mov
+0x01 add
+0x02 sub
+0x03 and
+0x04 or
+0x05 not
+0x06 xor
+0x07 asl
+0x08 asr
+0x09 push
+0x0a pop
+0x0b lpsw
+0x0c spsw
+--Reserved--
+0x0d
+0x0e
+0x0f
+* For shifted second operand 's' is added to opcode (mov --> movs). Operand is shifted by 16 bits
+
+0x10 cmp a, b                ; PSW set as in sub a, b
+0x11 jmp opcose amode
+0x12 je  oooooott tttttttt ; Z == 1
+0x13 jne oooooott tttttttt ; Z == 0
+0x14 jg  oooooott tttttttt ; S == 0, Z == 0
+0x15 jge oooooott tttttttt ; S == 0
+0x16 jl	 oooooott tttttttt ; S == 1, Z == 0
+0x17 jle oooooott tttttttt ; S == 1
+0x18 
+--Reserved--
+0x19
+0x1a
+0x1b
+0x1c
+0x1d call
+0x1e ret
+0x1f reti
+
+0x20: fmov ddd sss
+0x21: fadd
+0x22: fsub
+0x23: fmul
+0x24: fdiv
+0x25: fload fff amode 0
+0x26: fstore amode 0 fff
+0x27: fneg
+--Reserved--
+0x28: fpush //tbd
+0x29: fpop //tbd
+0x2a
+0x2b
+0x2c: fcmp
+0x2d
+0x2e
+0x2f
+
+Instruction forms and comments:
+amode amode		- first amode cannot be 11 (immediate)
+amode
+jcc				- target is 10-bit immediate
+fpr fpr
+amode fpr       - amode cannot be 11 (immediate)
+fpr amode
+null form		- opcode extended by 11
+
+PSW - processor status word:
+ZCSI - zero carry sign interrupt. Modified by each instruction that modifies dest register
+
+Operands:
+
+Registers
+GPR:
+rrrr
+0x0 - 0xd: r0 - r14
+0xe: rsp - stack pointer
+0xf: rip - instruction pointer
+
+FPR:
+ffff
+ooooooff ffaarrrr
+ooooooaa rrrrffff
+ooooooff ffffff00 i*64
+0x0 - 0xe: f0 - f14
+0xf: 64-bit immediate
+
+GPR addressing modes (amodes):
+amodes 0 and 1 behave the same
+0 0	ooooooaa rrrrfaar rrr00000
+0 2 ooooooaa rrrrfaai iiiiiiii iiirrrr0
+0 3 ooooooaa rrrrfaai iiiiiiii iiiiiii0
+2 0 ooooooaa iiiiiiii iiiirrrr faarrrr0
+2 2 ooooooaa iiiiiiii iiiirrrr faaiiiii iiiiiiir rrr00000
+2 3 ooooooaa iiiiiiii iiiirrrr faaiiiii iiiiiiii iii00000
+0	ooooooaa rrrr0000
+2	ooooooaa iiiiiiii iiiirrrr
+3	ooooooaa iiiiiiii iiiiiiii
+f f ooooooff ffffff00
+f 0 ooooooff ffaarrrr
+f 2 ooooooff ffaaiiii iiiiiiii rrrr0000
+f i ooooooff ffffff00 i*64
+0 f ooooooaa rrrrffff
+2 f ooooooaa iiiiiiii iiiirrrr ffff0000
+jcc oooooott tttttttt
+
+00: rrrr
+01: [rrrr]
+10: iiiiiiii iiii [rrrr]
+11: iiiiiiii iiiiiiii
+
+Memory (x8bit words):
+0x000000
+...
+0x100000
+
+Example:
+		jmp		main
+
+func:	mov		r2, 10
+loop:	sub		r2, 1
+		cmp		r2, 0
+		jg		loop
+		ret
+
+main:	movs	r1, 0x10
+		add 	r1, 0x2000
+		fload	f0, [r1]
+		fadd	f0, 3.5e10
+		fmov	f1, 1e10
+		fsub	f0, f1
+		fstore	0x10[r1], f0
+		call	func
+		mov 	r3, 5
+		fmov	f2, 0.5
+loop1:	fmul 	f5, 2.0
+		sub		r3, 1
+		cmp		r3, 0
+		jg		loop1
+wait:	jmp 	wait
+
+
+Compiled:
+47 12 00 00 26 14 00 08 26 02 00 40 26 00 00 53
+f6 5f 00 1e 20 00 04 16 00 40 94 12 84 3c 53 4c
+20 42 00 00 00 3c 80 7c 5f a0 02 42 00 00 00 20
+88 04 9a 01 01 00 5b 03 00 00 36 0d 0a 00 80 bc
+00 00 e0 3f 00 00 00 00 8d 7c 00 00 00 40 00 00
+00 00 08 36 02 00 40 36 00 00 53 ec 47 5b 00
+
+Parsed:
+;		0x00 Jmp 18
+;func:	0x03 Mov r2, 10
+;loop:	0x07 Sub r2, 1
+;		0x0b Cmp r2, 0
+;		0x0f Jg -10
+;		0x11 Ret
+;main:	0x12 Movs r1, 16
+;		0x16 Add r1, 8192
+;		0x1a Fload f0, [r2]
+;		0x1c Fadd f0, 3.5e+010
+;		0x26 Fmov f1, 1e+010
+;		0x30 Fsub f0, f1
+;		0x32 Fstore 16[r1], f0
+;		0x36 Call 3
+;		0x39 Mov r3, 5
+;		0x3d Fmov f2, 0.5
+;loop1:	0x47 Fmul f5, 2
+;		0x51 Sub r3, 1
+;		0x55 Cmp r3, 0
+;		0x59 Jg -20
+;wait:	0x5b Jmp 91

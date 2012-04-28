@@ -14,8 +14,8 @@ public:
 
   void draw();
   void updateLifetime();
-  void addParticle(ParticleType type, Vector3& coord, Vector3& vel, int lifeTime, double size);
-  void addParticle(ParticleType type, AstralBody* boundedTo, double dist, double angle, int lifeTime, double size);
+  void addParticle(ParticleType type, Vector3& coord, Vector3& vel, int lifeTime, double size, Vector3& color);
+  void addParticle(ParticleType type, AstralBody* boundedTo, double dist, double angle, int lifeTime, double size, Vector3& color);
   GLuint getSmokeTex() {return smokeTex_;}
   const Vector3& getCamPos() {return camPos_;}
   void reset();
@@ -32,6 +32,7 @@ private:
 class Particle: public Renderable
 {
 public:
+  Particle(int lifeTime, Vector3& color);
   Particle(int lifeTime);
   virtual ~Particle();
   virtual void render();
@@ -52,6 +53,7 @@ protected:
   Vector3 vel_;
   double size_;
   ParticleManager::ParticleType particleType_;
+  Vector3 color_;
 private:
   Particle();
 };
@@ -60,6 +62,7 @@ class DynamicParticle: public Particle
 {
 public:
   DynamicParticle(Vector3& coord, Vector3& vel, int lifeTime, double size);
+  DynamicParticle(Vector3& coord, Vector3& vel, int lifeTime, double size, Vector3& color);
   ~DynamicParticle();
 protected:
 };
@@ -77,10 +80,12 @@ class BoundedParticle: public Particle
 {
 public:
   BoundedParticle(AstralBody* boundedTo, double dist, double angle, int lifeTime, double size);
+  BoundedParticle(AstralBody* boundedTo, double dist, double angle, int lifeTime, double size, Vector3& color);
   ~BoundedParticle();
   virtual bool updateLifeTime();
 private:
   AstralBody* boundedTo_;
   double dist_;
   double angle_;
+  Vector3 color_;
 };

@@ -207,7 +207,7 @@ void World::updatePosition(Renderable* obj)
       Vector3 partCoord = station->getCoord() + Vector3(station->getPortDist()*station->getRadius()*sin(angle), station->getPortDist()*station->getRadius()*cos(angle), 0);
       Vector3 velDir = Vector3(sin(angle), cos(angle), 0);
       Vector3 vel = station->getVelocity() + (velDir).getNormalized()*20000;
-      Renderer::getInstance().getParticleManager()->addParticle(ParticleManager::LightParticle, partCoord, vel, 20, station->getRadius()*0.2);
+      Renderer::getInstance().getParticleManager()->addParticle(ParticleManager::LightParticle, partCoord, vel, 20, station->getRadius()*0.2, Vector3(0.6, 0.9, 0.2));
     }
   }
   
@@ -240,6 +240,16 @@ void World::updatePosition(Renderable* obj)
 
   if (dynObj->getType() == Renderable::ShipType) {
     Ship* ship = static_cast<Ship*>(dynObj);
+    int light = ship->getLight();
+    if (light == 0) {
+      Renderer::getInstance().getParticleManager()->addParticle(ParticleManager::LightParticle, ship, 0, 65, 45, ship->getRadius()*0.3, Vector3(0.9, 8, 0.7));
+      ship->setLight(50);
+    } else {
+      if (light == 15 || light == 40) {
+        Renderer::getInstance().getParticleManager()->addParticle(ParticleManager::LightParticle, ship, ship->getRadius()*0.5, 180, 15, ship->getRadius()*0.2, Vector3(0.9, 8, 0.7));
+      }
+      ship->setLight(--light);
+    }
     if (ship->isUndocking()) {
       ship->checkUndocking();
     } else if (ship->isDocked()) {
@@ -447,6 +457,17 @@ void World::setStarSystem(StarSystem* system)
 
 void World::addFreeObject(AstralBody* object)
 {
+  if (object->getType() == Renderable::ShipType) {
+    Ship* ship = static_cast<Ship*>(object);
+    int light = ship->getLight();
+    if (!ship->getLights()) {
+      Renderer::getInstance().getParticleManager()->addParticle(ParticleManager::LightParticle, ship, ship->getRadius()*1, -65, -1, ship->getRadius()*0.2, Vector3(1, 0.2, 0.2));
+      Renderer::getInstance().getParticleManager()->addParticle(ParticleManager::LightParticle, ship, ship->getRadius()*1, 65, -1, ship->getRadius()*0.2, Vector3(0.2, 1, 0.2));
+      ship->setLights(true);
+    }
+  }
+
+
   object->setRank(3);
   freeObjects_.push_back(object);
   objects_->push_back(object);
@@ -483,7 +504,7 @@ void World::atmosphereInterraction(Ship* ship)
   //cout << kmh << "km/h ";
   double a = velFactor * density * Gamani::getInstance().getSpeedReduce();
   if (a > 0) {
-    Renderer::getInstance().addParticle(ParticleManager::SmokeParticle, ship->getCoord(), planet->getVelocity() + rotDir*atmSpeed + velToAtm*0.85, a*5*50, ship->getRadius()*1.1*a*4.0);
+    Renderer::getInstance().getParticleManager()->addParticle(ParticleManager::SmokeParticle, ship->getCoord(), planet->getVelocity() + rotDir*atmSpeed + velToAtm*0.85, a*5*50, ship->getRadius()*1.1*a*4.0, Vector3());
   }
   //cout << a << " " << Renderer::getInstance().formatVelocity(atmSpeed) << endl;
   vel -= vel.getNormalized() * a;

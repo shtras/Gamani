@@ -27,10 +27,8 @@ public:
   Ship();
   ~Ship();
   void render();
-  void yawLeft();
-  void yawLeft(double val);
-  void yawRight();
-  void yawRight(double val);
+  void yawLeft(double val = 1.0);
+  void yawRight(double val = 1.0);
   void accelerate(double fraction = 1.0);
   void back(double fraction = 1.0);
   void steerLeft(double fraction = 1.0);
@@ -69,6 +67,10 @@ public:
   HUD* getHUD() {return hud_;}
   void setInAtmosphere(Planet* planet) {inAtmosphereOf_ = planet;}
   Planet* getInAtmosphere() {return inAtmosphereOf_;}
+  int getLight() {return light_;}
+  void setLight(int val) {light_ = val;}
+  bool getLights() {return lights_;}
+  void setLights(bool val) {lights_ = val;}
 public:
   //void testNavCom();
   //void testNavCom1();
@@ -100,5 +102,7 @@ public:
 
   bool initializeAsPlayerControlled_;
   Planet* inAtmosphereOf_;
+  int light_;
+  bool lights_;
 };
 

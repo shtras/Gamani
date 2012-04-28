@@ -101,12 +101,16 @@ int D_S_Form::getS( char* memory, int* rs, double* fs, int& psw )
   switch (src_->getAmode()->getNum()) {
   case 0:
     res = (rs[src_->getGPR()->getNum()]);
+    break;
   case 1:
     res = *(int*)(memory + rs[src_->getGPR()->getNum()]);
+    break;
   case 2:
     res = *(int*)(memory + src_->getImm()->getVal() + rs[src_->getGPR()->getNum()]);
+    break;
   case 3:
     res = src_->getImm()->getVal();
+    break;
   }
   if (shiftedSrc_) {
     res <<= 16;
@@ -294,7 +298,11 @@ F_G_Form::~F_G_Form()
 
 int F_G_Form::getSize()
 {
-  return getOpcodeSize() + dest_->getSize() + src_->getSize();
+  int res = getOpcodeSize() + dest_->getSize() + src_->getSize();
+  if (src_->getAmode()->getNum() == 2)  {
+    res += 4;
+  }
+  return res;
 }
 
 CString F_G_Form::toString()
@@ -307,6 +315,10 @@ void F_G_Form::dump( char* mem, int& offset )
   dumpOpcode(mem, offset);
   dest_->dump(mem, offset);
   src_->dump(mem, offset);
+  if (offset%8 != 0) {
+    int zeros = 8-offset%8;
+    dumpNumber(mem, offset, 0, zeros);
+  }
 }
 
 double* F_G_Form::getFD( char* memory, int* rs, double* fs, int& psw )
@@ -580,6 +592,9 @@ Mov::~Mov()
 
 void Mov::emit( char* memory, int* rs, double* fs, int& psw )
 {
+  if (src_->getAmode()->getNum() == 2 && src_->getImm()->getVal() == 8) {
+    int aaa = 0;
+  }
   int* dest = getD(memory, rs, fs, psw);
   int src = getS(memory, rs, fs, psw);
   *dest = src;
@@ -734,8 +749,8 @@ Push::~Push()
 void Push::emit( char* memory, int* rs, double* fs, int& psw )
 {
   int src = getS(memory, rs, fs, psw);
-  memory[rs[14]] = src;
   rs[14] -= 4;
+  *(int*)(memory + rs[14]) = src;
 }
 
 Pop::Pop(AModeOperand* op):D_Form(0xa, op)
@@ -751,8 +766,8 @@ Pop::~Pop()
 void Pop::emit( char* memory, int* rs, double* fs, int& psw )
 {
   int* dest = getD(memory, rs, fs, psw);
+  *dest = *(int*)(memory + rs[14]);
   rs[14] += 4;
-  *dest = memory[rs[14]];
 }
 
 Lpsw::Lpsw(AModeOperand* op):D_Form(0xb, op)
@@ -802,14 +817,14 @@ void Cmp::emit( char* memory, int* rs, double* fs, int& psw )
   int dest = *getD(memory, rs, fs, psw);
   int src = getS(memory, rs, fs, psw);
   if (dest >= src) {
-    psw |= 0x2;
+    psw &= 0xd; //set S to 0
   } else {
-    psw &= 0xd;
+    psw |= 0x2; //set S to 1
   }
-  if (dest != src) {
-    psw |= 0x8;
+  if (dest == src) {
+    psw |= 0x8; //set Z to 1
   } else {
-    psw &= 0x7;
+    psw &= 0x7; //set Z to 0
   }
 }
 
@@ -902,7 +917,44 @@ void Jge::emit( char* memory, int* rs, double* fs, int& psw )
   }
 }
 
-Call::Call(AModeOperand* op):D_Form(0x16, op)
+Jl::Jl( Immediate* imm ):Jcc_Form(0x16, imm)
+{
+
+}
+
+Jl::~Jl()
+{
+
+}
+
+void Jl::emit( char* memory, int* rs, double* fs, int& psw )
+{
+  int S = psw & 0x2;
+  int Z = psw & 0x8;
+  if (!Z && S) {
+    rs[15] += getS(memory, rs, fs, psw);
+  }
+}
+
+Jle::Jle( Immediate* imm ):Jcc_Form(0x17, imm)
+{
+
+}
+
+Jle::~Jle()
+{
+
+}
+
+void Jle::emit( char* memory, int* rs, double* fs, int& psw )
+{
+  int S = psw & 0x2;
+  if (S) {
+    rs[15] += getS(memory, rs, fs, psw);
+  }
+}
+
+Call::Call(AModeOperand* op):D_Form(0x1d, op)
 {
 
 }
@@ -914,12 +966,12 @@ Call::~Call()
 
 void Call::emit( char* memory, int* rs, double* fs, int& psw )
 {
-  memory[rs[14]] = rs[15];
   rs[14] -= 4;
+  *(int*)(memory+rs[14]) = rs[15];
   rs[15] = getS(memory, rs, fs, psw);
 }
 
-Ret::Ret():Null_Form(0x17)
+Ret::Ret():Null_Form(0x1e)
 {
 
 }
@@ -931,8 +983,25 @@ Ret::~Ret()
 
 void Ret::emit( char* memory, int* rs, double* fs, int& psw )
 {
+  rs[15] = *(int*)(memory+rs[14]);
   rs[14] += 4;
-  rs[15] = memory[rs[14]];
+}
+
+Reti::Reti():Null_Form(0x1f)
+{
+
+}
+
+Reti::~Reti()
+{
+
+}
+
+void Reti::emit( char* memory, int* rs, double* fs, int& psw )
+{
+  psw &= 0xE;
+  rs[15] = *(int*)(memory+rs[14]);
+  rs[14] += 4;
 }
 
 Fmov::Fmov(FPROperand* op1, FPROperand* op2):F_F_Form(0x20, op1, op2)
@@ -1020,7 +1089,24 @@ void Fdiv::emit( char* memory, int* rs, double* fs, int& psw )
   *dest /= src;
 }
 
-Fcmp::Fcmp(FPROperand* op1, FPROperand* op2):F_F_Form(0x27, op1, op2)
+Fneg::Fneg( FPROperand* op1, FPROperand* op2 ):F_F_Form(0x27, op1, op2)
+{
+
+}
+
+Fneg::~Fneg()
+{
+
+}
+
+void Fneg::emit( char* memory, int* rs, double* fs, int& psw )
+{
+  double* dest = getFD(memory, rs, fs, psw);
+  double src = getFS(memory, rs, fs, psw);
+  *dest = -src;
+}
+
+Fcmp::Fcmp(FPROperand* op1, FPROperand* op2):F_F_Form(0x2c, op1, op2)
 {
 
 }

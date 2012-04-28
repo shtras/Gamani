@@ -47,14 +47,40 @@ void Autopilot::step()
     static int cnt = 0;
     if (cnt++ == 5) {
       adp_->setMem(0x9500, getShip()->getYawVel());
+      adp_->setMem(0x9508, getShip()->getYaw());
+      if (ref_) {
+        //Vector3 relVel = getShip()->getVelocity() - ref_->getVelocity();
+        //double ang = relVel.getAngle();
+        //adp_->setMem(0x9570, ang);
+
+        Vector3& refVel = ref_->getVelocity();
+        Vector3& refCoord = ref_->getCoord();
+        adp_->setMem(0x9540, refVel[0]);
+        adp_->setMem(0x9548, refVel[1]);
+        adp_->setMem(0x9550, refVel[2]);
+
+        adp_->setMem(0x9558, refCoord[0]);
+        adp_->setMem(0x9560, refCoord[1]);
+        adp_->setMem(0x9568, refCoord[2]);
+      }
+      Vector3& vel = ship_->getVelocity();
+      Vector3& coord = ship_->getCoord();
+      adp_->setMem(0x9510, vel[0]);
+      adp_->setMem(0x9518, vel[1]);
+      adp_->setMem(0x9520, vel[2]);
+
+      adp_->setMem(0x9528, coord[0]);
+      adp_->setMem(0x9530, coord[1]);
+      adp_->setMem(0x9538, coord[2]);
+
       adp_->irq(0);
       cnt = 0;
     }
     double yawPower = adp_->getMem(0x10000);
-    if (yawPower > 0) {
-      ship_->yawLeft(yawPower);
-    } else  if (yawPower < 0) {
-      ship_->yawRight(-yawPower);
+    if (yawPower < 0) {
+      ship_->yawLeft(-yawPower);
+    } else  if (yawPower > 0) {
+      ship_->yawRight(yawPower);
     }
   }
 

@@ -120,7 +120,7 @@ bool ParticleComp(Particle* p1, Particle* p2)
   return (dist1 > dist2);
 }
 
-void ParticleManager::addParticle(ParticleType type, Vector3& coord, Vector3& vel, int lifeTime, double size)
+void ParticleManager::addParticle(ParticleType type, Vector3& coord, Vector3& vel, int lifeTime, double size, Vector3& color)
 {
   Particle* newPar = NULL;
   switch (type) {
@@ -129,7 +129,7 @@ void ParticleManager::addParticle(ParticleType type, Vector3& coord, Vector3& ve
     newPar->setParticleType(SmokeParticle);
     break;
   case LightParticle:
-    newPar = new DynamicParticle(coord, vel, lifeTime, size);
+    newPar = new DynamicParticle(coord, vel, lifeTime, size, color);
     newPar->setParticleType(LightParticle);
     break;
   case StarParticle:
@@ -144,13 +144,17 @@ void ParticleManager::addParticle(ParticleType type, Vector3& coord, Vector3& ve
   particles_.push_back(newPar);
 }
 
-void ParticleManager::addParticle(ParticleType type, AstralBody* boundedTo, double dist, double angle, int lifeTime, double size)
+void ParticleManager::addParticle(ParticleType type, AstralBody* boundedTo, double dist, double angle, int lifeTime, double size, Vector3& color)
 {
   Particle* newPar = NULL;
   switch (type) {
   case StarParticle:
     newPar = new BoundedParticle(boundedTo, dist, angle, lifeTime, size);
     newPar->setParticleType(StarParticle);
+    break;
+  case LightParticle:
+    newPar = new BoundedParticle(boundedTo, dist, angle, lifeTime, size, color);
+    newPar->setParticleType(LightParticle);
     break;
   default:
     assert(0);
@@ -166,7 +170,12 @@ void ParticleManager::sortParticles()
 }
 
 //////////////////////////////////////////////////////////////////////////
-Particle::Particle(int lifeTime):lifeTime_(lifeTime)
+Particle::Particle(int lifeTime):lifeTime_(lifeTime),currLife_(lifeTime), color_(Vector3(1,1,1))
+{
+
+}
+
+Particle::Particle(int lifeTime, Vector3& color):lifeTime_(lifeTime), currLife_(lifeTime), color_(color)
 {
 
 }
@@ -235,7 +244,7 @@ void Particle::render()
   if (particleType_ == ParticleManager::SmokeParticle) {
     glColor4f(0.1, 0.1, 0.1, currLife_ / (double)lifeTime_);
   } else if (particleType_ == ParticleManager::LightParticle) {
-    glColor4f(0.6, 0.9, 0.2, currLife_ / (double)lifeTime_);
+    glColor4f(color_[0], color_[1], color_[2], currLife_ / (double)lifeTime_);
   } else if (particleType_ == ParticleManager::StarParticle) {
     glColor4f(0.95, 1, 0.7, currLife_ / (double)lifeTime_);
   } else {
@@ -261,10 +270,17 @@ void Particle::render()
 }
 //////////////////////////////////////////////////////////////////////////
 
+DynamicParticle::DynamicParticle(Vector3& coord, Vector3& vel, int lifeTime, double size, Vector3& color):Particle(lifeTime, color)
+{
+  type_ = Renderable::ParticleType;
+  coord_ = coord;
+  vel_ = vel;
+  size_ = size;
+}
+
 DynamicParticle::DynamicParticle(Vector3& coord, Vector3& vel, int lifeTime, double size):Particle(lifeTime)
 {
   type_ = Renderable::ParticleType;
-  currLife_ = lifeTime;
   coord_ = coord;
   vel_ = vel;
   size_ = size;
@@ -308,6 +324,14 @@ BoundedParticle::BoundedParticle(AstralBody* boundedTo, double dist, double angl
   size_ = size;
 }
 
+BoundedParticle::BoundedParticle(AstralBody* boundedTo, double dist, double angle, int lifeTime, double size, Vector3& color):Particle(lifeTime, color)
+{
+  boundedTo_ = boundedTo;
+  dist_ = dist;
+  angle_ = angle;
+  size_ = size;
+}
+
 BoundedParticle::~BoundedParticle()
 {
 
@@ -318,5 +342,8 @@ bool BoundedParticle::updateLifeTime()
   bool res = Particle::updateLifeTime();
   coord_ = boundedTo_->getCoord();
   vel_ = boundedTo_->getVelocity();
+  double yaw = angle_ - boundedTo_->getYaw();
+  yaw = DegToRad(yaw);
+  coord_ += Vector3(dist_*sin(yaw), dist_*cos(yaw), 0);
   return res;
 }
