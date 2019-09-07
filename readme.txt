@@ -1,3 +1,6 @@
+Converted from SVN
+First attempt at 3D graphics and game dev. Probably won't even build on any modern compiler.
+
 Controls:
 W - accelarate
 A - turn left
